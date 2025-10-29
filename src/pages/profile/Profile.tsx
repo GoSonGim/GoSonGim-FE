@@ -1,12 +1,12 @@
 import BottomNav from '@/components/common/BottomNav';
 
-const Home = () => {
+const Profile = () => {
   return (
     <div className="relative h-full">
-      <h1>Home</h1>
+      <h1>프로필</h1>
       <BottomNav />
     </div>
   );
 };
 
-export default Home;
+export default Profile;
