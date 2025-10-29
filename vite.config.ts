@@ -13,6 +13,19 @@ export default defineConfig({
       include: '**/*.svg',
       svgrOptions: {
         exportType: 'default',
+        ref: true,
+        svgoConfig: {
+          plugins: [
+            {
+              name: 'preset-default',
+              params: {
+                overrides: {
+                  removeViewBox: false,
+                },
+              },
+            },
+          ],
+        },
       },
     }),
   ],

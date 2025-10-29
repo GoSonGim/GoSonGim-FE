@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'Pretendard';
+  src: url('@/assets/fonts/PretendardVariable.woff2') format('woff2');
+  font-weight: 100 900; /* font weight 100부터 900까지 */
+  font-display: swap; /* 폰트가 로드되기 전까지 시스템 폰트를 사용(swap 방식) */
+}
+
+* {
+  /* pretendard 폰트가 없으면 오른쪽 시스템 폰트들 순차대로 사용 */
+  font-family: 'Pretendard', ui-sans-serif, system-ui, sans-serif;
+}
