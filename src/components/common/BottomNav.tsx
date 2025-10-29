@@ -18,13 +18,18 @@ const BottomNav = () => {
         onClick={() => navigate('/')}
         className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-1"
       >
-        <div className="h-6 w-6" style={{ color: isActive('/') ? '#3C434F' : '#8A94A0' }}>
-          {isActive('/') ? <HomeActive /> : <HomeDefault />}
+        <div
+          className={clsx('h-6 w-6', {
+            'text-gray-80': isActive('/'),
+            'text-gray-50': !isActive('/'),
+          })}
+        >
+          {isActive('/') ? <HomeActive className="h-6 w-6" /> : <HomeDefault className="h-6 w-6" />}
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
-            'text-[#3C434F]': isActive('/'),
-            'text-[#8A94A0]': !isActive('/'),
+          className={clsx('text-body-02-semibold', {
+            'text-gray-80': isActive('/'),
+            'text-gray-50': !isActive('/'),
           })}
         >
           홈
@@ -35,13 +40,18 @@ const BottomNav = () => {
         onClick={() => navigate('/search')}
         className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-1"
       >
-        <div className="h-6 w-6" style={{ color: isActive('/search') ? '#3C434F' : '#8A94A0' }}>
-          <SearchIcon />
+        <div
+          className={clsx('h-6 w-6', {
+            'text-gray-80': isActive('/search'),
+            'text-gray-50': !isActive('/search'),
+          })}
+        >
+          <SearchIcon className="h-6 w-6" />
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
-            'text-[#3C434F]': isActive('/search'),
-            'text-[#8A94A0]': !isActive('/search'),
+          className={clsx('text-body-02-semibold', {
+            'text-gray-80': isActive('/search'),
+            'text-gray-50': !isActive('/search'),
           })}
         >
           학습탐색
@@ -52,13 +62,18 @@ const BottomNav = () => {
         onClick={() => navigate('/review')}
         className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-1"
       >
-        <div className="h-6 w-6" style={{ color: isActive('/review') ? '#3C434F' : '#8A94A0' }}>
-          <ReviewIcon />
+        <div
+          className={clsx('h-6 w-6', {
+            'text-gray-80': isActive('/review'),
+            'text-gray-50': !isActive('/review'),
+          })}
+        >
+          <ReviewIcon className="h-6 w-6" />
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
-            'text-[#3C434F]': isActive('/review'),
-            'text-[#8A94A0]': !isActive('/review'),
+          className={clsx('text-body-02-semibold', {
+            'text-gray-80': isActive('/review'),
+            'text-gray-50': !isActive('/review'),
           })}
         >
           복습
@@ -69,13 +84,18 @@ const BottomNav = () => {
         onClick={() => navigate('/profile')}
         className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-1"
       >
-        <div className="h-6 w-6" style={{ color: isActive('/profile') ? '#3C434F' : '#8A94A0' }}>
-          <ProfileIcon />
+        <div
+          className={clsx('h-6 w-6', {
+            'text-gray-80': isActive('/profile'),
+            'text-gray-50': !isActive('/profile'),
+          })}
+        >
+          <ProfileIcon className="h-6 w-6" />
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
-            'text-[#3C434F]': isActive('/profile'),
-            'text-[#8A94A0]': !isActive('/profile'),
+          className={clsx('text-body-02-semibold', {
+            'text-gray-80': isActive('/profile'),
+            'text-gray-50': !isActive('/profile'),
           })}
         >
           프로필
