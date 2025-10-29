@@ -9,3 +9,142 @@
   /* pretendard 폰트가 없으면 오른쪽 시스템 폰트들 순차대로 사용 */
   font-family: 'Pretendard', ui-sans-serif, system-ui, sans-serif;
 }
+
+@theme {
+  /* Typography - Heading System */
+
+  /* Heading 01 - Semibold */
+  --font-size-heading-01: 22px;
+  --font-weight-heading-01: 600;
+  --line-height-heading-01: 1.5;
+  --letter-spacing-heading-01: 0;
+
+  /* Heading 02 - Regular */
+  --font-size-heading-02: 20px;
+  --font-weight-heading-02-regular: 400;
+  --line-height-heading-02: 1.5;
+  --letter-spacing-heading-02: 0;
+
+  /* Heading 02 - Semibold */
+  --font-weight-heading-02-semibold: 600;
+
+  /* Heading 02 - Semibold (130% line-height) */
+  --line-height-heading-02-tight: 1.3;
+
+  /* Typography - Body System */
+
+  /* Body 01 - Regular */
+  --font-size-body-01: 18px;
+  --font-weight-body-01-regular: 400;
+  --line-height-body-01: 1.5;
+  --letter-spacing-body-01: 0;
+
+  /* Body 01 - Semibold */
+  --font-weight-body-01-semibold: 600;
+
+  /* Body 02 - Regular */
+  --font-size-body-02: 16px;
+  --font-weight-body-02-regular: 400;
+  --line-height-body-02: 1.5;
+  --letter-spacing-body-02: 0;
+
+  /* Body 02 - Semibold */
+  --font-weight-body-02-semibold: 600;
+
+  /* Typography - Detail System */
+
+  /* Detail 01 */
+  --font-size-detail-01: 14px;
+  --font-weight-detail-01: 400;
+  --line-height-detail-01: 1.5;
+  --letter-spacing-detail-01: 0;
+
+  /* Detail 02 */
+  --font-size-detail-02: 12px;
+  --font-weight-detail-02: 400;
+  --line-height-detail-02: 1.5;
+  --letter-spacing-detail-02: 0;
+}
+
+/* Typography Utility Classes */
+@layer utilities {
+  /* Heading 01 - Semibold */
+  .text-heading-01 {
+    font-size: var(--font-size-heading-01);
+    font-weight: var(--font-weight-heading-01);
+    line-height: var(--line-height-heading-01);
+    letter-spacing: var(--letter-spacing-heading-01);
+  }
+
+  /* Heading 02 - Regular */
+  .text-heading-02-regular {
+    font-size: var(--font-size-heading-02);
+    font-weight: var(--font-weight-heading-02-regular);
+    line-height: var(--line-height-heading-02);
+    letter-spacing: var(--letter-spacing-heading-02);
+  }
+
+  /* Heading 02 - Semibold */
+  .text-heading-02-semibold {
+    font-size: var(--font-size-heading-02);
+    font-weight: var(--font-weight-heading-02-semibold);
+    line-height: var(--line-height-heading-02);
+    letter-spacing: var(--letter-spacing-heading-02);
+  }
+
+  /* Heading 02 - Semibold (130% line-height) */
+  .text-heading-02-semibold-tight {
+    font-size: var(--font-size-heading-02);
+    font-weight: var(--font-weight-heading-02-semibold);
+    line-height: var(--line-height-heading-02-tight);
+    letter-spacing: var(--letter-spacing-heading-02);
+  }
+
+  /* Body 01 - Regular */
+  .text-body-01-regular {
+    font-size: var(--font-size-body-01);
+    font-weight: var(--font-weight-body-01-regular);
+    line-height: var(--line-height-body-01);
+    letter-spacing: var(--letter-spacing-body-01);
+  }
+
+  /* Body 01 - Semibold */
+  .text-body-01-semibold {
+    font-size: var(--font-size-body-01);
+    font-weight: var(--font-weight-body-01-semibold);
+    line-height: var(--line-height-body-01);
+    letter-spacing: var(--letter-spacing-body-01);
+  }
+
+  /* Body 02 - Regular */
+  .text-body-02-regular {
+    font-size: var(--font-size-body-02);
+    font-weight: var(--font-weight-body-02-regular);
+    line-height: var(--line-height-body-02);
+    letter-spacing: var(--letter-spacing-body-02);
+  }
+
+  /* Body 02 - Semibold */
+  .text-body-02-semibold {
+    font-size: var(--font-size-body-02);
+    font-weight: var(--font-weight-body-02-semibold);
+    line-height: var(--line-height-body-02);
+    letter-spacing: var(--letter-spacing-body-02);
+  }
+
+  /* Detail 01 */
+  .text-detail-01 {
+    font-size: var(--font-size-detail-01);
+    font-weight: var(--font-weight-detail-01);
+    line-height: var(--line-height-detail-01);
+    letter-spacing: var(--letter-spacing-detail-01);
+  }
+
+  /* Detail 02 */
+  .text-detail-02 {
+    font-size: var(--font-size-detail-02);
+    font-weight: var(--font-weight-detail-02);
+    line-height: var(--line-height-detail-02);
+    letter-spacing: var(--letter-spacing-detail-02);
+  }
+}
