@@ -13,16 +13,16 @@ const BottomNav = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="absolute right-0 bottom-0 left-0 flex items-end justify-center gap-8 border-t border-[#dde2e7] bg-white px-0 pt-1 pb-10">
+    <nav className="absolute bottom-0 w-full flex items-end justify-center gap-8 border-t border-[#dde2e7] bg-white px-0 pt-1 pb-10">
       <button
         onClick={() => navigate('/')}
-        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-1"
+        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
       >
         <div className="h-6 w-6" style={{ color: isActive('/') ? '#3C434F' : '#8A94A0' }}>
           {isActive('/') ? <HomeActive /> : <HomeDefault />}
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
+          className={clsx('text-[18px] leading-[1.5] font-semibold', {
             'text-[#3C434F]': isActive('/'),
             'text-[#8A94A0]': !isActive('/'),
           })}
@@ -33,13 +33,13 @@ const BottomNav = () => {
 
       <button
         onClick={() => navigate('/search')}
-        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-1"
+        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
       >
         <div className="h-6 w-6" style={{ color: isActive('/search') ? '#3C434F' : '#8A94A0' }}>
           <SearchIcon />
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
+          className={clsx('text-[18px] leading-[1.5] font-semibold', {
             'text-[#3C434F]': isActive('/search'),
             'text-[#8A94A0]': !isActive('/search'),
           })}
@@ -50,13 +50,13 @@ const BottomNav = () => {
 
       <button
         onClick={() => navigate('/review')}
-        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-1"
+        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
       >
         <div className="h-6 w-6" style={{ color: isActive('/review') ? '#3C434F' : '#8A94A0' }}>
           <ReviewIcon />
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
+          className={clsx('text-[18px] leading-[1.5] font-semibold', {
             'text-[#3C434F]': isActive('/review'),
             'text-[#8A94A0]': !isActive('/review'),
           })}
@@ -67,13 +67,13 @@ const BottomNav = () => {
 
       <button
         onClick={() => navigate('/profile')}
-        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-1"
+        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
       >
         <div className="h-6 w-6" style={{ color: isActive('/profile') ? '#3C434F' : '#8A94A0' }}>
           <ProfileIcon />
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
+          className={clsx('text-[16px] leading-[1.5] font-semibold', {
             'text-[#3C434F]': isActive('/profile'),
             'text-[#8A94A0]': !isActive('/profile'),
           })}

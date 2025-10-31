@@ -5,6 +5,7 @@ import Login from '@/pages/login/Login';
 import Search from '@/pages/search/Search';
 import Review from '@/pages/review/Review';
 import Profile from '@/pages/profile/Profile';
+import HomeStudyTalk from '@/pages/home/studytalk/HomeStudyTalk';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/review" element={<Review />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/studytalk" element={<HomeStudyTalk />} />
         </Route>
       </Routes>
     </BrowserRouter>
