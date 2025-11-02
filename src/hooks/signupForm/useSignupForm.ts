@@ -114,7 +114,7 @@ export const useSignupForm = () => {
   const handleSignup = () => {
     // 모든 검증이 완료되었을 때만 실행
     console.log('Signup successful', { email, password });
-    navigate('/');
+    navigate('/signup/nickname');
   };
 
   // 회원가입 버튼 활성화 조건
