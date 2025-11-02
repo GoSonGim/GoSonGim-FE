@@ -18,7 +18,17 @@ interface InputProps {
   showCheckIcon?: boolean; // 회원가입 폼에서 검증 완료 시 체크 아이콘 표시
 }
 
-export const Input = ({ type, label, value, onChange, onBlur, error, errorType = 'user', placeholder, showCheckIcon = false }: InputProps) => {
+export const Input = ({
+  type,
+  label,
+  value,
+  onChange,
+  onBlur,
+  error,
+  errorType = 'user',
+  placeholder,
+  showCheckIcon = false,
+}: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -82,7 +92,11 @@ export const Input = ({ type, label, value, onChange, onBlur, error, errorType =
           {/* 비밀번호 보기/숨기기 아이콘 */}
           {isPassword && hasValue && (
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="shrink-0">
-              {showPassword ? <EyeOpen className="h-5 w-5" /> : <EyeClosed className="h-5 w-5" />}
+              {showPassword ? (
+                <EyeOpen className="h-5 w-5 cursor-pointer" />
+              ) : (
+                <EyeClosed className="h-5 w-5 cursor-pointer" />
+              )}
             </button>
           )}
 
