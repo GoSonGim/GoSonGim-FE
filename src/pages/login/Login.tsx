@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/Login/Button';
+import { Button } from '@/components/Login/button/Button';
+import { SignupBottomSheet } from '@/components/Login/signUp/SignupBottomSheet';
 
 import EmailIcon from '@/assets/svgs/login/emailIcon.svg';
 import Divider from '@/assets/svgs/login/divider.svg';
@@ -10,6 +11,7 @@ import GoogleLogo from '@/assets/svgs/login/googleLogo.svg';
 const Login = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSignupOpen, setIsSignupOpen] = useState(false);
 
   // 이메일로 로그인
   const handleEmailLogin = () => {
@@ -39,11 +41,32 @@ const Login = () => {
     console.log('Inquiry clicked');
   };
 
-  // 회원가입
+  // 회원가입 바텀시트 열기
   const handleSignup = () => {
-    // TODO: Navigate to signup page
-    console.log('Signup clicked');
-    // navigate('/signup');
+    setIsSignupOpen(true);
+  };
+
+  // 구글로 회원가입
+  const handleGoogleSignup = async () => {
+    try {
+      setIsLoading(true);
+      // TODO: 구글 OAuth 회원가입 로직
+      console.log('Google signup clicked');
+      setIsSignupOpen(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Google signup failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 이메일로 회원가입
+  const handleEmailSignup = () => {
+    console.log('Email signup clicked');
+    setIsSignupOpen(false);
+    // TODO: 이메일 회원가입 페이지로 이동
+    // navigate('/signup/email');
   };
 
   return (
@@ -92,6 +115,14 @@ const Login = () => {
           </button>
         </div>
       </div>
+
+      {/* 회원가입 바텀시트 */}
+      <SignupBottomSheet
+        isOpen={isSignupOpen}
+        onClose={() => setIsSignupOpen(false)}
+        onGoogleSignup={handleGoogleSignup}
+        onEmailSignup={handleEmailSignup}
+      />
     </div>
   );
 };
