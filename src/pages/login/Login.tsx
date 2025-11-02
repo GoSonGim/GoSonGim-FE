@@ -63,8 +63,7 @@ const Login = () => {
   const handleEmailSignup = () => {
     console.log('Email signup clicked');
     setIsSignupOpen(false);
-    // TODO: 이메일 회원가입 페이지로 이동
-    // navigate('/signup/email');
+    navigate('/signup/email');
   };
 
   return (

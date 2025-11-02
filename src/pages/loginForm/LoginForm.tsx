@@ -17,24 +17,17 @@ const LoginForm = () => {
   const [emailErrorType, setEmailErrorType] = useState<'form' | 'user'>('user');
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  // 이메일 blur 시 유효성 검사
-  const handleEmailBlur = () => {
-    if (!email) {
+  // 이메일 실시간 형식 검증 (형식만 체크)
+  const validateEmail = (value: string) => {
+    if (!value) {
       setEmailError(null);
       return;
     }
 
-    // 1. 이메일 형식 검증
-    if (!isValidEmail(email)) {
+    // 이메일 형식 검증만 실시간으로
+    if (!isValidEmail(value)) {
       setEmailError('올바르지 않은 이메일 형식입니다.');
       setEmailErrorType('form');
-      return;
-    }
-
-    // 2. 가입된 이메일인지 검증 (Mock)
-    if (email !== MOCK_EMAIL) {
-      setEmailError('가입되어있지 않은 이메일입니다');
-      setEmailErrorType('user');
       return;
     }
 
@@ -43,7 +36,14 @@ const LoginForm = () => {
 
   // 로그인 처리
   const handleLogin = () => {
-    // 비밀번호 검증 (Mock)
+    // 1. 가입된 이메일인지 검증 (Mock) - 로그인 버튼 클릭 시에만
+    if (email !== MOCK_EMAIL) {
+      setEmailError('가입되어있지 않은 이메일입니다');
+      setEmailErrorType('user');
+      return;
+    }
+
+    // 2. 비밀번호 검증 (Mock)
     if (password !== MOCK_PASSWORD) {
       setPasswordError('비밀번호가 올바르지 않습니다');
       return;
@@ -84,9 +84,8 @@ const LoginForm = () => {
             value={email}
             onChange={(value) => {
               setEmail(value);
-              setEmailError(null); // 입력 중에는 에러 제거
+              validateEmail(value); // 실시간 검증
             }}
-            onBlur={handleEmailBlur}
             error={emailError}
             errorType={emailErrorType}
             placeholder="abcde@email.com"

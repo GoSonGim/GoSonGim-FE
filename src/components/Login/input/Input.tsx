@@ -4,6 +4,7 @@ import EyeOpen from '@/assets/svgs/login/loginForm/eyeOpensvg.svg';
 import EyeClosed from '@/assets/svgs/login/loginForm/eyeClosed.svg';
 import Warning from '@/assets/svgs/login/loginForm/warning.svg';
 import WarningYellow from '@/assets/svgs/login/loginForm/warningYellow.svg';
+import GreenCheck from '@/assets/svgs/login/singIn/greenCheck.svg';
 
 interface InputProps {
   type: 'email' | 'password';
@@ -14,9 +15,10 @@ interface InputProps {
   error?: string | null;
   errorType?: 'form' | 'user'; // form: 노란색, user: 빨간색
   placeholder: string;
+  showCheckIcon?: boolean; // 회원가입 폼에서 검증 완료 시 체크 아이콘 표시
 }
 
-export const Input = ({ type, label, value, onChange, onBlur, error, errorType = 'user', placeholder }: InputProps) => {
+export const Input = ({ type, label, value, onChange, onBlur, error, errorType = 'user', placeholder, showCheckIcon = false }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -75,7 +77,7 @@ export const Input = ({ type, label, value, onChange, onBlur, error, errorType =
           )}
         />
 
-        {/* Icons (비밀번호 눈 아이콘 + 에러 아이콘) */}
+        {/* Icons (비밀번호 눈 아이콘 + 에러 아이콘 + 체크 아이콘) */}
         <div className="flex items-center gap-2">
           {/* 비밀번호 보기/숨기기 아이콘 */}
           {isPassword && hasValue && (
@@ -94,6 +96,9 @@ export const Input = ({ type, label, value, onChange, onBlur, error, errorType =
               )}
             </>
           )}
+
+          {/* 체크 아이콘 (회원가입 폼에서 검증 완료 시) */}
+          {showCheckIcon && !hasError && <GreenCheck className="h-5 w-5 shrink-0" />}
         </div>
       </div>
 
