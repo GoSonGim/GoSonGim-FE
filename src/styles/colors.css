@@ -26,6 +26,11 @@
   --color-red-1: #ff4c4f;
   --color-red-1-hover: #b44143;
 
+  /* Green Scale */
+  --color-green-1: #074e42;
+  --color-green-2: #caf6ec;
+  --color-green-3: #5acbb0;
+
   /* background Color */
   --color-background-primary: #f2f6fa;
   --color-background-modal: rgb(25 25 25 / 0.5);
