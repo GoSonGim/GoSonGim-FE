@@ -20,7 +20,7 @@ export const Button = ({
   ...props
 }: ButtonProps) => {
   const baseStyles =
-    'flex items-center justify-between w-full rounded-full p-4 text-body-01-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed';
+    'flex items-center justify-between w-full rounded-full p-4 text-body-01-semibold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variantStyles: Record<ButtonVariant, string> = {
     primary: 'bg-blue-2 text-white hover:bg-blue-2-hover',

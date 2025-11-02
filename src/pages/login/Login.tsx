@@ -15,9 +15,7 @@ const Login = () => {
 
   // 이메일로 로그인
   const handleEmailLogin = () => {
-    // TODO: Navigate to email login form page
-    console.log('Email login clicked');
-    // navigate('/login/email');
+    navigate('/login/email');
   };
 
   // 구글로 로그인
