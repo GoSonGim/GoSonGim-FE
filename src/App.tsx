@@ -8,6 +8,9 @@ import NicknamePage from '@/pages/nickname/NicknamePage';
 import Search from '@/pages/search/Search';
 import Review from '@/pages/review/Review';
 import Profile from '@/pages/profile/Profile';
+import HomeStudyTalk from '@/pages/studytalk/HomeStudyTalk';
+import FreeTalkIntro from '@/pages/freetalk/FreeTalkIntro';
+import FreeTalk from '@/pages/freetalk/FreeTalk';
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/review" element={<Review />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/studytalk" element={<HomeStudyTalk />} />
+          <Route path="/freetalk" element={<FreeTalkIntro />} />
+          <Route path="/freetalk/chat" element={<FreeTalk />} />
         </Route>
       </Routes>
     </BrowserRouter>
