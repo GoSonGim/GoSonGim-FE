@@ -16,6 +16,7 @@ interface InputProps {
   errorType?: 'form' | 'user'; // form: 노란색, user: 빨간색
   placeholder: string;
   showCheckIcon?: boolean; // 회원가입 폼에서 검증 완료 시 체크 아이콘 표시
+  isLoading?: boolean; // 로딩 중 표시
 }
 
 export const Input = ({
@@ -28,6 +29,7 @@ export const Input = ({
   errorType = 'user',
   placeholder,
   showCheckIcon = false,
+  isLoading = false,
 }: InputProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -87,7 +89,7 @@ export const Input = ({
           )}
         />
 
-        {/* Icons (비밀번호 눈 아이콘 + 에러 아이콘 + 체크 아이콘) */}
+        {/* Icons (비밀번호 눈 아이콘 + 로딩/에러/체크 아이콘) */}
         <div className="flex items-center gap-2">
           {/* 비밀번호 보기/숨기기 아이콘 */}
           {isPassword && hasValue && (
@@ -100,8 +102,13 @@ export const Input = ({
             </button>
           )}
 
+          {/* 로딩 스피너 */}
+          {isLoading && (
+            <div className="border-gray-30 h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-t-[#5ACBB0]" />
+          )}
+
           {/* 에러 아이콘 */}
-          {hasError && (
+          {!isLoading && hasError && (
             <>
               {errorType === 'form' ? (
                 <WarningYellow className="h-5 w-5 shrink-0" />
@@ -112,7 +119,7 @@ export const Input = ({
           )}
 
           {/* 체크 아이콘 (회원가입 폼에서 검증 완료 시) */}
-          {showCheckIcon && !hasError && <GreenCheck className="h-5 w-5 shrink-0" />}
+          {!isLoading && showCheckIcon && !hasError && <GreenCheck className="h-5 w-5 shrink-0" />}
         </div>
       </div>
 

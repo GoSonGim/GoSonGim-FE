@@ -9,5 +9,6 @@ export const useValidateEmail = (email: string, enabled: boolean = true) => {
     staleTime: 0, // 항상 새로 검증
     gcTime: 0, // 캐시하지 않음
     retry: false, // 재시도 안 함
+    refetchOnMount: 'always', // mount 시 항상 refetch
   });
 };

@@ -33,8 +33,7 @@ export const useLoginForm = () => {
   const handleEmailChange = (value: string) => {
     setEmail(value);
     validateEmail(value);
-    // 에러 초기화
-    setEmailError(null);
+    // 비밀번호 에러만 초기화
     setPasswordError(null);
   };
 
@@ -53,8 +52,8 @@ export const useLoginForm = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setPasswordError('비밀번호는 6자리 이상이어야 합니다');
+    if (password.length < 8 || password.length > 20) {
+      setPasswordError('비밀번호는 8자 이상 20자 이하여야 합니다.');
       return;
     }
 
@@ -85,8 +84,7 @@ export const useLoginForm = () => {
   };
 
   // 로그인 버튼 활성화 조건
-  const isLoginEnabled =
-    email.length > 0 && password.length > 0 && !emailError && !loginMutation.isPending;
+  const isLoginEnabled = email.length > 0 && password.length > 0 && !emailError && !loginMutation.isPending;
 
   return {
     email,

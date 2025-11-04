@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { isValidEmail } from '@/utils/login/validationUtils';
 import { useSignupMutation } from '@/hooks/mutations/useSignupMutation';
 import { useValidateEmail } from '@/hooks/queries/useValidateEmail';
 import { getErrorMessage, parseApiError } from '@/utils/errorHandlerUtils';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export const useSignupForm = () => {
+  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState(0); // 0: email, 1: password, 2: password confirm
 
   // 각 input 값
@@ -24,18 +27,31 @@ export const useSignupForm = () => {
 
   // Mutations & Queries
   const signupMutation = useSignupMutation();
-  
+
+  // 이메일 debounce 처리 (1000ms)
+  const debouncedEmail = useDebounce(email, 1000);
+
   // 이메일 중복 확인 쿼리 (이메일이 유효한 형식일 때만 실행)
-  const shouldCheckEmail = email.length > 0 && isValidEmail(email);
+  const shouldCheckEmail = debouncedEmail.length > 0 && isValidEmail(debouncedEmail);
   const {
     data: emailValidation,
     isLoading: isCheckingEmail,
     isError: isEmailCheckError,
-  } = useValidateEmail(email, shouldCheckEmail);
+  } = useValidateEmail(debouncedEmail, shouldCheckEmail);
+
+  // email이 변경되면 검증 상태 초기화 (debounce 전)
+  useEffect(() => {
+    if (email !== debouncedEmail) {
+      // 아직 debounce 대기 중이므로 검증 상태 초기화
+      setIsEmailValidated(false);
+      // 이전 이메일 검증 쿼리 캐시 제거
+      queryClient.removeQueries({ queryKey: ['validateEmail'] });
+    }
+  }, [email, debouncedEmail, queryClient]);
 
   // 이메일 검증 결과에 따른 처리
   useEffect(() => {
-    if (!email || !isValidEmail(email)) {
+    if (!debouncedEmail || !isValidEmail(debouncedEmail)) {
       setIsEmailValidated(false);
       return;
     }
@@ -66,7 +82,7 @@ export const useSignupForm = () => {
         setIsEmailValidated(false);
       }
     }
-  }, [email, emailValidation, isCheckingEmail, isEmailCheckError, currentStep]);
+  }, [debouncedEmail, emailValidation, isCheckingEmail, isEmailCheckError, currentStep]);
 
   // 이메일 실시간 형식 검증
   const validateEmailFormat = (value: string) => {
@@ -84,6 +100,7 @@ export const useSignupForm = () => {
       return;
     }
 
+    // 형식이 유효하면 에러 초기화 (새로운 검증을 위해)
     setEmailError(null);
   };
 
@@ -95,9 +112,9 @@ export const useSignupForm = () => {
       return;
     }
 
-    // 6자리 이상 검증
-    if (value.length < 6) {
-      setPasswordError('비밀번호는 6자리 이상이어야 합니다');
+    // 8자 이상 20자 이하 검증
+    if (value.length < 8 || value.length > 20) {
+      setPasswordError('비밀번호는 8자 이상 20자 이하여야 합니다.');
       setIsPasswordValidated(false);
       return;
     }
@@ -128,6 +145,8 @@ export const useSignupForm = () => {
   // 이메일 변경 핸들러
   const handleEmailChange = (value: string) => {
     setEmail(value);
+    // 이메일이 변경되면 이전 검증 상태 초기화
+    setIsEmailValidated(false);
     validateEmailFormat(value);
   };
 
@@ -152,8 +171,8 @@ export const useSignupForm = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setPasswordError('비밀번호는 6자리 이상이어야 합니다');
+    if (password.length < 8 || password.length > 20) {
+      setPasswordError('비밀번호는 8자 이상 20자 이하여야 합니다.');
       return;
     }
 
@@ -197,6 +216,9 @@ export const useSignupForm = () => {
     !passwordError &&
     !passwordConfirmError;
 
+  // 실제 로딩 상태: API 호출 중이거나 debounce 대기 중
+  const isEmailLoading = isCheckingEmail || (email !== debouncedEmail && email.length > 0 && isValidEmail(email));
+
   return {
     currentStep,
     email,
@@ -208,6 +230,7 @@ export const useSignupForm = () => {
     passwordConfirmError,
     isEmailValidated,
     isPasswordValidated,
+    isCheckingEmail: isEmailLoading,
     handleEmailChange,
     handlePasswordChange,
     handlePasswordConfirmChange,

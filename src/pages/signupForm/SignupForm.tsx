@@ -18,6 +18,7 @@ const SignupForm = () => {
     passwordConfirmError,
     isEmailValidated,
     isPasswordValidated,
+    isCheckingEmail,
     handleEmailChange,
     handlePasswordChange,
     handlePasswordConfirmChange,
@@ -54,6 +55,7 @@ const SignupForm = () => {
             errorType={emailErrorType}
             placeholder="abcde@email.com"
             showCheckIcon={isEmailValidated}
+            isLoading={isCheckingEmail}
           />
         </motion.div>
 
@@ -66,7 +68,7 @@ const SignupForm = () => {
               value={password}
               onChange={handlePasswordChange}
               error={passwordError}
-              placeholder="6자리 이상 입력하세요"
+              placeholder="8자 이상 20자 이하 입력하세요"
               showCheckIcon={isPasswordValidated}
             />
           </motion.div>
