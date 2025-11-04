@@ -1,10 +1,29 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+// 구글 OAuth 설정
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || `${window.location.origin}/auth/callback`;
+const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
+
 export const useLogin = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+
+  // 구글 OAuth URL 생성
+  const getGoogleAuthUrl = (isSignup: boolean = false) => {
+    const params = new URLSearchParams({
+      client_id: GOOGLE_CLIENT_ID,
+      redirect_uri: GOOGLE_REDIRECT_URI,
+      response_type: 'code',
+      scope: 'email profile',
+      access_type: 'offline',
+      state: isSignup ? 'signup' : 'login', // 로그인/회원가입 구분
+    });
+
+    return `${GOOGLE_AUTH_URL}?${params.toString()}`;
+  };
 
   // 이메일로 로그인
   const handleEmailLogin = () => {
@@ -12,18 +31,10 @@ export const useLogin = () => {
   };
 
   // 구글로 로그인
-  const handleGoogleLogin = async () => {
-    try {
-      setIsLoading(true);
-      // await loginWithGoogle();
-      // Navigate to home after successful login
-      navigate('/');
-    } catch (error) {
-      console.error('Google login failed:', error);
-      // TODO: Show error message to user
-    } finally {
-      setIsLoading(false);
-    }
+  const handleGoogleLogin = () => {
+    setIsLoading(true);
+    // 구글 OAuth 페이지로 리다이렉트
+    window.location.href = getGoogleAuthUrl(false);
   };
 
   // 문의하기
@@ -38,23 +49,15 @@ export const useLogin = () => {
   };
 
   // 구글로 회원가입
-  const handleGoogleSignup = async () => {
-    try {
-      setIsLoading(true);
-      // TODO: 구글 OAuth 회원가입 로직
-      console.log('Google signup clicked');
-      setIsSignupOpen(false);
-      navigate('/');
-    } catch (error) {
-      console.error('Google signup failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleGoogleSignup = () => {
+    setIsLoading(true);
+    setIsSignupOpen(false);
+    // 구글 OAuth 페이지로 리다이렉트 (state=signup)
+    window.location.href = getGoogleAuthUrl(true);
   };
 
   // 이메일로 회원가입
   const handleEmailSignup = () => {
-    console.log('Email signup clicked');
     setIsSignupOpen(false);
     navigate('/signup/email');
   };

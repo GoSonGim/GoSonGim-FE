@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Input } from '@/components/Login/input/Input';
-import { LoginButton } from '@/components/Login/button/LoginButton';
+import { Input } from '@/components/login/input/Input';
+import { LoginButton } from '@/components/login/button/LoginButton';
 import { useSignupForm } from '@/hooks/signupForm/useSignupForm';
-import BackIcon from '@/assets/svgs/login/singIn/back.svg';
+import BackIcon from '@/assets/svgs/login/signIn/back.svg';
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -44,11 +44,7 @@ const SignupForm = () => {
       {/* Input 폼 */}
       <div className="absolute top-[230px] left-4 flex w-[361px] flex-col gap-6">
         {/* 이메일 Input (항상 표시) */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
           <Input
             type="email"
             label="이메일"
@@ -63,11 +59,7 @@ const SignupForm = () => {
 
         {/* 비밀번호 Input (step >= 1일 때 표시) */}
         {currentStep >= 1 && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
             <Input
               type="password"
               label="비밀번호"
@@ -82,11 +74,7 @@ const SignupForm = () => {
 
         {/* 비밀번호 확인 Input (step >= 2일 때 표시) */}
         {currentStep >= 2 && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
             <Input
               type="password"
               label="비밀번호 확인"

@@ -18,7 +18,15 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 3000,
+    port: 8080,
+    // 개발 환경에서는 프록시 사용, 프로덕션에서는 실제 URL 사용
+    proxy: {
+      '/api': {
+        target: 'https://ttobaki.app',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
   },
   resolve: {
     alias: {

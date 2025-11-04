@@ -5,6 +5,7 @@ import Login from '@/pages/login/Login';
 import LoginForm from '@/pages/loginForm/LoginForm';
 import SignupForm from '@/pages/signupForm/SignupForm';
 import NicknamePage from '@/pages/nickname/NicknamePage';
+import GoogleCallback from '@/pages/auth/GoogleCallback';
 import Search from '@/pages/search/Search';
 import Review from '@/pages/review/Review';
 import Profile from '@/pages/profile/Profile';
@@ -13,6 +14,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* 구글 OAuth Callback - Layout 없이 처리 */}
+        <Route path="/callback" element={<GoogleCallback />} />
+
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
