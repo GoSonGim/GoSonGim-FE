@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { isValidEmail } from '@/utils/login/validation';
-
-// Mock 데이터
-const MOCK_EMAIL = 'test@example.com'; // 이미 가입된 이메일
+import { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { isValidEmail } from '@/utils/login/validationUtils';
+import { useSignupMutation } from '@/hooks/mutations/useSignupMutation';
+import { useValidateEmail } from '@/hooks/queries/useValidateEmail';
+import { getErrorMessage, parseApiError } from '@/utils/errorHandlerUtils';
+import { useDebounce } from '@/hooks/useDebounce';
 
 export const useSignupForm = () => {
-  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState(0); // 0: email, 1: password, 2: password confirm
 
   // 각 input 값
@@ -24,15 +25,74 @@ export const useSignupForm = () => {
   const [isEmailValidated, setIsEmailValidated] = useState(false);
   const [isPasswordValidated, setIsPasswordValidated] = useState(false);
 
-  // 이메일 실시간 검증
-  const validateEmail = (value: string) => {
+  // Mutations & Queries
+  const signupMutation = useSignupMutation();
+
+  // 이메일 debounce 처리 (1000ms)
+  const debouncedEmail = useDebounce(email, 1000);
+
+  // 이메일 중복 확인 쿼리 (이메일이 유효한 형식일 때만 실행)
+  const shouldCheckEmail = debouncedEmail.length > 0 && isValidEmail(debouncedEmail);
+  const {
+    data: emailValidation,
+    isLoading: isCheckingEmail,
+    isError: isEmailCheckError,
+  } = useValidateEmail(debouncedEmail, shouldCheckEmail);
+
+  // email이 변경되면 검증 상태 초기화 (debounce 전)
+  useEffect(() => {
+    if (email !== debouncedEmail) {
+      // 아직 debounce 대기 중이므로 검증 상태 초기화
+      setIsEmailValidated(false);
+      // 이전 이메일 검증 쿼리 캐시 제거
+      queryClient.removeQueries({ queryKey: ['validateEmail'] });
+    }
+  }, [email, debouncedEmail, queryClient]);
+
+  // 이메일 검증 결과에 따른 처리
+  useEffect(() => {
+    if (!debouncedEmail || !isValidEmail(debouncedEmail)) {
+      setIsEmailValidated(false);
+      return;
+    }
+
+    if (isCheckingEmail) {
+      return;
+    }
+
+    if (isEmailCheckError) {
+      setEmailError('이메일 확인 중 오류가 발생했습니다');
+      setEmailErrorType('user');
+      setIsEmailValidated(false);
+      return;
+    }
+
+    if (emailValidation) {
+      if (emailValidation.result.available) {
+        // 사용 가능한 이메일
+        setEmailError(null);
+        setIsEmailValidated(true);
+        if (currentStep === 0) {
+          setCurrentStep(1);
+        }
+      } else {
+        // 이미 사용 중인 이메일
+        setEmailError('이미 가입된 이메일입니다');
+        setEmailErrorType('user');
+        setIsEmailValidated(false);
+      }
+    }
+  }, [debouncedEmail, emailValidation, isCheckingEmail, isEmailCheckError, currentStep]);
+
+  // 이메일 실시간 형식 검증
+  const validateEmailFormat = (value: string) => {
     if (!value) {
       setEmailError(null);
       setIsEmailValidated(false);
       return;
     }
 
-    // 1. 이메일 형식 검증
+    // 이메일 형식 검증
     if (!isValidEmail(value)) {
       setEmailError('올바르지 않은 이메일 형식입니다.');
       setEmailErrorType('form');
@@ -40,18 +100,8 @@ export const useSignupForm = () => {
       return;
     }
 
-    // 2. 이미 가입된 이메일인지 검증 (Mock)
-    if (value === MOCK_EMAIL) {
-      setEmailError('이미 가입된 이메일입니다');
-      setEmailErrorType('user');
-      setIsEmailValidated(false);
-      return;
-    }
-
-    // 검증 통과 - 자동으로 다음 스텝으로
+    // 형식이 유효하면 에러 초기화 (새로운 검증을 위해)
     setEmailError(null);
-    setIsEmailValidated(true);
-    setCurrentStep(1);
   };
 
   // 비밀번호 실시간 검증
@@ -62,9 +112,9 @@ export const useSignupForm = () => {
       return;
     }
 
-    // 6자리 이상 검증
-    if (value.length < 6) {
-      setPasswordError('비밀번호는 6자리 이상이어야 합니다');
+    // 8자 이상 20자 이하 검증
+    if (value.length < 8 || value.length > 20) {
+      setPasswordError('비밀번호는 8자 이상 20자 이하여야 합니다.');
       setIsPasswordValidated(false);
       return;
     }
@@ -95,7 +145,9 @@ export const useSignupForm = () => {
   // 이메일 변경 핸들러
   const handleEmailChange = (value: string) => {
     setEmail(value);
-    validateEmail(value);
+    // 이메일이 변경되면 이전 검증 상태 초기화
+    setIsEmailValidated(false);
+    validateEmailFormat(value);
   };
 
   // 비밀번호 변경 핸들러
@@ -112,9 +164,47 @@ export const useSignupForm = () => {
 
   // 회원가입 처리
   const handleSignup = () => {
-    // 모든 검증이 완료되었을 때만 실행
-    console.log('Signup successful', { email, password });
-    navigate('/signup/nickname');
+    // 최종 검증
+    if (!isValidEmail(email)) {
+      setEmailError('올바르지 않은 이메일 형식입니다.');
+      setEmailErrorType('form');
+      return;
+    }
+
+    if (password.length < 8 || password.length > 20) {
+      setPasswordError('비밀번호는 8자 이상 20자 이하여야 합니다.');
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      setPasswordConfirmError('비밀번호가 일치하지 않습니다');
+      return;
+    }
+
+    // API 호출
+    signupMutation.mutate(
+      { email, password },
+      {
+        onError: (error) => {
+          const parsedError = parseApiError(error);
+
+          // 409: 이메일 중복
+          if (parsedError.status === 409) {
+            setEmailError('이미 등록된 이메일입니다');
+            setEmailErrorType('user');
+            setCurrentStep(0);
+          }
+          // 400: 유효성 검사 실패
+          else if (parsedError.status === 400) {
+            setPasswordError(getErrorMessage(error));
+          }
+          // 기타 에러
+          else {
+            setPasswordError(getErrorMessage(error));
+          }
+        },
+      },
+    );
   };
 
   // 회원가입 버튼 활성화 조건
@@ -125,6 +215,9 @@ export const useSignupForm = () => {
     !emailError &&
     !passwordError &&
     !passwordConfirmError;
+
+  // 실제 로딩 상태: API 호출 중이거나 debounce 대기 중
+  const isEmailLoading = isCheckingEmail || (email !== debouncedEmail && email.length > 0 && isValidEmail(email));
 
   return {
     currentStep,
@@ -137,6 +230,7 @@ export const useSignupForm = () => {
     passwordConfirmError,
     isEmailValidated,
     isPasswordValidated,
+    isCheckingEmail: isEmailLoading,
     handleEmailChange,
     handlePasswordChange,
     handlePasswordConfirmChange,
