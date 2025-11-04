@@ -17,15 +17,11 @@ export default function SortFilter({ selectedSort, onSortChange }: SortFilterPro
           key={option}
           onClick={() => onSortChange(option)}
           className={clsx(
-            'flex items-center justify-center rounded-full px-[10px] py-[4px] transition-colors cursor-pointer',
-            selectedSort === option
-              ? 'bg-[#f1f1f5] text-gray-100'
-              : 'border border-[#f1f1f5] bg-white text-[#a6aeb6]'
+            'flex cursor-pointer items-center justify-center rounded-full px-[10px] py-[4px] transition-colors',
+            selectedSort === option ? 'bg-[#f1f1f5] text-gray-100' : 'text-gray-40 border border-[#f1f1f5] bg-white',
           )}
         >
-          <p className="text-[18px] leading-[1.5] font-normal">
-            {option}
-          </p>
+          <p className="text-[18px] leading-normal font-normal">{option}</p>
         </button>
       ))}
     </div>

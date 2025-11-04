@@ -14,9 +14,9 @@ import clsx from 'clsx';
 export default function FreeTalk() {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const loadingTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const completeTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const loadingTimerRef = useRef<number | null>(null);
+  const completeTimerRef = useRef<number | null>(null);
+  const progressIntervalRef = useRef<number | null>(null);
 
   const [conversations, setConversations] = useState<Conversation[]>(conversationsMock);
   const [isRecording, setIsRecording] = useState(false);
@@ -105,7 +105,7 @@ export default function FreeTalk() {
               return { ...conv, status: 'active' as const };
             }
             return conv;
-          })
+          }),
         );
         setIsRecording(false);
         setUserAnswer(null);
@@ -133,7 +133,6 @@ export default function FreeTalk() {
       progressIntervalRef.current = null;
     }
 
-  
     const answer = userAnswer || mockAnswers[activeConversation.id];
 
     setConversations((prev) =>
@@ -149,7 +148,7 @@ export default function FreeTalk() {
           return { ...conv, status: 'active' as const };
         }
         return conv;
-      })
+      }),
     );
 
     setIsRecording(false);
@@ -157,44 +156,41 @@ export default function FreeTalk() {
     setUserAnswer(null);
   };
 
-  
   const handleExit = () => {
     navigate('/');
   };
 
   return (
-    <div className="relative bg-background-primary flex h-full flex-col">
-      <div className="bg-white h-16 flex items-center justify-between overflow-clip px-4 py-2 relative shrink-0">
+    <div className="bg-background-primary relative flex h-full flex-col">
+      <div className="relative flex h-16 shrink-0 items-center justify-between overflow-clip bg-white px-4 py-2">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center justify-center p-2 size-12 cursor-pointer"
+          className="flex size-12 cursor-pointer items-center justify-center p-2"
           aria-label="뒤로가기"
         >
           <ChevronLeft className="h-[18px] w-[10px]" />
         </button>
-        <p className="text-[20px] font-normal leading-[1.5] text-gray-100 text-center absolute left-1/2 -translate-x-1/2">
+        <p className="absolute left-1/2 -translate-x-1/2 text-center text-[20px] leading-normal font-normal text-gray-100">
           자유대화
         </p>
         <button
           onClick={handleExit}
-          className="text-[18px] font-normal leading-[1.5] text-[#3c434f] px-1 py-2 rounded-lg hover:bg-[#f1f1f5] cursor-pointer transition-colors"
+          className="text-gray-80 cursor-pointer rounded-lg px-1 py-2 text-[18px] leading-normal font-normal transition-colors hover:bg-[#f1f1f5]"
         >
           종료하기
         </button>
       </div>
 
- 
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex gap-2 px-4 pt-6 pb-4 shrink-0">
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="flex shrink-0 gap-2 px-4 pt-6 pb-4">
           {conversations.map((conv) => (
             <div
               key={conv.id}
               className={clsx(
-                'flex items-center justify-center h-[30px] rounded-[8px] text-[16px] font-normal leading-[1.5]',
-                conv.status === 'completed' && 'bg-[#757a9e] text-[#a6aeb6] w-[70px]',
-                conv.status === 'active' &&
-                  'bg-white text-[#757a9e] border border-[#757a9e] border-solid w-[70px]',
-                conv.status === 'pending' && 'bg-[#e2e4e7] text-[#a6aeb6] w-[70px]'
+                'flex h-[30px] items-center justify-center rounded-[8px] text-[16px] leading-normal font-normal',
+                conv.status === 'completed' && 'text-gray-40 w-[70px] bg-[#757a9e]',
+                conv.status === 'active' && 'w-[70px] border border-solid border-[#757a9e] bg-white text-[#757a9e]',
+                conv.status === 'pending' && 'bg-gray-20 w-[70px] text-[#232323]',
               )}
             >
               {conv.status === 'completed' ? '완료' : `대화 ${conv.id}`}
@@ -202,34 +198,29 @@ export default function FreeTalk() {
           ))}
         </div>
 
-        
-        <div className="px-4 pb-6 shrink-0">
-          <div className="bg-white box-border flex items-center justify-center h-[224px] rounded-[16px] w-full">
-            <p className="text-[18px] font-medium leading-[1.5] text-gray-100 text-center">
-              아바타 영상
-            </p>
+        <div className="shrink-0 px-4 pb-6">
+          <div className="box-border flex h-[224px] w-full items-center justify-center rounded-[16px] bg-white">
+            <p className="text-center text-[18px] leading-normal font-medium text-gray-100">아바타 영상</p>
           </div>
         </div>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 hide-scrollbar">
-        
+        <div ref={scrollRef} className="hide-scrollbar flex-1 overflow-y-auto px-4">
           {conversations
             .filter((conv) => conv.status === 'completed')
             .map((conv) => (
-              <div key={conv.id} className="flex flex-col gap-4 mb-6">
-           
+              <div key={conv.id} className="mb-6 flex flex-col gap-4">
                 <div className="flex justify-start">
-                  <div className="bg-[#757a9e] w-[361px] min-h-[62px] px-[16px] py-[16px] rounded-tl-[2px] rounded-tr-[16px] rounded-bl-[16px] rounded-br-[16px] flex items-center justify-center">
-                    <p className="text-[20px] font-normal leading-[1.5] text-white text-center break-words">
+                  <div className="flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[2px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[16px] bg-[#757a9e] px-[16px] py-[16px]">
+                    <p className="text-center text-[20px] leading-normal font-normal wrap-break-word text-white">
                       {conv.question}
                     </p>
                   </div>
                 </div>
-               
+
                 {conv.answer && (
                   <div className="flex justify-end">
-                    <div className="bg-white border border-[#e2e4e7] border-solid w-[361px] min-h-[62px] px-[16px] py-[16px] rounded-tl-[16px] rounded-tr-[2px] rounded-bl-[16px] rounded-br-[16px] flex items-center justify-center">
-                      <p className="text-[20px] font-normal leading-[1.5] text-[#3c434f] text-center break-words">
+                    <div className="border-gray-20 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px]">
+                      <p className="text-gray-80 text-center text-[20px] leading-normal font-normal wrap-break-word">
                         {conv.answer}
                       </p>
                     </div>
@@ -238,12 +229,11 @@ export default function FreeTalk() {
               </div>
             ))}
 
-          
           {activeConversation && (
-            <div className="flex flex-col gap-4 mb-6">
+            <div className="mb-6 flex flex-col gap-4">
               <div className="flex justify-start">
-                <div className="bg-[#757a9e] w-[361px] min-h-[62px] px-[16px] py-[16px] rounded-tl-[2px] rounded-tr-[16px] rounded-bl-[16px] rounded-br-[16px] flex items-center justify-center">
-                  <p className="text-[20px] font-normal leading-[1.5] text-white text-center break-words">
+                <div className="flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[2px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[16px] bg-[#757a9e] px-[16px] py-[16px]">
+                  <p className="text-center text-[20px] leading-normal font-normal wrap-break-word text-white">
                     {displayedText}
                   </p>
                 </div>
@@ -252,12 +242,12 @@ export default function FreeTalk() {
               {(showLoadingDots || userAnswer) && (
                 <div className="flex justify-end">
                   {showLoadingDots ? (
-                    <div className="bg-white border border-[#e2e4e7] border-solid w-[361px] h-[62px] px-[16px] py-[16px] rounded-tl-[16px] rounded-tr-[2px] rounded-bl-[16px] rounded-br-[16px] flex items-center justify-center">
+                    <div className="border-gray-20 flex h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px]">
                       <LoadingDot className="h-[30px] w-[68px] animate-pulse" />
                     </div>
                   ) : userAnswer ? (
-                    <div className="bg-white border border-[#e2e4e7] border-solid w-[361px] min-h-[62px] px-[16px] py-[16px] rounded-tl-[16px] rounded-tr-[2px] rounded-bl-[16px] rounded-br-[16px] flex items-center justify-center">
-                      <p className="text-[20px] font-normal leading-[1.5] text-[#3c434f] text-center break-words">
+                    <div className="border-gray-20 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px]">
+                      <p className="text-gray-80 text-center text-[20px] leading-normal font-normal wrap-break-word">
                         {userAnswer}
                       </p>
                     </div>
@@ -269,13 +259,11 @@ export default function FreeTalk() {
         </div>
       </div>
 
-    
-      <div className="flex justify-center shrink-0 py-3">
+      <div className="flex shrink-0 justify-center py-3">
         {isRecording ? (
-         
           <button
             onClick={handleStopRecording}
-            className="relative flex items-center justify-center size-[88px] cursor-pointer"
+            className="relative flex size-[88px] cursor-pointer items-center justify-center"
             aria-label="녹음 중단"
           >
             <CircularProgress progress={progress} />
@@ -283,21 +271,16 @@ export default function FreeTalk() {
             <WhiteSquare className="relative size-[26px]" />
           </button>
         ) : (
-     
           <button
             onClick={handleMicClick}
             disabled={!activeConversation || !isComplete}
             className={clsx(
-              'flex items-center justify-center size-[88px] cursor-pointer',
-              (!activeConversation || !isComplete) && 'opacity-100 cursor-not-allowed'
+              'flex size-[88px] cursor-pointer items-center justify-center',
+              (!activeConversation || !isComplete) && 'cursor-not-allowed opacity-100',
             )}
             aria-label="녹음하기"
           >
-            {!isComplete ? (
-              <Mike1 className="size-[88px]" />
-            ) : (
-              <Mike2 className="size-[88px]" />
-            )}
+            {!isComplete ? <Mike1 className="size-[88px]" /> : <Mike2 className="size-[88px]" />}
           </button>
         )}
       </div>

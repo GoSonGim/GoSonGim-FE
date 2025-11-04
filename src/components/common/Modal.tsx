@@ -1,4 +1,4 @@
-import { useEffect, ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import clsx from 'clsx';
 
@@ -19,27 +19,22 @@ interface ModalButtonProps {
   className?: string;
 }
 
-export function ModalButton({
-  onClick,
-  variant = 'primary',
-  children,
-  className,
-}: ModalButtonProps) {
+export function ModalButton({ onClick, variant = 'primary', children, className }: ModalButtonProps) {
   return (
     <button
       onClick={onClick}
       className={clsx(
-        'flex items-center justify-center px-[45px] py-[12px] rounded-[8px] w-[152px] cursor-pointer',
-        variant === 'primary' && 'bg-[#4c5eff]',
-        variant === 'secondary' && 'bg-[#e2e4e7]',
-        className
+        'flex w-[152px] cursor-pointer items-center justify-center rounded-[8px] px-[45px] py-[12px]',
+        variant === 'primary' && 'bg-blue-1',
+        variant === 'secondary' && 'bg-gray-20',
+        className,
       )}
     >
       <p
         className={clsx(
-          'text-[18px] font-normal leading-[1.5] text-center whitespace-pre',
+          'text-center text-[18px] leading-normal font-normal whitespace-pre',
           variant === 'primary' && 'text-white',
-          variant === 'secondary' && 'text-[#3c434f]'
+          variant === 'secondary' && 'text-gray-80',
         )}
       >
         {children}
@@ -80,11 +75,11 @@ export default function Modal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background-modal"
+      className="bg-background-modal fixed inset-0 z-50 flex items-center justify-center"
       onClick={handleBackdropClick}
     >
       <div
-        className="bg-white flex flex-col gap-[32px] items-center justify-center px-[16px] py-[24px] rounded-[16px]"
+        className="flex flex-col items-center justify-center gap-[32px] rounded-[16px] bg-white px-[16px] py-[24px]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Custom children or default title/description layout */}
@@ -94,14 +89,12 @@ export default function Modal({
           <>
             {/* Title and Description */}
             {(title || description) && (
-              <div className="flex flex-col gap-[8px] items-center text-center">
+              <div className="flex flex-col items-center gap-[8px] text-center">
                 {title && (
-                  <p className="text-[22px] font-semibold leading-[1.5] text-gray-100 whitespace-pre">
-                    {title}
-                  </p>
+                  <p className="text-[22px] leading-normal font-semibold whitespace-pre text-gray-100">{title}</p>
                 )}
                 {description && (
-                  <div className="text-[18px] font-normal leading-[1.5] text-[#6c7582]">
+                  <div className="text-gray-60 text-[18px] leading-normal font-normal">
                     {typeof description === 'string' ? <p>{description}</p> : description}
                   </div>
                 )}
@@ -109,11 +102,11 @@ export default function Modal({
             )}
 
             {/* Footer (Buttons) */}
-            {footer && <div className="flex gap-[8px] items-center">{footer}</div>}
+            {footer && <div className="flex items-center gap-[8px]">{footer}</div>}
           </>
         )}
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }

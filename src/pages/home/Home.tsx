@@ -1,9 +1,9 @@
 import BottomNav from '@/components/common/BottomNav';
-import HomeHeader from '@/pages/home/HomeHeader';
-import HomeWelcome from '@/pages/home/HomeWelcome';
-import HomeMyStudy from '@/pages/home/HomeMyStudy';
-import HomeStudyPractice from '@/pages/home/HomeStudyPractice';
-import HomeMoreContents from '@/pages/home/HomeMoreContents';
+import HomeHeader from '@/components/home/Header';
+import HomeWelcome from '@/components/home/Welcome';
+import HomeMyStudy from '@/components/home/MyStudy';
+import HomeStudyPractice from '@/components/home/StudyPractice';
+import HomeMoreContents from '@/components/home/MoreContents';
 
 const Home = () => {
   return (

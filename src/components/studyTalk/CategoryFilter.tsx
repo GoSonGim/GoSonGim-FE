@@ -11,17 +11,15 @@ export default function CategoryFilter({ selectedCategory, onCategoryChange }: C
   const categories: CategoryOption[] = ['전체', '호흡', '조음위치', '조음방법'];
 
   return (
-    <div className="border-b border-[#f1f1f5] bg-white px-[20px] py-[16px] w-full">
-      <div className="flex items-center gap-[24px] text-[20px] leading-[1.5]">
+    <div className="w-full border-b border-[#f1f1f5] bg-white px-[20px] py-[16px]">
+      <div className="flex items-center gap-[24px] text-[20px] leading-normal">
         {categories.map((category) => (
           <button
             key={category}
             onClick={() => onCategoryChange(category)}
             className={clsx(
-              'text-center transition-colors cursor-pointer',
-              selectedCategory === category
-                ? 'font-semibold text-gray-100'
-                : 'font-normal text-[#a6aeb6]'
+              'cursor-pointer text-center transition-colors',
+              selectedCategory === category ? 'font-semibold text-gray-100' : 'text-gray-40 font-normal',
             )}
           >
             {category}

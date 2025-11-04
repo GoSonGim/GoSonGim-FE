@@ -8,9 +8,9 @@ import NicknamePage from '@/pages/nickname/NicknamePage';
 import Search from '@/pages/search/Search';
 import Review from '@/pages/review/Review';
 import Profile from '@/pages/profile/Profile';
-import HomeStudyTalk from '@/pages/home/studytalk/HomeStudyTalk';
-import FreeTalkIntro from '@/pages/home/freetalk/FreeTalkIntro';
-import FreeTalk from '@/pages/home/freetalk/FreeTalk';
+import HomeStudyTalk from '@/pages/studytalk/HomeStudyTalk';
+import FreeTalkIntro from '@/pages/freetalk/FreeTalkIntro';
+import FreeTalk from '@/pages/freetalk/FreeTalk';
 
 function App() {
   return (
