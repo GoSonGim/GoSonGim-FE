@@ -9,6 +9,9 @@ import GoogleCallback from '@/pages/auth/GoogleCallback';
 import Search from '@/pages/search/Search';
 import Review from '@/pages/review/Review';
 import Profile from '@/pages/profile/Profile';
+import FreeTalkIntro from '@/pages/freetalk/FreeTalkIntro';
+import FreeTalk from '@/pages/freetalk/FreeTalk';
+import HomeStudyTalk from '@/pages/studytalk/HomeStudyTalk';
 
 import Layout from '@/components/layout/Layout';
 import RequireAuth from '@/components/router/RequireAuth';
@@ -37,6 +40,9 @@ export const router = createBrowserRouter([
           { path: '/search', element: <Search /> },
           { path: '/review', element: <Review /> },
           { path: '/profile', element: <Profile /> },
+          { path: '/freetalk/intro', element: <FreeTalkIntro /> },
+          { path: '/freetalk', element: <FreeTalk /> },
+          { path: '/studytalk', element: <HomeStudyTalk /> },
         ],
       },
     ],
