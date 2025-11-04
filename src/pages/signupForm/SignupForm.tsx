@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Input } from '@/components/login/input/Input';
-import { LoginButton } from '@/components/login/button/LoginButton';
+import { Input } from '@/components/Login/input/Input';
+import { LoginButton } from '@/components/Login/button/LoginButton';
 import { useSignupForm } from '@/hooks/signupForm/useSignupForm';
 import BackIcon from '@/assets/svgs/login/signIn/back.svg';
 

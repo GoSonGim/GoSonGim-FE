@@ -1,5 +1,5 @@
-import { NicknameInput } from '@/components/nickname/input/NicknameInput';
-import { NextButton } from '@/components/nickname/button/NextButton';
+import { NicknameInput } from '@/components/Nickname/input/NicknameInput';
+import { NextButton } from '@/components/Nickname/button/NextButton';
 import { useNickname } from '@/hooks/nickname/useNickname';
 
 const NicknamePage = () => {
