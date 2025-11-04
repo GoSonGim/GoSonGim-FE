@@ -10,10 +10,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
     svgr({
-      include: '**/*.svg',
+      include: '**/*.svg', // ?react 안붙혀도 컴포넌트로 인식
       svgrOptions: {
         exportType: 'default',
-        icon: true,
+        icon: true, // tailwind className 사용 가능
       },
     }),
   ],

@@ -23,8 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
+.claude
 CLAUDE.md
 .cursorrules
 .claude/
 .cursor/
 mcp.json
+
+.env
