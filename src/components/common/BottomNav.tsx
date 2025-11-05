@@ -22,9 +22,9 @@ const BottomNav = () => {
           {isActive('/') ? <HomeActive /> : <HomeDefault />}
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
-            'text-[#3C434F]': isActive('/'),
-            'text-[#8A94A0]': !isActive('/'),
+          className={clsx('text-body-02-semibold', {
+            'text-gray-80': isActive('/'),
+            'text-gray-50': !isActive('/'),
           })}
         >
           홈
@@ -39,9 +39,9 @@ const BottomNav = () => {
           <SearchIcon />
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
-            'text-[#3C434F]': isActive('/search'),
-            'text-[#8A94A0]': !isActive('/search'),
+          className={clsx('text-body-02-semibold', {
+            'text-gray-80': isActive('/search'),
+            'text-gray-50': !isActive('/search'),
           })}
         >
           학습탐색
@@ -56,9 +56,9 @@ const BottomNav = () => {
           <ReviewIcon />
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
-            'text-[#3C434F]': isActive('/review'),
-            'text-[#8A94A0]': !isActive('/review'),
+          className={clsx('text-body-02-semibold', {
+            'text-gray-80': isActive('/review'),
+            'text-gray-50': !isActive('/review'),
           })}
         >
           복습
@@ -73,9 +73,9 @@ const BottomNav = () => {
           <ProfileIcon />
         </div>
         <span
-          className={clsx('text-base leading-[1.5] font-semibold', {
-            'text-[#3C434F]': isActive('/profile'),
-            'text-[#8A94A0]': !isActive('/profile'),
+          className={clsx('text-body-02-semibold', {
+            'text-gray-80': isActive('/profile'),
+            'text-gray-50': !isActive('/profile'),
           })}
         >
           프로필

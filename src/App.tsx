@@ -5,6 +5,16 @@ import Login from '@/pages/login/Login';
 import Search from '@/pages/search/Search';
 import Review from '@/pages/review/Review';
 import Profile from '@/pages/profile/Profile';
+import TalkingKit from '@/pages/talkingkit/TalkingKit';
+import KitDetail from '@/pages/talkingkit/KitDetail';
+import BreathingExercise from '@/pages/talkingkit/BreathingExercise';
+import VowelPitch from '@/pages/talkingkit/VowelPitch';
+import VowelPitchResult from '@/pages/talkingkit/VowelPitchResult';
+import SteadySound from '@/pages/talkingkit/SteadySound';
+import ShortSound from '@/pages/talkingkit/ShortSound';
+import LoudSound from '@/pages/talkingkit/LoudSound';
+import LoudSoundVolume from '@/pages/talkingkit/LoudSoundVolume';
+import LoudSoundVolumeResult from '@/pages/talkingkit/LoudSoundVolumeResult';
 
 function App() {
   return (
@@ -16,6 +26,16 @@ function App() {
           <Route path="/search" element={<Search />} />
           <Route path="/review" element={<Review />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/talkingkit" element={<TalkingKit />} />
+          <Route path="/talkingkit/:id" element={<KitDetail />} />
+          <Route path="/talkingkit/:id/breathing" element={<BreathingExercise />} />
+          <Route path="/talkingkit/:id/steady-sound" element={<SteadySound />} />
+          <Route path="/talkingkit/:id/short-sound" element={<ShortSound />} />
+          <Route path="/talkingkit/:id/loud-sound" element={<LoudSound />} />
+          <Route path="/talkingkit/:id/loud-sound-volume" element={<LoudSoundVolume />} />
+          <Route path="/talkingkit/:id/loud-sound-volume/result" element={<LoudSoundVolumeResult />} />
+          <Route path="/talkingkit/vowel-pitch" element={<VowelPitch />} />
+          <Route path="/talkingkit/vowel-pitch/result" element={<VowelPitchResult />} />
         </Route>
       </Routes>
     </BrowserRouter>
