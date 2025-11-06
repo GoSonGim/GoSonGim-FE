@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import type { RefreshTokenResponse } from '@/types/auth.types';
 
 // 개발 환경에서는 프록시 사용, 프로덕션에서는 실제 URL 사용
-const baseURL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL || 'https://ttobaki.app';
+const baseURL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL || 'https://api.ttobaki.app';
 
 // Axios 인스턴스 생성
 export const apiClient = axios.create({
@@ -88,7 +88,7 @@ apiClient.interceptors.response.use(
 
       try {
         // 토큰 갱신 요청
-        const refreshBaseURL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL || 'https://ttobaki.app';
+        const refreshBaseURL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL || 'https://api.ttobaki.app';
         const response = await axios.post<RefreshTokenResponse>(
           `${refreshBaseURL}/api/v1/auth/refresh`,
           { refreshToken },
