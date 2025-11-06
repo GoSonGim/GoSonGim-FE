@@ -2,8 +2,9 @@ import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/stores/useAuthStore';
 import type { RefreshTokenResponse } from '@/types/auth.types';
 
-// 개발 환경에서는 프록시 사용, 프로덕션에서는 실제 URL 사용
-const baseURL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL || 'https://api.ttobaki.app';
+// Vercel Rewrites를 사용하므로 개발/프로덕션 모두 상대 경로 사용
+// 이렇게 하면 Same-Origin이 되어 CORS 문제가 발생하지 않음
+const baseURL = '';
 
 // Axios 인스턴스 생성
 export const apiClient = axios.create({
@@ -87,10 +88,9 @@ apiClient.interceptors.response.use(
       }
 
       try {
-        // 토큰 갱신 요청
-        const refreshBaseURL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_BASE_URL || 'https://api.ttobaki.app';
+        // 토큰 갱신 요청 (Vercel Rewrites를 통해 프록시됨)
         const response = await axios.post<RefreshTokenResponse>(
-          `${refreshBaseURL}/api/v1/auth/refresh`,
+          '/api/v1/auth/refresh',
           { refreshToken },
           {
             headers: {
