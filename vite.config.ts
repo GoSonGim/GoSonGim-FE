@@ -22,7 +22,7 @@ export default defineConfig({
     // 개발 환경에서는 프록시 사용, 프로덕션에서는 실제 URL 사용
     proxy: {
       '/api': {
-        target: 'https://ttobaki.app',
+        target: 'https://api.ttobaki.app',
         changeOrigin: true,
         secure: true,
       },
