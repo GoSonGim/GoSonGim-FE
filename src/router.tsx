@@ -12,6 +12,16 @@ import Profile from '@/pages/profile/Profile';
 import FreeTalkIntro from '@/pages/freetalk/FreeTalkIntro';
 import FreeTalk from '@/pages/freetalk/FreeTalk';
 import HomeStudyTalk from '@/pages/studytalk/HomeStudyTalk';
+import TalkingKit from '@/pages/talkingkit/TalkingKit';
+import KitDetail from '@/pages/talkingkit/KitDetail';
+import BreathingExercise from '@/pages/talkingkit/breathing/BreathingExercise';
+import VowelPitch from '@/pages/talkingkit/vowelPitch/VowelPitch';
+import VowelPitchResult from '@/pages/talkingkit/vowelPitch/VowelPitchResult';
+import SteadySound from '@/pages/talkingkit/steadySound/SteadySound';
+import ShortSound from '@/pages/talkingkit/shortSound/ShortSound';
+import LoudSound from '@/pages/talkingkit/loudSound/LoudSound';
+import LoudSoundVolume from '@/pages/talkingkit/loudSound/LoudSoundVolume';
+import LoudSoundVolumeResult from '@/pages/talkingkit/loudSound/LoudSoundVolumeResult';
 
 import Layout from '@/components/layout/Layout';
 import RequireAuth from '@/components/router/RequireAuth';
@@ -43,6 +53,16 @@ export const router = createBrowserRouter([
           { path: '/freetalk/intro', element: <FreeTalkIntro /> },
           { path: '/freetalk', element: <FreeTalk /> },
           { path: '/studytalk', element: <HomeStudyTalk /> },
+          { path: '/talkingkit', element: <TalkingKit /> },
+          { path: '/talkingkit/:id', element: <KitDetail /> },
+          { path: '/talkingkit/:id/breathing', element: <BreathingExercise /> },
+          { path: '/talkingkit/:id/steady-sound', element: <SteadySound /> },
+          { path: '/talkingkit/:id/short-sound', element: <ShortSound /> },
+          { path: '/talkingkit/:id/loud-sound', element: <LoudSound /> },
+          { path: '/talkingkit/:id/loud-sound-volume', element: <LoudSoundVolume /> },
+          { path: '/talkingkit/:id/loud-sound-volume/result', element: <LoudSoundVolumeResult /> },
+          { path: '/talkingkit/vowel-pitch', element: <VowelPitch /> },
+          { path: '/talkingkit/vowel-pitch/result', element: <VowelPitchResult /> },
         ],
       },
     ],
