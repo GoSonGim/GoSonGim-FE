@@ -11,11 +11,11 @@ import {
   calculateScaleFromAccuracy,
   type ShortSoundEvaluationResult,
 } from '@/utils/shortSoundEvaluation';
+import { TARGET_POINTS, DURATION, DUPLICATE_DETECTION_THRESHOLD, TARGET_POINT_TOLERANCE } from '@/constants/shortSound';
+import { logger } from '@/utils/loggerUtils';
+import { handleError } from '@/utils/errorHandlerUtils';
 
 type Phase = 'ready' | 'playing' | 'result';
-
-const TARGET_POINTS: [number, number] = [2000, 4000]; // 2초, 4초
-const DURATION = 6000; // 6초
 
 const ShortSound = () => {
   const navigate = useNavigate();
@@ -24,6 +24,20 @@ const ShortSound = () => {
   const [evaluationResult, setEvaluationResult] = useState<ShortSoundEvaluationResult | null>(null);
   const lastRecordingRef = useRef<number>(-1);
   const processedPointsRef = useRef<Set<number>>(new Set()); // 처리된 지점 추적
+  const stopVoiceRef = useRef<(() => void) | null>(null);
+  const stopBallRef = useRef<(() => void) | null>(null);
+
+  const handleTimerComplete = useCallback(() => {
+    logger.log('⏱️ 타이머 완료, 평가 시작');
+    if (stopVoiceRef.current) stopVoiceRef.current();
+    if (stopBallRef.current) stopBallRef.current();
+
+    // 평가 수행
+    const result = evaluateShortSound(recordings, TARGET_POINTS);
+    logger.log('📊 평가 결과:', result);
+    setEvaluationResult(result);
+    setPhase('result');
+  }, [recordings]);
 
   const {
     position,
@@ -36,10 +50,12 @@ const ShortSound = () => {
     onComplete: handleTimerComplete,
   });
 
+  stopBallRef.current = stopBall;
+
   const handleVoiceDetected = useCallback(
     (timestamp: number) => {
       // 중복 방지: 100ms 이내 같은 소리는 무시
-      if (Math.abs(timestamp - lastRecordingRef.current) < 100) {
+      if (Math.abs(timestamp - lastRecordingRef.current) < DUPLICATE_DETECTION_THRESHOLD) {
         return;
       }
 
@@ -50,12 +66,12 @@ const ShortSound = () => {
       for (const targetPoint of TARGET_POINTS) {
         const accuracy = Math.abs(timestamp - targetPoint);
 
-        // 해당 지점을 아직 처리하지 않았고, 1000ms 이내에 발음했다면
-        if (accuracy <= 1000 && !processedPointsRef.current.has(targetPoint)) {
+        // 해당 지점을 아직 처리하지 않았고, 허용 오차 이내에 발음했다면
+        if (accuracy <= TARGET_POINT_TOLERANCE && !processedPointsRef.current.has(targetPoint)) {
           processedPointsRef.current.add(targetPoint);
           const scaleValue = calculateScaleFromAccuracy(accuracy);
           triggerScaleAnimation(scaleValue);
-          console.log(`🎯 지점 ${targetPoint}ms에서 발음 감지! 오차: ${accuracy}ms, scale: ${scaleValue}`);
+          logger.log(`🎯 지점 ${targetPoint}ms에서 발음 감지! 오차: ${accuracy}ms, scale: ${scaleValue}`);
           break; // 하나의 지점만 처리
         }
       }
@@ -68,20 +84,10 @@ const ShortSound = () => {
     threshold: 0.02,
   });
 
-  function handleTimerComplete() {
-    console.log('⏱️ 타이머 완료, 평가 시작');
-    stopVoice();
-    stopBall();
-
-    // 평가 수행
-    const result = evaluateShortSound(recordings, TARGET_POINTS);
-    console.log('📊 평가 결과:', result);
-    setEvaluationResult(result);
-    setPhase('result');
-  }
+  stopVoiceRef.current = stopVoice;
 
   const handleStart = async () => {
-    console.log('🚀 시작');
+    logger.log('🚀 시작');
     setPhase('playing');
     setRecordings([]);
     processedPointsRef.current.clear();
@@ -91,8 +97,8 @@ const ShortSound = () => {
       await startVoice();
       startBall();
     } catch (error) {
-      console.error('Failed to start:', error);
-      alert('마이크 권한이 필요합니다.');
+      logger.error('Failed to start:', error);
+      alert(handleError(error));
       setPhase('ready');
     }
   };
