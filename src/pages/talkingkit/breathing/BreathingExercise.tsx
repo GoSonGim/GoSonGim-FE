@@ -5,6 +5,7 @@ import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressB
 import { kitsData } from '@/mock/talkingkit/kitsData';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
+import { logger } from '@/utils/loggerUtils';
 
 const BreathingExercise = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,13 +21,13 @@ const BreathingExercise = () => {
   }
 
   const handleStart = () => {
-    console.log('🚀 애니메이션 시작');
+    logger.log('🚀 애니메이션 시작');
     reset();
     start();
   };
 
   const handleNext = () => {
-    console.log('➡️ 다음 페이지로 이동');
+    logger.log('➡️ 다음 페이지로 이동');
     // vowel-pitch 페이지로 이동
     navigate('/talkingkit/vowel-pitch');
   };

@@ -2,6 +2,14 @@ import { useState, useRef, useCallback } from 'react';
 import { PitchDetector } from 'pitchy';
 import type { PitchData, PitchDetectionState } from '@/types/pitch';
 import { evaluatePitch, frequencyToNote, isSoundLoudEnough } from '@/utils/pitchEvaluation';
+import { logger } from '@/utils/loggerUtils';
+import { handleError } from '@/utils/errorHandlerUtils';
+import {
+  AUDIO_FFT_SIZE,
+  AUDIO_SMOOTHING_TIME_CONSTANT,
+  LOUDNESS_DETECTION_THRESHOLD,
+  AUDIO_CONFIG,
+} from '@/constants/audio';
 
 interface PitchDetectionOptions {
   maxDuration?: number; // 최대 감지 시간 (ms)
@@ -43,7 +51,7 @@ export const usePitchDetection = (options: PitchDetectionOptions = {}) => {
     const rms = Math.sqrt(buffer.reduce((sum, val) => sum + val * val, 0) / buffer.length);
 
     // 음량이 충분한 경우에만 음정 감지
-    if (isSoundLoudEnough(rms, 0.01)) {
+    if (isSoundLoudEnough(rms, LOUDNESS_DETECTION_THRESHOLD)) {
       const [frequency, clarity] = detector.findPitch(buffer, audioContextRef.current.sampleRate);
 
       // 주파수가 80Hz 이상이고 신뢰도가 높은 경우에만 처리
@@ -81,11 +89,7 @@ export const usePitchDetection = (options: PitchDetectionOptions = {}) => {
     try {
       // 마이크 권한 요청
       const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: false,
-          noiseSuppression: false,
-          autoGainControl: false,
-        },
+        audio: AUDIO_CONFIG,
       });
 
       streamRef.current = stream;
@@ -96,8 +100,8 @@ export const usePitchDetection = (options: PitchDetectionOptions = {}) => {
 
       // Analyser 노드 생성
       const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 2048;
-      analyser.smoothingTimeConstant = 0.8;
+      analyser.fftSize = AUDIO_FFT_SIZE;
+      analyser.smoothingTimeConstant = AUDIO_SMOOTHING_TIME_CONSTANT;
       analyserRef.current = analyser;
 
       // 마이크 입력 연결
@@ -133,8 +137,8 @@ export const usePitchDetection = (options: PitchDetectionOptions = {}) => {
         }
       }, updateInterval);
     } catch (error) {
-      console.error('Failed to start pitch detection:', error);
-      throw new Error('마이크 권한이 필요합니다.');
+      logger.error('Failed to start pitch detection:', error);
+      throw new Error(handleError(error));
     }
   }, [maxDuration, updateInterval, detectPitch]);
 

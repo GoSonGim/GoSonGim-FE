@@ -1,5 +1,8 @@
 import { useState, useRef, useCallback } from 'react';
 import Meyda from 'meyda';
+import { logger } from '@/utils/loggerUtils';
+import { handleError } from '@/utils/errorHandlerUtils';
+import { AUDIO_FFT_SIZE, AUDIO_SMOOTHING_TIME_CONSTANT, AUDIO_CONFIG } from '@/constants/audio';
 
 interface DecibelDetectionOptions {
   maxDuration?: number; // 최대 녹음 시간 (ms)
@@ -70,11 +73,7 @@ export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
 
       // 마이크 권한 요청
       const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: false,
-          noiseSuppression: false,
-          autoGainControl: false,
-        },
+        audio: AUDIO_CONFIG,
       });
 
       streamRef.current = stream;
@@ -85,8 +84,8 @@ export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
 
       // Analyser 노드 생성
       const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 2048;
-      analyser.smoothingTimeConstant = 0.8;
+      analyser.fftSize = AUDIO_FFT_SIZE;
+      analyser.smoothingTimeConstant = AUDIO_SMOOTHING_TIME_CONSTANT;
       analyserRef.current = analyser;
 
       // 마이크 입력 연결
@@ -97,7 +96,7 @@ export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
       const meydaAnalyzer = Meyda.createMeydaAnalyzer({
         audioContext,
         source,
-        bufferSize: 2048,
+        bufferSize: AUDIO_FFT_SIZE,
         featureExtractors: ['rms'],
         callback: (features) => {
           if (features.rms !== undefined && features.rms > 0) {
@@ -145,9 +144,9 @@ export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
         stopDetection();
       }, maxDuration);
     } catch (error) {
-      console.error('Failed to start decibel detection:', error);
+      logger.error('Failed to start decibel detection:', error);
       setIsDetecting(false);
-      throw new Error('마이크 권한이 필요합니다.');
+      throw new Error(handleError(error));
     }
   }, [maxDuration, stopDetection]);
 

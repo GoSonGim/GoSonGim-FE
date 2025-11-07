@@ -1,11 +1,19 @@
 import { useRef, useCallback } from 'react';
+import { logger } from '@/utils/loggerUtils';
+import { handleError } from '@/utils/errorHandlerUtils';
+import {
+  AUDIO_FFT_SIZE,
+  AUDIO_SMOOTHING_TIME_CONSTANT,
+  VOICE_DETECTION_THRESHOLD,
+  AUDIO_CONFIG,
+} from '@/constants/audio';
 
 interface VoiceDetectionOptions {
   onVoiceDetected: (timestamp: number) => void;
-  threshold?: number; // RMS 임계값 (기본값: 0.02)
+  threshold?: number; // RMS 임계값 (기본값: VOICE_DETECTION_THRESHOLD)
 }
 
-export const useVoiceDetection = ({ onVoiceDetected, threshold = 0.02 }: VoiceDetectionOptions) => {
+export const useVoiceDetection = ({ onVoiceDetected, threshold = VOICE_DETECTION_THRESHOLD }: VoiceDetectionOptions) => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -37,11 +45,7 @@ export const useVoiceDetection = ({ onVoiceDetected, threshold = 0.02 }: VoiceDe
     try {
       // 마이크 권한 요청
       const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: false,
-          noiseSuppression: false,
-          autoGainControl: false,
-        },
+        audio: AUDIO_CONFIG,
       });
 
       streamRef.current = stream;
@@ -52,8 +56,8 @@ export const useVoiceDetection = ({ onVoiceDetected, threshold = 0.02 }: VoiceDe
 
       // Analyser 노드 생성
       const analyser = audioContext.createAnalyser();
-      analyser.fftSize = 2048;
-      analyser.smoothingTimeConstant = 0.8;
+      analyser.fftSize = AUDIO_FFT_SIZE;
+      analyser.smoothingTimeConstant = AUDIO_SMOOTHING_TIME_CONSTANT;
       analyserRef.current = analyser;
 
       // 마이크 입력 연결
@@ -65,8 +69,8 @@ export const useVoiceDetection = ({ onVoiceDetected, threshold = 0.02 }: VoiceDe
       isDetectingRef.current = true;
       detectVoice();
     } catch (error) {
-      console.error('Failed to start voice detection:', error);
-      throw new Error('마이크 권한이 필요합니다.');
+      logger.error('Failed to start voice detection:', error);
+      throw new Error(handleError(error));
     }
   }, [detectVoice]);
 
