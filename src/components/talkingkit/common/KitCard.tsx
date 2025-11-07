@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import type { TalkingKit } from '@/types/talkingkit';
-import BookmarkIcon from '@/assets/svgs/talkingkit/bookmarkempty.svg';
+import BookmarkIcon from '@/assets/svgs/talkingkit/common/bookmarkempty.svg';
 
 interface KitCardProps {
   kit: TalkingKit;

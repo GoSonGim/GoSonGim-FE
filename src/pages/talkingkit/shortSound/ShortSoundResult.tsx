@@ -1,18 +1,14 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import AnimatedContainer from '@/components/talkingkit/AnimatedContainer';
-import LeftArrowIcon from '@/assets/svgs/talkingkit/leftarrow.svg';
-import type { VolumeEvaluationResult } from '@/utils/volumeEvaluation';
+import { useNavigate } from 'react-router-dom';
+import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
+import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
+import type { ShortSoundEvaluationResult } from '@/utils/shortSoundEvaluation';
 
-const LoudSoundVolumeResult = () => {
+interface ShortSoundResultProps {
+  evaluationResult: ShortSoundEvaluationResult;
+}
+
+const ShortSoundResult = ({ evaluationResult }: ShortSoundResultProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const evaluationResult = location.state?.evaluationResult as VolumeEvaluationResult | undefined;
-
-  // 결과가 없으면 이전 페이지로 리다이렉트
-  if (!evaluationResult) {
-    navigate('/talkingkit/3/loud-sound-volume');
-    return null;
-  }
 
   const handleComplete = () => {
     navigate('/talkingkit');
@@ -31,7 +27,7 @@ const LoudSoundVolumeResult = () => {
               <LeftArrowIcon className="h-full w-full" />
             </div>
           </div>
-          <p className="text-heading-02-regular text-gray-100">큰 소리 내기</p>
+          <p className="text-heading-02-regular text-gray-100">일정한 소리 내기</p>
         </div>
       </div>
 
@@ -46,7 +42,7 @@ const LoudSoundVolumeResult = () => {
       {/* 타이틀 */}
       <AnimatedContainer variant="fadeInUp" delay={0.1} className="mb-3 w-full px-4 text-left">
         <p className="text-detail-01 text-gray-60">2단계</p>
-        <h2 className="text-heading-02-semibold text-gray-100">최대 성량으로 말하기</h2>
+        <h2 className="text-heading-02-semibold text-gray-100">짧게 끊어 발성하기</h2>
       </AnimatedContainer>
 
       {/* 총 점수 박스 */}
@@ -61,26 +57,26 @@ const LoudSoundVolumeResult = () => {
         </div>
       </AnimatedContainer>
 
-      {/* 데시벨 정보 박스 */}
+      {/* 지점별 점수 박스 */}
       <div className="grid w-full grid-cols-2 gap-4 px-4">
-        {/* 평균 데시벨 박스 */}
+        {/* 1번 지점 박스 */}
         <AnimatedContainer variant="fadeInUp" delay={0.25}>
           <div className="border-gray-20 flex w-full flex-col items-center justify-center gap-3 rounded-[16px] border bg-white px-3 py-6">
-            <p className="text-detail-01 text-gray-60">평균 데시벨</p>
+            <p className="text-detail-01 text-gray-60">1번 지점</p>
             <p className="text-[28px] leading-tight font-semibold text-gray-100">
-              {evaluationResult.averageDecibel}
-              <span className="text-[20px]">dB</span>
+              {evaluationResult.point1Score}
+              <span className="text-[20px]">점</span>
             </p>
           </div>
         </AnimatedContainer>
 
-        {/* 최고 데시벨 박스 */}
+        {/* 2번 지점 박스 */}
         <AnimatedContainer variant="fadeInUp" delay={0.3}>
           <div className="border-gray-20 flex w-full flex-col items-center justify-center gap-3 rounded-[16px] border bg-white px-3 py-6">
-            <p className="text-detail-01 text-gray-60">최고 데시벨</p>
+            <p className="text-detail-01 text-gray-60">2번 지점</p>
             <p className="text-[28px] leading-tight font-semibold text-gray-100">
-              {evaluationResult.maxDecibel}
-              <span className="text-[20px]">dB</span>
+              {evaluationResult.point2Score}
+              <span className="text-[20px]">점</span>
             </p>
           </div>
         </AnimatedContainer>
@@ -101,4 +97,4 @@ const LoudSoundVolumeResult = () => {
   );
 };
 
-export default LoudSoundVolumeResult;
+export default ShortSoundResult;

@@ -1,11 +1,11 @@
 import { useState, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Step2Layout from '@/components/talkingkit/Step2Layout';
-import ShortSoundVisualizer from '@/components/talkingkit/ShortSoundVisualizer';
-import ShortSoundResult from '@/pages/talkingkit/ShortSoundResult';
-import TimerProgressBar from '@/components/talkingkit/TimerProgressBar';
-import { useBallAnimation } from '@/hooks/useBallAnimation';
-import { useVoiceDetection } from '@/hooks/useVoiceDetection';
+import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
+import ShortSoundVisualizer from '@/components/talkingkit/shortSound/ShortSoundVisualizer';
+import ShortSoundResult from '@/pages/talkingkit/shortSound/ShortSoundResult';
+import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressBar';
+import { useBallAnimation } from '@/hooks/talkingkit/shortSound/useBallAnimation';
+import { useVoiceDetection } from '@/hooks/talkingkit/common/useVoiceDetection';
 import {
   evaluateShortSound,
   calculateScaleFromAccuracy,

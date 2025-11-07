@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Step1Layout from '@/components/talkingkit/Step1Layout';
-import TimerProgressBar from '@/components/talkingkit/TimerProgressBar';
-import AnimatedContainer from '@/components/talkingkit/AnimatedContainer';
-import BreathAnimation from '@/assets/svgs/talkingkit/breathanimation.svg';
+import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
+import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressBar';
+import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
+import BreathAnimation from '@/assets/svgs/talkingkit/breathing/breathanimation.svg';
 
 type Phase = 'ready' | 'playing' | 'complete';
 

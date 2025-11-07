@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import type { PitchData } from '@/types/pitch';
-import AnimatedContainer from '@/components/talkingkit/AnimatedContainer';
+import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 
 interface PitchVisualizerProps {
   pitchDataList: PitchData[];
@@ -66,8 +66,8 @@ const PitchVisualizer = ({ pitchDataList, baselineFrequency }: PitchVisualizerPr
       {/* 메인 컨테이너 - 흰색 박스 */}
       <div className="relative flex h-[352px] w-full flex-col items-center gap-4 overflow-visible rounded-2xl bg-white p-4">
         {/* "아" 텍스트 박스 - 회색 보더 */}
-        <div className="flex h-[66px] w-[288px] items-center justify-center rounded-2xl border-4 border-gray-20">
-          <h3 className="text-[32px] font-medium leading-normal text-black">아</h3>
+        <div className="border-gray-20 flex h-[66px] w-[288px] items-center justify-center rounded-2xl border-4">
+          <h3 className="text-[32px] leading-normal font-medium text-black">아</h3>
         </div>
 
         {/* 시각화 영역 */}
@@ -114,9 +114,9 @@ const PitchVisualizer = ({ pitchDataList, baselineFrequency }: PitchVisualizerPr
                 )}
               </svg>
             </>
-        )}
+          )}
+        </div>
       </div>
-    </div>
     </AnimatedContainer>
   );
 };

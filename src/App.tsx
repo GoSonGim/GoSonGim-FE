@@ -7,14 +7,14 @@ import Review from '@/pages/review/Review';
 import Profile from '@/pages/profile/Profile';
 import TalkingKit from '@/pages/talkingkit/TalkingKit';
 import KitDetail from '@/pages/talkingkit/KitDetail';
-import BreathingExercise from '@/pages/talkingkit/BreathingExercise';
-import VowelPitch from '@/pages/talkingkit/VowelPitch';
-import VowelPitchResult from '@/pages/talkingkit/VowelPitchResult';
-import SteadySound from '@/pages/talkingkit/SteadySound';
-import ShortSound from '@/pages/talkingkit/ShortSound';
-import LoudSound from '@/pages/talkingkit/LoudSound';
-import LoudSoundVolume from '@/pages/talkingkit/LoudSoundVolume';
-import LoudSoundVolumeResult from '@/pages/talkingkit/LoudSoundVolumeResult';
+import BreathingExercise from '@/pages/talkingkit/breathing/BreathingExercise';
+import VowelPitch from '@/pages/talkingkit/vowelPitch/VowelPitch';
+import VowelPitchResult from '@/pages/talkingkit/vowelPitch/VowelPitchResult';
+import SteadySound from '@/pages/talkingkit/steadySound/SteadySound';
+import ShortSound from '@/pages/talkingkit/shortSound/ShortSound';
+import LoudSound from '@/pages/talkingkit/loudSound/LoudSound';
+import LoudSoundVolume from '@/pages/talkingkit/loudSound/LoudSoundVolume';
+import LoudSoundVolumeResult from '@/pages/talkingkit/loudSound/LoudSoundVolumeResult';
 
 function App() {
   return (

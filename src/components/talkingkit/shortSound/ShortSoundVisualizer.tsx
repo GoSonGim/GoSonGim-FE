@@ -1,5 +1,5 @@
-import BlueCircle from '@/assets/svgs/talkingkit/bluecircle2.svg';
-import GrayBox from '@/assets/svgs/talkingkit/grayrectangle.svg';
+import BlueCircle from '@/assets/svgs/talkingkit/shortSound/bluecircle2.svg';
+import GrayBox from '@/assets/svgs/talkingkit/shortSound/grayrectangle.svg';
 
 interface ShortSoundVisualizerProps {
   phase: 'ready' | 'playing';

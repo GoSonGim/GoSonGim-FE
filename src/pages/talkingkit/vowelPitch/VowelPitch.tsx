@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Mike2 from '@/assets/svgs/talkingkit/mike2.svg';
-import { usePitchDetection } from '@/hooks/usePitchDetection';
-import PitchVisualizer from '@/components/talkingkit/PitchVisualizer';
-import CircularProgress from '@/components/talkingkit/CircularProgress';
-import AnimatedContainer from '@/components/talkingkit/AnimatedContainer';
-import Step2Layout from '@/components/talkingkit/Step2Layout';
+import Mike2 from '@/assets/svgs/talkingkit/vowelPitch/mike2.svg';
+import { usePitchDetection } from '@/hooks/talkingkit/common/usePitchDetection';
+import PitchVisualizer from '@/components/talkingkit/vowelPitch/PitchVisualizer';
+import CircularProgress from '@/components/talkingkit/progressBar/CircularProgress';
+import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
+import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
 
 const VowelPitch = () => {
   const navigate = useNavigate();

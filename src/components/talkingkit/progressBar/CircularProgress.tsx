@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import WhiteSquare from '@/assets/svgs/talkingkit/whitesquare.svg';
-import GrayCircle from '@/assets/svgs/talkingkit/graycircle.svg';
+import WhiteSquare from '@/assets/svgs/talkingkit/common/whitesquare.svg';
+import GrayCircle from '@/assets/svgs/talkingkit/common/graycircle.svg';
 
 interface CircularProgressProps {
   duration: number; // milliseconds

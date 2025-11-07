@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Step1Layout from '@/components/talkingkit/Step1Layout';
-import AnimatedContainer from '@/components/talkingkit/AnimatedContainer';
-import GraybigCircle from '@/assets/svgs/talkingkit/biggraycircle.svg';
-import BlueRing from '@/assets/svgs/talkingkit/bluering.svg';
-import { useLoudSound } from '@/hooks/talkingkit/useLoudSound';
+import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
+import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
+import GraybigCircle from '@/assets/svgs/talkingkit/loudSound/biggraycircle.svg';
+import BlueRing from '@/assets/svgs/talkingkit/loudSound/bluering.svg';
+import { useLoudSound } from '@/hooks/talkingkit/loudSound/useLoudSound';
 
 const LoudSound = () => {
   const navigate = useNavigate();

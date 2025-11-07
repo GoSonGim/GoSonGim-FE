@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Mike2 from '@/assets/svgs/talkingkit/mike2.svg';
-import { useDecibelDetection } from '@/hooks/useDecibelDetection';
-import CircularProgress from '@/components/talkingkit/CircularProgress';
-import AnimatedContainer from '@/components/talkingkit/AnimatedContainer';
-import Step2Layout from '@/components/talkingkit/Step2Layout';
-import DecibelBar from '@/components/talkingkit/DecibelBar';
+import Mike2 from '@/assets/svgs/talkingkit/vowelPitch/mike2.svg';
+import { useDecibelDetection } from '@/hooks/talkingkit/common/useDecibelDetection';
+import CircularProgress from '@/components/talkingkit/progressBar/CircularProgress';
+import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
+import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
+import DecibelBar from '@/components/talkingkit/loudSound/DecibelBar';
 import { evaluateVolume } from '@/utils/volumeEvaluation';
 import type { VolumeEvaluationResult } from '@/utils/volumeEvaluation';
 

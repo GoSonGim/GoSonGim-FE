@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import AnimatedContainer from '@/components/talkingkit/AnimatedContainer';
-import LeftArrowIcon from '@/assets/svgs/talkingkit/leftarrow.svg';
+import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
+import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import type { PitchEvaluationResult } from '@/types/pitch';
 
 const VowelPitchResult = () => {
