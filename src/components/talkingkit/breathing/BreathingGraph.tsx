@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import type { BreathingGraphProps } from '@/types/breathing';
+import { BLUE_PATH_START } from '@/constants/breathing';
+import BreathingBall from './BreathingBall';
 
 const BreathingGraph = ({ phase, ballPosition, setBluePathRef, setRedPathRef }: BreathingGraphProps) => {
   const [bluePathLength, setBluePathLength] = useState(0);
@@ -15,8 +18,12 @@ const BreathingGraph = ({ phase, ballPosition, setBluePathRef, setRedPathRef }: 
 
   // 파란색 경로의 20% 지점부터 끝까지만 표시
   // dasharray: [앞 20% 간격, 나머지 80% 표시]
-  const blueStartGap = bluePathLength > 0 ? bluePathLength * 0.2 : 0;
-  const blueVisibleLength = bluePathLength > 0 ? bluePathLength * 0.8 : 0;
+  const blueDashArray = useMemo(() => {
+    if (bluePathLength === 0) return undefined;
+    const startGap = bluePathLength * BLUE_PATH_START;
+    const visibleLength = bluePathLength * (1 - BLUE_PATH_START);
+    return `0 ${startGap} ${visibleLength}`;
+  }, [bluePathLength]);
 
   return (
     <div className="relative flex items-center justify-center">
@@ -38,14 +45,16 @@ const BreathingGraph = ({ phase, ballPosition, setBluePathRef, setRedPathRef }: 
         </svg>
 
         {/* 파란색 올라가기 경로 - 20% 지점부터 정점까지만 표시 */}
-        <svg
+        <motion.svg
           className="absolute top-0 left-0"
           width="353"
           height="219"
           viewBox="0 0 353 219"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ opacity: phase === 'inhale' ? 1 : 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: phase === 'inhale' ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
         >
           <path
             ref={handleBluePathRef}
@@ -53,21 +62,21 @@ const BreathingGraph = ({ phase, ballPosition, setBluePathRef, setRedPathRef }: 
             stroke="#5856D6"
             strokeWidth="5"
             strokeLinecap="round"
-            {...(bluePathLength > 0 && {
-              strokeDasharray: `0 ${blueStartGap} ${blueVisibleLength}`,
-            })}
+            strokeDasharray={blueDashArray}
           />
-        </svg>
+        </motion.svg>
 
         {/* 빨간색 내려가기 경로 - 항상 렌더링하되 exhale에서만 표시 */}
-        <svg
+        <motion.svg
           className="absolute top-0 left-0"
           width="353"
           height="219"
           viewBox="0 0 353 219"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ opacity: phase === 'exhale' ? 1 : 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: phase === 'exhale' ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
         >
           <path
             ref={setRedPathRef}
@@ -76,31 +85,10 @@ const BreathingGraph = ({ phase, ballPosition, setBluePathRef, setRedPathRef }: 
             strokeWidth="5"
             strokeLinecap="round"
           />
-        </svg>
+        </motion.svg>
 
         {/* 움직이는 공 */}
-        {phase !== 'complete' && phase !== 'ready' && (
-          <div
-            className="absolute z-10 h-[26px] w-[26px] rounded-full bg-[#D1D5DB] shadow-lg"
-            style={{
-              left: `${ballPosition.x}px`,
-              top: `${ballPosition.y}px`,
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
-        )}
-
-        {/* ready 상태 공 (왼쪽 20% 지점) */}
-        {phase === 'ready' && (
-          <div
-            className="absolute z-10 h-[26px] w-[26px] rounded-full bg-[#D1D5DB] shadow-lg"
-            style={{
-              left: `${ballPosition.x}px`,
-              top: `${ballPosition.y}px`,
-              transform: 'translate(-50%, -50%)',
-            }}
-          />
-        )}
+        <BreathingBall position={ballPosition} phase={phase} />
       </div>
     </div>
   );
