@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import BlueCircle from '@/assets/svgs/talkingkit/shortSound/bluecircle2.svg';
 import GrayBox from '@/assets/svgs/talkingkit/shortSound/grayrectangle.svg';
 
@@ -30,16 +31,25 @@ const ShortSoundVisualizer = ({ ballPosition, ballScale = 1.0 }: ShortSoundVisua
       </div>
 
       {/* 파란 공 - 위치와 scale 애니메이션 (90% ~ 0% 범위, 오른쪽 → 왼쪽) */}
-      <div
-        className="absolute z-10 transition-transform duration-400 ease-in-out"
+      <motion.div
+        className="absolute z-10"
         style={{
           top: 'calc(50% + 19px)',
           left: `${ballPosition}%`,
-          transform: `translate(-50%, -50%) scale(${ballScale})`,
+          x: '-50%',
+          y: '-50%',
+        }}
+        animate={{
+          scale: ballScale,
+        }}
+        transition={{
+          type: 'spring',
+          stiffness: 400,
+          damping: 25,
         }}
       >
         <BlueCircle className="size-[53px]" />
-      </div>
+      </motion.div>
     </div>
   );
 };
