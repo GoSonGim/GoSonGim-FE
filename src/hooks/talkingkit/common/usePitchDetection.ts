@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { PitchDetector } from 'pitchy';
-import type { PitchData, PitchDetectionState } from '@/types/pitch';
-import { evaluatePitch, frequencyToNote, isSoundLoudEnough } from '@/utils/pitchEvaluation';
+import type { PitchData, PitchDetectionState } from '@/types/talkingkit/pitch';
+import { evaluatePitch, frequencyToNote, isSoundLoudEnough } from '@/utils/talkingkit/pitchEvaluation';
 import { logger } from '@/utils/loggerUtils';
 import { handleError } from '@/utils/errorHandlerUtils';
 import {
@@ -9,7 +9,7 @@ import {
   AUDIO_SMOOTHING_TIME_CONSTANT,
   LOUDNESS_DETECTION_THRESHOLD,
   AUDIO_CONFIG,
-} from '@/constants/audio';
+} from '@/constants/talkingkit/audio';
 
 interface PitchDetectionOptions {
   maxDuration?: number; // 최대 감지 시간 (ms)

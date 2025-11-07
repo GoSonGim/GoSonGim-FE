@@ -6,8 +6,8 @@ import CircularProgress from '@/components/talkingkit/progressBar/CircularProgre
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
 import DecibelBar from '@/components/talkingkit/loudSound/DecibelBar';
-import { evaluateVolume } from '@/utils/volumeEvaluation';
-import type { VolumeEvaluationResult } from '@/utils/volumeEvaluation';
+import { evaluateVolume } from '@/utils/talkingkit/volumeEvaluation';
+import type { VolumeEvaluationResult } from '@/utils/talkingkit/volumeEvaluation';
 
 const LoudSoundVolume = () => {
   const navigate = useNavigate();

@@ -10,8 +10,13 @@ import {
   evaluateShortSound,
   calculateScaleFromAccuracy,
   type ShortSoundEvaluationResult,
-} from '@/utils/shortSoundEvaluation';
-import { TARGET_POINTS, DURATION, DUPLICATE_DETECTION_THRESHOLD, TARGET_POINT_TOLERANCE } from '@/constants/shortSound';
+} from '@/utils/talkingkit/shortSoundEvaluation';
+import {
+  TARGET_POINTS,
+  DURATION,
+  DUPLICATE_DETECTION_THRESHOLD,
+  TARGET_POINT_TOLERANCE,
+} from '@/constants/talkingkit/shortSound';
 import { logger } from '@/utils/loggerUtils';
 import { handleError } from '@/utils/errorHandlerUtils';
 

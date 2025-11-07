@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
-import type { ShortSoundEvaluationResult } from '@/utils/shortSoundEvaluation';
+import type { ShortSoundEvaluationResult } from '@/utils/talkingkit/shortSoundEvaluation';
 
 interface ShortSoundResultProps {
   evaluationResult: ShortSoundEvaluationResult;

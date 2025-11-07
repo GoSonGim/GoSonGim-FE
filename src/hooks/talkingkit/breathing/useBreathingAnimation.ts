@@ -1,12 +1,12 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useMotionValue } from 'framer-motion';
-import type { BreathingState, BreathingPhase } from '@/types/breathing';
-import { ANIMATION_DURATION, INHALE_DURATION, INITIAL_POSITION_DELAY } from '@/constants/breathing';
+import type { BreathingState, BreathingPhase } from '@/types/talkingkit/breathing';
+import { ANIMATION_DURATION, INHALE_DURATION, INITIAL_POSITION_DELAY } from '@/constants/talkingkit/breathing';
 import {
   getInitialBallPosition,
   calculateBluePathPosition,
   calculateRedPathPosition,
-} from '@/utils/breathingPathUtils';
+} from '@/utils/talkingkit/breathingPathUtils';
 
 /**
  * 경과 시간에 따른 단계 결정

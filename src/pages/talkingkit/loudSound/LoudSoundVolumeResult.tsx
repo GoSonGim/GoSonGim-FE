@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
-import type { VolumeEvaluationResult } from '@/utils/volumeEvaluation';
+import type { VolumeEvaluationResult } from '@/utils/talkingkit/volumeEvaluation';
 
 const LoudSoundVolumeResult = () => {
   const navigate = useNavigate();
