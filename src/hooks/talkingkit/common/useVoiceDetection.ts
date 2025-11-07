@@ -6,7 +6,7 @@ import {
   AUDIO_SMOOTHING_TIME_CONSTANT,
   VOICE_DETECTION_THRESHOLD,
   AUDIO_CONFIG,
-} from '@/constants/audio';
+} from '@/constants/talkingkit/audio';
 
 interface VoiceDetectionOptions {
   onVoiceDetected: (timestamp: number) => void;

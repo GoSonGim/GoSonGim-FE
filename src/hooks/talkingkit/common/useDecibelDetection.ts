@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from 'react';
 import Meyda from 'meyda';
 import { logger } from '@/utils/loggerUtils';
 import { handleError } from '@/utils/errorHandlerUtils';
-import { AUDIO_FFT_SIZE, AUDIO_SMOOTHING_TIME_CONSTANT, AUDIO_CONFIG } from '@/constants/audio';
+import { AUDIO_FFT_SIZE, AUDIO_SMOOTHING_TIME_CONSTANT, AUDIO_CONFIG } from '@/constants/talkingkit/audio';
 
 interface DecibelDetectionOptions {
   maxDuration?: number; // 최대 녹음 시간 (ms)

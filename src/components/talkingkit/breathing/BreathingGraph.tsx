@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import type { BreathingGraphProps } from '@/types/breathing';
-import { BLUE_PATH_START } from '@/constants/breathing';
+import type { BreathingGraphProps } from '@/types/talkingkit/breathing';
+import { BLUE_PATH_START } from '@/constants/talkingkit/breathing';
 import BreathingBall from './BreathingBall';
 
 const BreathingGraph = ({ phase, ballPosition, setBluePathRef, setRedPathRef }: BreathingGraphProps) => {
