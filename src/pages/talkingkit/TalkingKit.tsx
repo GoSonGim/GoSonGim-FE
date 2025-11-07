@@ -1,6 +1,6 @@
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import KitCard from '@/components/talkingkit/common/KitCard';
-import { kitsData } from '@/mock/talkingkit/kitsData';
+import { kitsData } from '@/mocks/talkingkit/kitsData';
 
 const TalkingKit = () => {
   return (
