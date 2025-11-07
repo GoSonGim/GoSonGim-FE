@@ -33,13 +33,13 @@ const ShortSound = () => {
   const stopBallRef = useRef<(() => void) | null>(null);
 
   const handleTimerComplete = useCallback(() => {
-    logger.log('⏱️ 타이머 완료, 평가 시작');
+    logger.log('타이머 완료, 평가 시작');
     if (stopVoiceRef.current) stopVoiceRef.current();
     if (stopBallRef.current) stopBallRef.current();
 
     // 평가 수행
     const result = evaluateShortSound(recordings, TARGET_POINTS);
-    logger.log('📊 평가 결과:', result);
+    logger.log('평가 결과:', result);
     setEvaluationResult(result);
     setPhase('result');
   }, [recordings]);
@@ -76,7 +76,7 @@ const ShortSound = () => {
           processedPointsRef.current.add(targetPoint);
           const scaleValue = calculateScaleFromAccuracy(accuracy);
           triggerScaleAnimation(scaleValue);
-          logger.log(`🎯 지점 ${targetPoint}ms에서 발음 감지! 오차: ${accuracy}ms, scale: ${scaleValue}`);
+          logger.log(`지점 ${targetPoint}ms에서 발음 감지! 오차: ${accuracy}ms, scale: ${scaleValue}`);
           break; // 하나의 지점만 처리
         }
       }
@@ -92,7 +92,7 @@ const ShortSound = () => {
   stopVoiceRef.current = stopVoice;
 
   const handleStart = async () => {
-    logger.log('🚀 시작');
+    logger.log('시작');
     setPhase('playing');
     setRecordings([]);
     processedPointsRef.current.clear();

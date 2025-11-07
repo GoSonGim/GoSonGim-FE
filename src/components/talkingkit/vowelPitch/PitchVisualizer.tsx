@@ -114,9 +114,9 @@ const PitchVisualizer = ({ pitchDataList, baselineFrequency }: PitchVisualizerPr
                 )}
               </svg>
             </>
-          )}
-        </div>
+        )}
       </div>
+    </div>
     </AnimatedContainer>
   );
 };
