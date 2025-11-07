@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
-import type { PitchData } from '@/types/pitch';
+import type { PitchData } from '@/types/talkingkit/pitch';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 
 interface PitchVisualizerProps {

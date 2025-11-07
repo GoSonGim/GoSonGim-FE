@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import type { BreathingPhase } from '@/types/breathing';
+import type { BreathingPhase } from '@/types/talkingkit/breathing';
 
 interface BreathingBallProps {
   position: { x: number; y: number };

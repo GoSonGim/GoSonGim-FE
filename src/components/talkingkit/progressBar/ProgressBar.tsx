@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { ProgressBarProps } from '@/types/breathing';
+import type { ProgressBarProps } from '@/types/talkingkit/breathing';
 
 interface BaseProgressBarProps {
   progress: number; // 0-100%
