@@ -21,13 +21,13 @@ const BreathingExercise = () => {
   }
 
   const handleStart = () => {
-    logger.log('🚀 애니메이션 시작');
+    logger.log('애니메이션 시작');
     reset();
     start();
   };
 
   const handleNext = () => {
-    logger.log('➡️ 다음 페이지로 이동');
+    logger.log('다음 페이지로 이동');
     // vowel-pitch 페이지로 이동
     navigate('/talkingkit/vowel-pitch');
   };

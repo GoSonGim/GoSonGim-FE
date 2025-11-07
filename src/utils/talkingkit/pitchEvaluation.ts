@@ -100,34 +100,6 @@ export const evaluatePitch = (pitchDataList: PitchData[], baselineFrequency: num
   const totalScore = scorePerPoint.reduce((sum, point) => sum + point.score, 0);
   const finalScore = Math.round(totalScore / scorePerPoint.length);
 
-  // 평균 주파수 차이 (참고용)
-  const averageFreqDiff = scorePerPoint.reduce((sum, point) => sum + point.frequencyDiff, 0) / scorePerPoint.length;
-
-  // 상세 디버깅 로그
-  console.log('🔍 상세 분석 (시간 기반, ±3Hz 허용, 더 빡세게):', {
-    기준주파수: baselineFrequency.toFixed(2) + 'Hz',
-    허용범위: '±3Hz (이내는 100점)',
-    데이터샘플: scorePerPoint.slice(0, 3).map((p) => ({
-      주파수: p.frequency.toFixed(2) + 'Hz',
-      차이: p.frequencyDiff.toFixed(2) + 'Hz',
-      점수: p.score + '점',
-    })),
-    평균주파수차이: averageFreqDiff.toFixed(3) + 'Hz',
-    최종점수: finalScore + '점',
-    총데이터수: pitchDataList.length,
-    점수분포: {
-      완벽100점: scorePerPoint.filter((p) => p.score === 100).length + '개 (머무른 시간)',
-      우수90점이상: scorePerPoint.filter((p) => p.score >= 90).length + '개',
-      좋음80점이상: scorePerPoint.filter((p) => p.score >= 80).length + '개',
-      보통60점이상: scorePerPoint.filter((p) => p.score >= 60).length + '개',
-    },
-  });
-
-  // 85점 이상일 때 콘솔에 성공 메시지 출력
-  if (finalScore >= 85) {
-    console.log('🎉 성공!');
-  }
-
   // 피드백 생성 (더 빡세게)
   let feedback = '';
   if (finalScore >= 95) {

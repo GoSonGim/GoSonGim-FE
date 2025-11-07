@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { KitEvaluationRequest } from '@/types/audio';
+import { logger } from '@/utils/loggerUtils';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
@@ -23,7 +24,7 @@ export const submitKitEvaluation = async (data: KitEvaluationRequest, audioFile:
       },
     });
   } catch (error) {
-    console.error('Failed to submit evaluation:', error);
+    logger.error('Failed to submit evaluation:', error);
     throw new Error('평가 결과 제출에 실패했습니다.');
   }
 };
