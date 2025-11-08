@@ -8,6 +8,12 @@ import NicknamePage from '@/pages/nickname/NicknamePage';
 import GoogleCallback from '@/pages/auth/GoogleCallback';
 import Search from '@/pages/search/Search';
 import Review from '@/pages/review/Review';
+import ReviewCalendar from '@/pages/review/ReviewCalendar';
+import ReviewPractice from '@/pages/review/ReviewPractice';
+import ReviewPracticeListen from '@/pages/review/ReviewPracticeListen';
+import ArticulationPracticeListen from '@/pages/review/ArticulationPracticeListen';
+import WordQuiz from '@/pages/review/WordQuiz';
+import WordListPage from '@/pages/review/WordListPage';
 import Profile from '@/pages/profile/Profile';
 import FreeTalkIntro from '@/pages/freetalk/FreeTalkIntro';
 import FreeTalk from '@/pages/freetalk/FreeTalk';
@@ -39,6 +45,12 @@ export const router = createBrowserRouter([
           { path: '/signup/nickname', element: <NicknamePage /> },
           { path: '/search', element: <Search /> },
           { path: '/review', element: <Review /> },
+          { path: '/review/calendar', element: <ReviewCalendar /> },
+          { path: '/review/practice', element: <ReviewPractice /> },
+          { path: '/review/practice/listen', element: <ReviewPracticeListen /> },
+          { path: '/review/practice/articulation-listen', element: <ArticulationPracticeListen /> },
+          { path: '/review/word-quiz', element: <WordQuiz /> },
+          { path: '/review/word-list', element: <WordListPage /> },
           { path: '/profile', element: <Profile /> },
           { path: '/freetalk/intro', element: <FreeTalkIntro /> },
           { path: '/freetalk', element: <FreeTalk /> },
