@@ -4,8 +4,10 @@ import BottomNav from '@/components/common/BottomNav';
 import BlueArrow from '@/assets/svgs/review/review-bluearrow.svg';
 import WhiteArrow from '@/assets/svgs/review/review-whitearrow.svg';
 import CalendarIcon from '@/assets/svgs/review/review-calendar.svg';
-import MikeIcon from '@/assets/svgs/review/review-mike.svg';
-import PeopleIcon from '@/assets/svgs/review/review-peopleIcon.svg';
+
+// 대용량 SVG를 URL로 import하여 브라우저 네이티브 lazy loading 사용
+import MikeIconUrl from '@/assets/svgs/review/review-mike.svg?url';
+import PeopleIconUrl from '@/assets/svgs/review/review-peopleIcon.svg?url';
 
 const Review = () => {
   const navigate = useNavigate();
@@ -111,7 +113,7 @@ const Review = () => {
               </p>
             </div>
             <div className="flex justify-end">
-              <MikeIcon className="h-[62px] w-[62px]" />
+              <img src={MikeIconUrl} alt="마이크 아이콘" className="h-[62px] w-[62px]" loading="lazy" />
             </div>
           </div>
 
@@ -130,7 +132,7 @@ const Review = () => {
               </p>
             </div>
             <div className="absolute right-4 bottom-4">
-              <PeopleIcon className="h-[65px] w-[70px]" />
+              <img src={PeopleIconUrl} alt="사람 아이콘" className="h-[65px] w-[70px]" loading="lazy" />
             </div>
           </div>
         </div>
