@@ -1,20 +1,23 @@
-import { useNavigate } from 'react-router-dom';
-import type { TalkingKit } from '@/types/talkingkit';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { Situation } from '@/types/situation.types';
 import BookmarkIcon from '@/assets/svgs/talkingkit/common/bookmarkempty.svg';
 
-interface KitCardProps {
-  kit: TalkingKit;
+interface SituationCardProps {
+  situation: Situation;
   onClick?: () => void;
 }
 
-const KitCard = ({ kit, onClick }: KitCardProps) => {
+const SituationCard = ({ situation, onClick }: SituationCardProps) => {
   const navigate = useNavigate();
+  const { category } = useParams<{ category: string }>();
 
   const handleClick = () => {
     if (onClick) {
       onClick();
     } else {
-      navigate(`/talkingkit/${kit.id}`);
+      // 현재 카테고리 정보를 유지하면서 상세 페이지로 이동
+      const currentCategory = category || 'daily';
+      navigate(`/search/situation/${currentCategory}/${situation.situationId}`);
     }
   };
 
@@ -31,13 +34,10 @@ const KitCard = ({ kit, onClick }: KitCardProps) => {
         </div>
 
         <div className="flex w-full shrink-0 flex-col items-start px-1 py-0">
-          <p className="text-detail-02 text-gray-50">{kit.category}</p>
           <div className="text-heading-02-semibold-tight text-gray-100">
             <p className="mb-0">
-              <span className="text-blue-1">{kit.highlightedText}</span>
-              <span> {kit.mainText}</span>
+              <span className="text-gray-100">{situation.situationName}</span>
             </p>
-            <p>{kit.kitLabel}</p>
           </div>
         </div>
       </div>
@@ -45,4 +45,4 @@ const KitCard = ({ kit, onClick }: KitCardProps) => {
   );
 };
 
-export default KitCard;
+export default SituationCard;

@@ -5,10 +5,16 @@ import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer'
 import GraybigCircle from '@/assets/svgs/talkingkit/loudSound/biggraycircle.svg';
 import BlueRing from '@/assets/svgs/talkingkit/loudSound/bluering.svg';
 import { useLoudSound } from '@/hooks/talkingkit/loudSound/useLoudSound';
+import { useKitDetail } from '@/hooks/queries/useKitDetail';
 
 const LoudSound = () => {
   const navigate = useNavigate();
   const { phase, activeText, ringScale, start } = useLoudSound();
+  const { data: kitDetail } = useKitDetail(3); // kitId: 3 (큰 소리 내기)
+
+  // API에서 받아온 1단계 이름 (stageId: 1)
+  const stage1Name: string =
+    kitDetail?.result.stages.find((stage) => stage.stageId === 1)?.stageName || '호흡 세게 뱉기';
 
   const handleStart = () => {
     start();
@@ -26,14 +32,14 @@ const LoudSound = () => {
   if (phase === 'complete') {
     return (
       <div className="bg-background-primary relative flex h-full flex-col">
-        <Step1Layout headerTitle="큰 소리 내기" title="호흡 세게 뱉기" onBackClick={handleBack}>
+        <Step1Layout headerTitle="큰 소리 내기" title={stage1Name} onBackClick={handleBack}>
           <div className="flex h-[352px] w-full items-center justify-center">
             <h1 className="text-[48px] leading-normal font-medium text-[#ff1f1f]">GREAT!</h1>
           </div>
         </Step1Layout>
 
         {/* 다음 진행하기 버튼 */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <div className="absolute bottom-[149px] left-1/2 -translate-x-1/2">
           <AnimatedContainer variant="fadeIn" delay={0.3}>
             <button
               onClick={handleNext}
@@ -51,7 +57,7 @@ const LoudSound = () => {
   return (
     <Step1Layout
       headerTitle="큰 소리 내기"
-      title="호흡 세게 뱉기"
+      title={stage1Name}
       showAction={phase === 'ready'}
       guideText="바람을 불어 원의 테두리를 맞춰보세요"
       buttonText="시작하기"

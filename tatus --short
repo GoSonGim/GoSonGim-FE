@@ -1,0 +1,130 @@
+[1mdiff --git a/src/hooks/freetalk/useHeygenAvatar.ts b/src/hooks/freetalk/useHeygenAvatar.ts[m
+[1mindex 2da8198..9866590 100644[m
+[1m--- a/src/hooks/freetalk/useHeygenAvatar.ts[m
+[1m+++ b/src/hooks/freetalk/useHeygenAvatar.ts[m
+[36m@@ -12,6 +12,8 @@[m [mexport const useHeygenAvatar = ({[m
+ }: UseHeygenAvatarProps = {}): UseHeygenAvatarReturn => {[m
+   const videoRef = useRef<HTMLVideoElement>(null);[m
+   const avatarInstanceRef = useRef<StreamingAvatar | null>(null);[m
+[32m+[m[32m  const hasEndedRef = useRef<boolean>(false);[m
+[32m+[m[32m  const isVoiceChatOpenRef = useRef<boolean>(false);[m
+ [m
+   const [avatarState, setAvatarState] = useState<HeygenAvatarState>('idle');[m
+   const [isSessionReady, setIsSessionReady] = useState(false);[m
+[36m@@ -22,6 +24,7 @@[m [mexport const useHeygenAvatar = ({[m
+     try {[m
+       setAvatarState('loading');[m
+       setError(null);[m
+[32m+[m[32m      hasEndedRef.current = false;[m
+ [m
+       // 세션 토큰 발급[m
+       const token = await heygenAPI.createSessionToken();[m
+[36m@@ -53,8 +56,12 @@[m [mexport const useHeygenAvatar = ({[m
+ [m
+       avatar.on(StreamingEvents.STREAM_DISCONNECTED, () => {[m
+         console.log('Stream disconnected');[m
+[31m-        setIsSessionReady(false);[m
+[31m-        setAvatarState('idle');[m
+[32m+[m[32m        // 의도치 않은 종료일 수 있으므로 상태만 반영하고 UI에서 재시작 유도[m
+[32m+[m[32m        isVoiceChatOpenRef.current = false;[m
+[32m+[m[32m        if (!hasEndedRef.current) {[m
+[32m+[m[32m          setIsSessionReady(false);[m
+[32m+[m[32m          setAvatarState('idle');[m
+[32m+[m[32m        }[m
+       });[m
+ [m
+       avatar.on(StreamingEvents.AVATAR_START_TALKING, () => {[m
+[36m@@ -163,10 +170,19 @@[m [mexport const useHeygenAvatar = ({[m
+   // 세션 종료[m
+   const endSession = async () => {[m
+     try {[m
+[31m-      if (avatarInstanceRef.current) {[m
+[31m-        await avatarInstanceRef.current.stopAvatar();[m
+[31m-        avatarInstanceRef.current = null;[m
+[32m+[m[32m      if (!avatarInstanceRef.current || hasEndedRef.current) return;[m
+[32m+[m[32m      hasEndedRef.current = true;[m
+[32m+[m[32m      // 열려있다면 우선 음성 채팅 종료[m
+[32m+[m[32m      if (isVoiceChatOpenRef.current) {[m
+[32m+[m[32m        try {[m
+[32m+[m[32m          await avatarInstanceRef.current.closeVoiceChat();[m
+[32m+[m[32m        } catch (e) {[m
+[32m+[m[32m          console.warn('closeVoiceChat failed during endSession:', e);[m
+[32m+[m[32m        }[m
+[32m+[m[32m        isVoiceChatOpenRef.current = false;[m
+       }[m
+[32m+[m[32m      await avatarInstanceRef.current.stopAvatar();[m
+[32m+[m[32m      avatarInstanceRef.current = null;[m
+       setIsSessionReady(false);[m
+       setAvatarState('idle');[m
+       if (videoRef.current) {[m
+[36m@@ -183,7 +199,12 @@[m [mexport const useHeygenAvatar = ({[m
+       if (!avatarInstanceRef.current || !isSessionReady) {[m
+         throw new Error('아바타 세션이 준비되지 않았습니다.');[m
+       }[m
+[31m-      await avatarInstanceRef.current.startVoiceChat(options || {});[m
+[32m+[m[32m      if (!isVoiceChatOpenRef.current) {[m
+[32m+[m[32m        await avatarInstanceRef.current.startVoiceChat(options || {});[m
+[32m+[m[32m        isVoiceChatOpenRef.current = true;[m
+[32m+[m[32m      } else {[m
+[32m+[m[32m        console.log('Voice chat already active');[m
+[32m+[m[32m      }[m
+       console.log('Voice chat started');[m
+     } catch (err) {[m
+       console.error('Failed to start listening:', err);[m
+[36m@@ -197,7 +218,10 @@[m [mexport const useHeygenAvatar = ({[m
+       if (!avatarInstanceRef.current) {[m
+         return;[m
+       }[m
+[31m-      await avatarInstanceRef.current.closeVoiceChat();[m
+[32m+[m[32m      if (isVoiceChatOpenRef.current) {[m
+[32m+[m[32m        await avatarInstanceRef.current.closeVoiceChat();[m
+[32m+[m[32m        isVoiceChatOpenRef.current = false;[m
+[32m+[m[32m      }[m
+       console.log('Voice chat stopped');[m
+     } catch (err) {[m
+       console.error('Failed to stop listening:', err);[m
+[36m@@ -230,8 +254,12 @@[m [mexport const useHeygenAvatar = ({[m
+         throw new Error('아바타 세션이 준비되지 않았습니다.');[m
+       }[m
+       // Voice Chat을 재시작하여 mute 상태 변경[m
+[31m-      await avatarInstanceRef.current.closeVoiceChat();[m
+[32m+[m[32m      if (isVoiceChatOpenRef.current) {[m
+[32m+[m[32m        await avatarInstanceRef.current.closeVoiceChat();[m
+[32m+[m[32m        isVoiceChatOpenRef.current = false;[m
+[32m+[m[32m      }[m
+       await avatarInstanceRef.current.startVoiceChat({ isInputAudioMuted: muted });[m
+[32m+[m[32m      isVoiceChatOpenRef.current = true;[m
+       console.log(`Microphone ${muted ? 'muted' : 'unmuted'}`);[m
+     } catch (err) {[m
+       console.error('Failed to set microphone mute:', err);[m
+[36m@@ -241,9 +269,27 @@[m [mexport const useHeygenAvatar = ({[m
+   // 컴포넌트 언마운트 시 정리[m
+   useEffect(() => {[m
+     return () => {[m
+[31m-      if (avatarInstanceRef.current) {[m
+[31m-        avatarInstanceRef.current.stopAvatar().catch(console.error);[m
+[31m-      }[m
+[32m+[m[32m      if (!avatarInstanceRef.current) return;[m
+[32m+[m[32m      hasEndedRef.current = true;[m
+[32m+[m[32m      const inst = avatarInstanceRef.current;[m
+[32m+[m[32m      // best-effort 정리[m
+[32m+[m[32m      (async () => {[m
+[32m+[m[32m        try {[m
+[32m+[m[32m          if (isVoiceChatOpenRef.current) {[m
+[32m+[m[32m            await inst.closeVoiceChat();[m
+[32m+[m[32m          }[m
+[32m+[m[32m        } catch {[m
+[32m+[m[32m          // ignore[m
+[32m+[m[32m        } finally {[m
+[32m+[m[32m          try {[m
+[32m+[m[32m            await inst.stopAvatar();[m
+[32m+[m[32m          } catch {[m
+[32m+[m[32m            // ignore[m
+[32m+[m[32m          } finally {[m
+[32m+[m[32m            avatarInstanceRef.current = null;[m
+[32m+[m[32m          }[m
+[32m+[m[32m        }[m
+[32m+[m[32m      })();[m
+     };[m
+   }, []);[m
+ [m

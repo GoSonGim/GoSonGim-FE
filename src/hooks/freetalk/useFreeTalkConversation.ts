@@ -16,6 +16,7 @@ interface UseFreeTalkConversationReturn {
   isSessionReady: boolean;
   avatarError: string | null;
   startSession: () => Promise<void>;
+  endSession: () => Promise<void>;
   videoRef: React.RefObject<HTMLVideoElement | null>;
 }
 
@@ -32,6 +33,7 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
   const progressIntervalRef = useRef<number | null>(null);
   const conversationIdRef = useRef(1);
   const isRecordingRef = useRef(false);
+  const isVoiceChatActiveRef = useRef(false); // Voice Chat 활성화 여부 추적
 
   // 메시지 버퍼 (스트리밍 중 누적)
   const avatarMessageBufferRef = useRef<string>('');
@@ -157,7 +159,15 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
   // 현재 활성 대화 찾기
   const activeConversation = conversations.find((conv) => conv.status === 'active');
 
-  // 프로그레스 업데이트
+  // 세션 상태 변화 감지 - 예상치 못한 종료 방지
+  useEffect(() => {
+    if (!avatar.isSessionReady && isVoiceChatActiveRef.current) {
+      console.log('[SESSION WARNING] 세션이 예상치 못하게 종료됨 - Voice Chat 플래그 유지');
+      // isVoiceChatActiveRef는 유지 - 명시적 종료가 아니므로
+    }
+  }, [avatar.isSessionReady]);
+
+  // 프로그레스 업데이트 + 3초 후 자동 중단
   useEffect(() => {
     if (isRecording) {
       setProgress(0);
@@ -179,15 +189,22 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
         });
       }, interval);
 
+      // 3초 후 자동 녹음 중단
+      const autoStopTimer = setTimeout(() => {
+        handleStopRecording();
+      }, 3000);
+
       return () => {
         if (progressIntervalRef.current) {
           clearInterval(progressIntervalRef.current);
           progressIntervalRef.current = null;
         }
+        clearTimeout(autoStopTimer);
       };
     } else {
       setProgress(0);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRecording]);
 
   // 세션이 준비되면 아바타가 먼저 인사 + Voice Chat 시작
@@ -237,9 +254,14 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
     userMessageBufferRef.current = ''; // 버퍼 초기화
 
     try {
-      console.log('=== 사용자 녹음 시작: Voice Chat 시작 ===');
-      await avatar.startListening();
-      console.log('Voice Chat 시작됨. 음성 인식 중...');
+      // 첫 번째 녹음 시에만 Voice Chat 시작
+      if (!isVoiceChatActiveRef.current) {
+        console.log('=== 첫 녹음: Voice Chat 시작 (이후 계속 유지) ===');
+        await avatar.startListening();
+        isVoiceChatActiveRef.current = true;
+      } else {
+        console.log('=== 녹음 시작: Voice Chat 이미 활성화됨 ===');
+      }
     } catch (error) {
       console.error('Failed to start voice chat:', error);
       if (error instanceof Error && error.name === 'NotAllowedError') {
@@ -254,7 +276,7 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
   const handleStopRecording = async () => {
     if (!isRecording || !activeConversation) return;
 
-    // 타이머 취소
+    // 타이머 정리
     if (loadingTimerRef.current) {
       clearTimeout(loadingTimerRef.current);
       loadingTimerRef.current = null;
@@ -268,14 +290,9 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
       progressIntervalRef.current = null;
     }
 
-    // 버퍼에서 최종 사용자 답변 추출
+    // 1. 사용자 답변 즉시 표시
     const finalAnswer = userMessageBufferRef.current.trim() || '답변을 받지 못했습니다.';
-    const hasAnswer = userMessageBufferRef.current.trim() !== '';
-
-    console.log('[STOP] 녹음 중단, 최종 사용자 답변:', finalAnswer);
-
-    // 버퍼 초기화
-    userMessageBufferRef.current = '';
+    console.log('[STOP] 사용자 답변 즉시 표시:', finalAnswer);
 
     setConversations((prev) =>
       prev.map((conv) => {
@@ -290,60 +307,55 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
       }),
     );
 
+    // 버퍼 초기화
+    userMessageBufferRef.current = '';
+
     // 다음 대화 ID 증가
     conversationIdRef.current++;
 
-    // 완료된 대화 개수 확인
-    const completedCount = conversations.filter((c) => c.status === 'completed').length + 1; // +1은 방금 완료된 대화
+    // 2. 완료된 대화 개수 확인
+    const completedCount = conversations.filter((c) => c.status === 'completed').length + 1;
 
     if (completedCount >= 5) {
-      console.log('[SESSION END] 대화 5개 완료. 세션 종료');
-      setIsRecording(false);
-      setShowLoadingDots(false);
-      setUserAnswer(null);
+      console.log('='.repeat(50));
+      console.log('[SESSION END] 🎉 5번째 대화 완료! 세션 종료 시작');
+      console.log('[SESSION END] 완료된 대화 수:', completedCount);
+      console.log('='.repeat(50));
 
-      // Voice Chat 종료
+      setIsRecording(false);
+      isRecordingRef.current = false;
+      setShowLoadingDots(false);
+      isVoiceChatActiveRef.current = false; // Voice Chat 종료 표시
+
+      // ⚠️ 중요: 5번째 대화 완료 시에만 Voice Chat 종료 및 세션 종료
       setTimeout(async () => {
         try {
+          console.log('[SESSION END] ✅ Voice Chat 종료 중...');
           await avatar.stopListening();
+          console.log('[SESSION END] ✅ Voice Chat 종료 완료. 세션 종료 중...');
           await avatar.endSession();
-
-          // 종료 메시지 표시
+          console.log('[SESSION END] ✅ 세션 종료 완료');
           alert('대화가 완료되었습니다! 수고하셨어요 😊');
         } catch (error) {
-          console.error('Failed to end session:', error);
-        }
-      }, 1000);
-
-      return; // 더 이상 진행하지 않음
-    }
-
-    setIsRecording(false);
-    isRecordingRef.current = false; // ref 업데이트
-
-    // Voice Chat 종료
-    try {
-      console.log('Voice Chat 종료');
-      await avatar.stopListening();
-    } catch (error) {
-      console.error('Failed to stop voice chat:', error);
-    }
-
-    setShowLoadingDots(true); // 아바타의 다음 질문 대기
-    setUserAnswer(null);
-
-    // 답변이 없으면 아바타가 자동으로 다음 질문 요청
-    if (!hasAnswer) {
-      console.log('[NO ANSWER] 답변 없음. 아바타에게 다음 질문 요청');
-      setTimeout(async () => {
-        try {
-          await avatar.speak('계속해서 대화를 나눠볼까요? 다른 주제로 이야기해주세요!');
-        } catch (error) {
-          console.error('Failed to speak next question:', error);
-          setShowLoadingDots(false);
+          console.error('[SESSION END] ❌ 세션 종료 실패:', error);
         }
       }, 500);
+      return;
     }
+
+    // 3. 1~4번째 대화: 세션 유지 (stopListening 절대 호출 안 함)
+    setIsRecording(false);
+    isRecordingRef.current = false;
+    setShowLoadingDots(true); // 아바타 응답 대기
+    setUserAnswer(null);
+
+    console.log('='.repeat(50));
+    console.log('[STOP] ✅ 녹음 종료. Voice Chat 유지 중 (WebSocket 열린 상태)');
+    console.log('[STOP] 📊 완료된 대화 수:', completedCount, '/ 5');
+    console.log('[STOP] 🔊 Voice Chat 활성 상태:', isVoiceChatActiveRef.current);
+    console.log('[STOP] ⚠️ stopListening() 호출 안 함 - 세션 계속 유지!');
+    console.log('='.repeat(50));
+    // ⚠️ 중요: stopListening() 절대 호출하지 않음 - WebSocket 연결 유지!
   };
 
   // Cleanup
@@ -369,6 +381,7 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
     isSessionReady: avatar.isSessionReady,
     avatarError: avatar.error,
     startSession: avatar.startSession,
+    endSession: avatar.endSession,
     videoRef: avatar.videoRef,
   };
 };

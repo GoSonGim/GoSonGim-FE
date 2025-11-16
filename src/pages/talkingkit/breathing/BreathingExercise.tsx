@@ -6,11 +6,13 @@ import { kitsData } from '@/mocks/talkingkit/kitsData';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
 import { logger } from '@/utils/loggerUtils';
+import { useKitDetail } from '@/hooks/queries/useKitDetail';
 
 const BreathingExercise = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { phase, ballPosition, start, reset, setBluePathRef, setRedPathRef } = useBreathingAnimation();
+  const { data: kitDetail } = useKitDetail(1); // kitId: 1 (길게 소리내기)
 
   // 키트 정보 가져오기
   const kit = kitsData.find((k) => k.id === Number(id));
@@ -19,6 +21,10 @@ const BreathingExercise = () => {
     navigate('/talkingkit');
     return null;
   }
+
+  // API에서 받아온 1단계 이름 (stageId: 1)
+  const stage1Name: string =
+    kitDetail?.result.stages.find((stage) => stage.stageId === 1)?.stageName || '횡경막 호흡 연습';
 
   const handleStart = () => {
     logger.log('애니메이션 시작');
@@ -38,7 +44,7 @@ const BreathingExercise = () => {
       <div className="bg-background-primary relative flex h-full flex-col">
         <Step1Layout
           headerTitle={`${kit.highlightedText} 소리내기`}
-          title="환경과 호흡 연습"
+          title={stage1Name}
           onBackClick={() => navigate('/talkingkit')}
         >
           <div className="flex h-[352px] w-full items-center justify-center">
@@ -47,7 +53,7 @@ const BreathingExercise = () => {
         </Step1Layout>
 
         {/* 다음 진행하기 버튼 - 절대 위치 */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
+        <div className="absolute bottom-[149px] left-1/2 -translate-x-1/2">
           <AnimatedContainer variant="fadeIn" delay={0.3}>
             <button
               onClick={handleNext}
@@ -66,7 +72,7 @@ const BreathingExercise = () => {
     return (
       <Step1Layout
         headerTitle={`${kit.highlightedText} 소리내기`}
-        title="환경과 호흡 연습"
+        title={stage1Name}
         showAction={true}
         guideText="공의 움직임에 따라 호흡을 진행하세요"
         buttonText="시작하기"
@@ -90,7 +96,7 @@ const BreathingExercise = () => {
     <div className="bg-background-primary relative flex h-full flex-col">
       <Step1Layout
         headerTitle={`${kit.highlightedText} 소리내기`}
-        title="환경과 호흡 연습"
+        title={stage1Name}
         onBackClick={() => navigate('/talkingkit')}
         disableAnimation={true}
       >

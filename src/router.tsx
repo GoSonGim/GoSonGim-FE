@@ -7,6 +7,15 @@ import SignupForm from '@/pages/signupForm/SignupForm';
 import NicknamePage from '@/pages/nickname/NicknamePage';
 import GoogleCallback from '@/pages/auth/GoogleCallback';
 import Search from '@/pages/search/Search';
+import KitDiagnosis from '@/pages/search/KitDiagnosis';
+import ArticulationPositionKit from '@/pages/search/ArticulationPositionKit';
+import ArticulationMethodKit from '@/pages/search/ArticulationMethodKit';
+import LipSoundStep1 from '@/pages/search/lipSound/LipSoundStep1';
+import LipSoundStep2 from '@/pages/search/lipSound/LipSoundStep2';
+import LipSoundPractice from '@/pages/search/lipSound/LipSoundPractice';
+import LipSoundResult from '@/pages/search/lipSound/LipSoundResult';
+import SituationCategory from '@/pages/search/SituationCategory';
+import SituationDetail from '@/pages/search/SituationDetail';
 import Review from '@/pages/review/Review';
 import Profile from '@/pages/profile/Profile';
 import FreeTalkIntro from '@/pages/freetalk/FreeTalkIntro';
@@ -48,6 +57,15 @@ export const router = createBrowserRouter([
           { path: '/', element: <Home /> },
           { path: '/signup/nickname', element: <NicknamePage /> },
           { path: '/search', element: <Search /> },
+          { path: '/search/diagnosis', element: <KitDiagnosis /> },
+          { path: '/search/articulation-position', element: <ArticulationPositionKit /> },
+          { path: '/search/articulation-method', element: <ArticulationMethodKit /> },
+          { path: '/search/articulation-position/lip-sound/step1', element: <LipSoundStep1 /> },
+          { path: '/search/articulation-position/lip-sound/step2', element: <LipSoundStep2 /> },
+          { path: '/search/articulation-position/lip-sound/practice', element: <LipSoundPractice /> },
+          { path: '/search/articulation-position/lip-sound/result', element: <LipSoundResult /> },
+          { path: '/search/situation/:category', element: <SituationCategory /> },
+          { path: '/search/situation/:category/:situationId', element: <SituationDetail /> },
           { path: '/review', element: <Review /> },
           { path: '/profile', element: <Profile /> },
           { path: '/freetalk/intro', element: <FreeTalkIntro /> },

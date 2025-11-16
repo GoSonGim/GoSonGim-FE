@@ -19,6 +19,7 @@ import {
 } from '@/constants/talkingkit/shortSound';
 import { logger } from '@/utils/loggerUtils';
 import { handleError } from '@/utils/talkingkit/audioErrorHandlerUtils';
+import { useKitDetail } from '@/hooks/queries/useKitDetail';
 
 type Phase = 'ready' | 'playing' | 'result';
 
@@ -31,6 +32,11 @@ const ShortSound = () => {
   const processedPointsRef = useRef<Set<number>>(new Set()); // 처리된 지점 추적
   const stopVoiceRef = useRef<(() => void) | null>(null);
   const stopBallRef = useRef<(() => void) | null>(null);
+  const { data: kitDetail } = useKitDetail(2); // kitId: 2 (일정한 소리내기)
+
+  // API에서 받아온 2단계 이름 (stageId: 2)
+  const stage2Name: string =
+    kitDetail?.result.stages.find((stage) => stage.stageId === 2)?.stageName || '짧게 끊어 발성하기';
 
   const handleTimerComplete = useCallback(() => {
     logger.log('타이머 완료, 평가 시작');
@@ -121,7 +127,7 @@ const ShortSound = () => {
     return (
       <Step2Layout
         headerTitle="일정한 소리 내기"
-        title="짧게 끊어 발성하기"
+        title={stage2Name}
         showAction={true}
         guideText="선을 따라 일정하게 발음해주세요"
         buttonText="시작하기"
@@ -137,12 +143,7 @@ const ShortSound = () => {
   if (phase === 'playing') {
     return (
       <div className="bg-background-primary relative flex h-full flex-col">
-        <Step2Layout
-          headerTitle="일정한 소리 내기"
-          title="짧게 끊어 발성하기"
-          disableAnimation={true}
-          onBackClick={handleBack}
-        >
+        <Step2Layout headerTitle="일정한 소리 내기" title={stage2Name} disableAnimation={true} onBackClick={handleBack}>
           <ShortSoundVisualizer phase="playing" ballPosition={position} ballScale={scale} />
         </Step2Layout>
 
@@ -162,7 +163,7 @@ const ShortSound = () => {
   // 평가 중
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
-      <Step2Layout headerTitle="일정한 소리 내기" title="짧게 끊어 발성하기" onBackClick={handleBack}>
+      <Step2Layout headerTitle="일정한 소리 내기" title={stage2Name} onBackClick={handleBack}>
         <div className="flex h-[400px] items-center justify-center">
           <p className="text-body-01-regular text-gray-60">평가 중...</p>
         </div>

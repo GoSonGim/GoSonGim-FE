@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import clsx from 'clsx';
@@ -55,12 +55,17 @@ const Step2Layout = ({
       </AnimatedContainer>
 
       {/* 본문 */}
-      <div className="relative flex flex-1 flex-col items-center px-4 py-4 pb-12">
+      <div className="bg-background-primary relative flex flex-col items-center px-4 pt-4 pb-0">
         {/* 단계 정보와 흰색 박스 */}
         <div className={clsx('flex w-full flex-col', showAction ? 'gap-[72px]' : 'gap-0')}>
           {/* 단계 정보 */}
           <div className="flex w-full flex-col gap-2">
-            <AnimatedContainer variant="fadeInUp" delay={0.1} className="mb-2 w-full text-left" disabled={disableAnimation}>
+            <AnimatedContainer
+              variant="fadeInUp"
+              delay={0.1}
+              className="mb-2 w-full text-left"
+              disabled={disableAnimation}
+            >
               <p className="text-detail-01 text-gray-60">2단계</p>
               <h2 className="text-heading-02-semibold text-gray-100">{title}</h2>
             </AnimatedContainer>
@@ -78,7 +83,12 @@ const Step2Layout = ({
 
           {/* 안내 텍스트와 버튼 (조건부) */}
           {showAction && (
-            <AnimatedContainer variant="fadeIn" delay={0.25} className="flex w-full flex-col items-center gap-4" disabled={disableAnimation}>
+            <AnimatedContainer
+              variant="fadeIn"
+              delay={0.25}
+              className="flex w-full flex-col items-center gap-4"
+              disabled={disableAnimation}
+            >
               {/* 안내 텍스트 */}
               {guideText && <p className="text-body-02-regular text-gray-60 text-center">{guideText}</p>}
 
