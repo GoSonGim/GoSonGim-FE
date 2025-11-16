@@ -81,7 +81,7 @@ const Search = () => {
           }`}
         >
           <p
-            className={`text-heading-02-semibold text-center ${
+            className={`text-heading-02-semibold cursor-pointer text-center ${
               activeTab === '조음발음' ? 'text-gray-100' : 'text-gray-40'
             }`}
           >

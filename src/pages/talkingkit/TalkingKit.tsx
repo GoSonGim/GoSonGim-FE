@@ -4,8 +4,10 @@ import KitCard from '@/components/talkingkit/common/KitCard';
 import { kitsData } from '@/mocks/talkingkit/kitsData';
 import { useKitsByCategory } from '@/hooks/queries/useKitsByCategory';
 import { useKitDetail } from '@/hooks/queries/useKitDetail';
+import { useNavigate } from 'react-router-dom';
 
 const TalkingKit = () => {
+  const navigate = useNavigate();
   const { data: kitsData_API, error } = useKitsByCategory(1);
   const { data: kitDetail, error: detailError } = useKitDetail(1);
 
@@ -48,7 +50,7 @@ const TalkingKit = () => {
           {/* 뒤로가기 버튼 (UI만) */}
           <div className="absolute left-4 flex size-12 items-center justify-center overflow-hidden p-2">
             <div className="h-[18px] w-[10px]">
-              <LeftArrowIcon className="h-full w-full" />
+              <LeftArrowIcon onClick={() => navigate('/search')} className="h-full w-full cursor-pointer" />
             </div>
           </div>
 
