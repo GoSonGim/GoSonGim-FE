@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 
+import LandingPage from '@/pages/landing/LandingPage';
 import Home from '@/pages/home/Home';
 import Login from '@/pages/login/Login';
 import LoginForm from '@/pages/loginForm/LoginForm';
@@ -40,6 +41,7 @@ export const router = createBrowserRouter([
   {
     element: <Layout />,
     children: [
+      { path: '/', element: <LandingPage /> },
       { path: '/login', element: <Login /> },
       { path: '/login/email', element: <LoginForm /> },
       { path: '/signup/email', element: <SignupForm /> },
@@ -54,7 +56,7 @@ export const router = createBrowserRouter([
       {
         element: <Layout />,
         children: [
-          { path: '/', element: <Home /> },
+          { path: '/home', element: <Home /> },
           { path: '/signup/nickname', element: <NicknamePage /> },
           { path: '/search', element: <Search /> },
           { path: '/review', element: <Review /> },
