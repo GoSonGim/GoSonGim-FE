@@ -9,7 +9,7 @@ import GoogleCallback from '@/pages/auth/GoogleCallback';
 import Search from '@/pages/search/Search';
 import Review from '@/pages/review/Review';
 import ReviewCalendar from '@/pages/review/ReviewCalendar';
-giimport ReviewPractice from '@/pages/review/practice/ReviewPractice';
+import ReviewPractice from '@/pages/review/practice/ReviewPractice';
 import ReviewPracticeListen from '@/pages/review/practice/ReviewPracticeListen';
 import ArticulationPracticeListen from '@/pages/review/practice/ArticulationPracticeListen';
 import WordQuiz from '@/pages/review/words/WordQuiz';
