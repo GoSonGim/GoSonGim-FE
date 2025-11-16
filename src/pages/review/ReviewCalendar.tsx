@@ -31,7 +31,7 @@ const ReviewCalendar = () => {
     <div className="bg-background-primary relative flex h-full flex-col">
       {/* 헤더 */}
       <header className="flex h-16 items-center justify-center bg-white px-4">
-        <button onClick={() => navigate('/review')} className="absolute left-4 p-2">
+        <button onClick={() => navigate('/review')} className="absolute left-4 cursor-pointer p-2">
           <LeftIcon className="h-[18px] w-[10px]" />
         </button>
         <h1 className="text-heading-02-regular text-gray-100">날짜별 학습 기록</h1>
@@ -43,11 +43,11 @@ const ReviewCalendar = () => {
         <div className="bg-white">
           {/* 달력 네비게이션 */}
           <div className="flex h-[59px] items-center justify-center gap-4 px-4">
-            <button onClick={goToPrevMonth} className="flex items-center justify-center">
+            <button onClick={goToPrevMonth} className="flex cursor-pointer items-center justify-center">
               <LeftIcon className="h-[18px] w-[10px]" />
             </button>
             <p className="text-body-01-semibold text-gray-100">{formatYearMonth()}</p>
-            <button onClick={goToNextMonth} className="flex items-center justify-center">
+            <button onClick={goToNextMonth} className="flex cursor-pointer items-center justify-center">
               <RightIcon className="h-[18px] w-[10px]" />
             </button>
           </div>
@@ -80,6 +80,7 @@ const ReviewCalendar = () => {
                   key={index}
                   onClick={() => handleDateClick(day.fullDate)}
                   className={clsx(
+                    'cursor-pointer',
                     'flex h-14 w-full flex-col items-center justify-start gap-2 p-1',
                     selected && 'from-blue-1 to-blue-2 bg-linear-to-t',
                     !selected && 'hover:bg-gray-5 bg-white',

@@ -30,7 +30,7 @@ export default function ScoreModal({ isOpen, score, onClose }: ScoreModalProps) 
 
         <button
           onClick={handleClose}
-          className="text-body-01-regular bg-blue-1 w-full rounded-lg px-[45px] py-3 text-white"
+          className="text-body-01-regular bg-blue-1 w-full cursor-pointer rounded-lg px-[45px] py-3 text-white"
         >
           복습으로 돌아가기
         </button>

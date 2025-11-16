@@ -53,7 +53,7 @@ const WordQuiz = () => {
     <div className="bg-background-primary relative flex h-full flex-col">
       {/* 헤더 */}
       <header className="flex h-16 items-center justify-center bg-white px-4">
-        <button onClick={() => navigate('/review')} className="absolute left-4 p-2">
+        <button onClick={() => navigate('/review')} className="absolute left-4 cursor-pointer p-2">
           <LeftIcon className="h-[18px] w-[10px]" />
         </button>
         <h1 className="text-heading-02-regular text-gray-100">단어 복습 랜덤퀴즈</h1>
