@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import type { ProgressBarProps } from '@/types/talkingkit/breathing';
 
 interface BaseProgressBarProps {

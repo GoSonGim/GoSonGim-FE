@@ -18,11 +18,14 @@ export default function CategoryFilter({ selectedCategory, onCategoryChange }: C
             key={category}
             onClick={() => onCategoryChange(category)}
             className={clsx(
-              'cursor-pointer text-center transition-colors',
+              'relative cursor-pointer pb-1 text-center transition-colors',
               selectedCategory === category ? 'font-semibold text-gray-100' : 'text-gray-40 font-normal',
             )}
           >
             {category}
+            {selectedCategory === category && (
+              <div className="absolute -bottom-px left-0 z-10 h-[2px] w-full bg-gray-100" />
+            )}
           </button>
         ))}
       </div>
