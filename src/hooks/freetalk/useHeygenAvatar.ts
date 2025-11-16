@@ -12,6 +12,7 @@ export const useHeygenAvatar = ({
 }: UseHeygenAvatarProps = {}): UseHeygenAvatarReturn => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const avatarInstanceRef = useRef<StreamingAvatar | null>(null);
+  const canEndSessionRef = useRef<boolean>(false); // 5번째 대화 완료 시에만 true로 설정
 
   const [avatarState, setAvatarState] = useState<HeygenAvatarState>('idle');
   const [isSessionReady, setIsSessionReady] = useState(false);
@@ -22,6 +23,7 @@ export const useHeygenAvatar = ({
     try {
       setAvatarState('loading');
       setError(null);
+      canEndSessionRef.current = false; // 세션 시작 시 플래그 리셋
 
       // 세션 토큰 발급
       const token = await heygenAPI.createSessionToken();
@@ -52,9 +54,19 @@ export const useHeygenAvatar = ({
       });
 
       avatar.on(StreamingEvents.STREAM_DISCONNECTED, () => {
-        console.log('Stream disconnected');
-        setIsSessionReady(false);
-        setAvatarState('idle');
+        console.log('[STREAM_DISCONNECTED] 이벤트 발생');
+
+        // 5번째 대화 완료 후에만 세션 종료 허용
+        if (canEndSessionRef.current) {
+          console.log('[STREAM_DISCONNECTED] 5번째 대화 완료 - 세션 종료 허용');
+          setIsSessionReady(false);
+          setAvatarState('idle');
+          return;
+        }
+
+        // 그 외 모든 경우: 세션 무조건 유지
+        console.log('[STREAM_DISCONNECTED] 5번째 대화 전 - 세션 상태 무조건 유지 (isSessionReady 유지)');
+        // isSessionReady를 false로 변경하지 않음 - 세션 계속 유지
       });
 
       avatar.on(StreamingEvents.AVATAR_START_TALKING, () => {
@@ -160,9 +172,12 @@ export const useHeygenAvatar = ({
     }
   };
 
-  // 세션 종료
+  // 세션 종료 (5번째 대화 완료 시에만 호출되어야 함)
   const endSession = async () => {
     try {
+      console.log('[END SESSION] 세션 종료 시작 (5번째 대화 완료)');
+      canEndSessionRef.current = true; // 5번째 대화 완료 플래그 설정
+
       if (avatarInstanceRef.current) {
         await avatarInstanceRef.current.stopAvatar();
         avatarInstanceRef.current = null;
@@ -172,6 +187,7 @@ export const useHeygenAvatar = ({
       if (videoRef.current) {
         videoRef.current.srcObject = null;
       }
+      console.log('[END SESSION] 세션 종료 완료');
     } catch (err) {
       console.error('Failed to end avatar session:', err);
     }
@@ -242,6 +258,8 @@ export const useHeygenAvatar = ({
   useEffect(() => {
     return () => {
       if (avatarInstanceRef.current) {
+        console.log('[CLEANUP] 컴포넌트 언마운트 - 세션 종료');
+        canEndSessionRef.current = true; // 언마운트 시 종료 허용
         avatarInstanceRef.current.stopAvatar().catch(console.error);
       }
     };

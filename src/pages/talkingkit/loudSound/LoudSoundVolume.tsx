@@ -8,6 +8,7 @@ import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
 import DecibelBar from '@/components/talkingkit/loudSound/DecibelBar';
 import { evaluateVolume } from '@/utils/talkingkit/volumeEvaluation';
 import type { VolumeEvaluationResult } from '@/utils/talkingkit/volumeEvaluation';
+import { useKitDetail } from '@/hooks/queries/useKitDetail';
 
 const LoudSoundVolume = () => {
   const navigate = useNavigate();
@@ -15,6 +16,11 @@ const LoudSoundVolume = () => {
   const [error, setError] = useState<string | null>(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
   const [evaluationResult, setEvaluationResult] = useState<VolumeEvaluationResult | null>(null);
+  const { data: kitDetail } = useKitDetail(3); // kitId: 3 (큰 소리 내기)
+
+  // API에서 받아온 2단계 이름 (stageId: 2)
+  const stage2Name: string =
+    kitDetail?.result.stages.find((stage) => stage.stageId === 2)?.stageName || '최대 성량으로 말하기';
 
   const { isDetecting, currentDecibel, averageDecibel, maxDecibel, startDetection, stopDetection } =
     useDecibelDetection({
@@ -81,7 +87,7 @@ const LoudSoundVolume = () => {
 
   return (
     <>
-      <Step2Layout headerTitle="큰 소리 내기" title="최대 성량으로 말하기" showAction={false} onBackClick={handleBack}>
+      <Step2Layout headerTitle="큰 소리 내기" title={stage2Name} showAction={false} onBackClick={handleBack}>
         <div className="flex h-[352px] w-full flex-col items-center px-6 pt-[39px]">
           {/* 상단: "아빠" 텍스트 */}
           <AnimatedContainer variant="fadeInUp" delay={0.1} className="mb-[74px]">

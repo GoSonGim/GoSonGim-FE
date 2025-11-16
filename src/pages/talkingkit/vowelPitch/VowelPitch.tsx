@@ -2,16 +2,23 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Mike2 from '@/assets/svgs/talkingkit/vowelPitch/mike2.svg';
 import { usePitchDetection } from '@/hooks/talkingkit/common/usePitchDetection';
+import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
 import PitchVisualizer from '@/components/talkingkit/vowelPitch/PitchVisualizer';
 import CircularProgress from '@/components/talkingkit/progressBar/CircularProgress';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
+import { useKitDetail } from '@/hooks/queries/useKitDetail';
 
 const VowelPitch = () => {
   const navigate = useNavigate();
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
+  const { data: kitDetail } = useKitDetail(1); // kitId: 1 (길게 소리내기)
+
+  // API에서 받아온 2단계 이름 (stageId: 2)
+  const stage2Name: string =
+    kitDetail?.result.stages.find((stage) => stage.stageId === 2)?.stageName || '모음 길게 소리내기';
 
   const {
     isDetecting,
@@ -26,15 +33,22 @@ const VowelPitch = () => {
     minDuration: 2000, // 2초 (최소값)
   });
 
+  const { startRecording, stopRecording } = useAudioRecorder();
+
   // 평가 결과가 생성되면 결과 페이지로 이동
   useEffect(() => {
     if (shouldNavigate && evaluationResult) {
-      navigate('/talkingkit/vowel-pitch/result', {
-        state: { evaluationResult },
-      });
-      setShouldNavigate(false);
+      // evaluationResult와 audioBlob을 함께 전달하기 위해 비동기 처리
+      const prepareNavigation = async () => {
+        const audioBlob = await stopRecording();
+        navigate('/talkingkit/vowel-pitch/result', {
+          state: { evaluationResult, audioBlob },
+        });
+        setShouldNavigate(false);
+      };
+      prepareNavigation();
     }
-  }, [evaluationResult, shouldNavigate, navigate]);
+  }, [evaluationResult, shouldNavigate, navigate, stopRecording]);
 
   // 녹음 완료 - 바로 결과 페이지로 이동
   const handleRecordingComplete = useCallback(() => {
@@ -51,7 +65,8 @@ const VowelPitch = () => {
     setShouldNavigate(false);
 
     try {
-      await startDetection();
+      // Pitch detection과 audio recording 동시 시작
+      await Promise.all([startDetection(), startRecording()]);
 
       // 4초 타이머 시작
       setTimeout(() => {
@@ -64,10 +79,10 @@ const VowelPitch = () => {
   };
 
   return (
-    <div className="bg-background-primary relative min-h-screen">
+    <>
       <Step2Layout
         headerTitle="길게 소리내기"
-        title="모음 길게 소리내기"
+        title={stage2Name}
         showAction={false}
         onBackClick={() => navigate('/talkingkit')}
       >
@@ -109,7 +124,7 @@ const VowelPitch = () => {
           </AnimatedContainer>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

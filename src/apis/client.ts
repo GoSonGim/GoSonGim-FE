@@ -10,9 +10,6 @@ const baseURL = '';
 export const apiClient = axios.create({
   baseURL,
   timeout: 10000, // 10초
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 // 토큰 갱신 중인지 체크하는 플래그
@@ -35,13 +32,25 @@ const processQueue = (error: AxiosError | null, token: string | null = null) => 
   failedQueue = [];
 };
 
-// Request Interceptor: Authorization 헤더 자동 추가
+// Request Interceptor: Authorization 헤더 자동 추가 & Content-Type 처리
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const { accessToken } = useAuthStore.getState();
 
+    // Authorization 헤더 추가
     if (accessToken && config.headers) {
       config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    // Content-Type 헤더 처리
+    if (config.headers) {
+      if (config.data instanceof FormData) {
+        // FormData 요청: Content-Type을 제거하여 axios가 자동으로 multipart/form-data와 boundary를 설정하도록 함
+        delete config.headers['Content-Type'];
+      } else if (!config.headers['Content-Type']) {
+        // JSON 요청: Content-Type이 설정되지 않은 경우에만 application/json 설정
+        config.headers['Content-Type'] = 'application/json';
+      }
     }
 
     return config;

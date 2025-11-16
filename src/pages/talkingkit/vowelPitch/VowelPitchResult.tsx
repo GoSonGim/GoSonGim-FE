@@ -1,12 +1,70 @@
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import type { PitchEvaluationResult } from '@/types/talkingkit/pitch';
+import { kitAPI } from '@/apis/kit.api';
+import { logger } from '@/utils/loggerUtils';
 
 const VowelPitchResult = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const evaluationResult = location.state?.evaluationResult as PitchEvaluationResult | null;
+  const audioBlob = location.state?.audioBlob as Blob | null;
+
+  // S3 업로드 및 학습 기록 저장
+  useEffect(() => {
+    const uploadAndSaveLog = async () => {
+      if (!evaluationResult || !audioBlob) {
+        logger.warn('evaluationResult 또는 audioBlob이 없습니다.');
+        return;
+      }
+
+      try {
+        // 1. UUID 생성하여 파일명 만들기
+        const uuid = crypto.randomUUID();
+        const fileName = `vowel_pitch_${uuid}.wav`;
+
+        // 2. Presigned URL 요청
+        logger.log('Presigned URL 요청 중...');
+        const uploadResponse = await kitAPI.getUploadUrl({
+          folder: 'kit',
+          fileName,
+        });
+
+        const { fileKey, url } = uploadResponse.result;
+        logger.log('Presigned URL 받음:', fileKey);
+
+        // 3. S3에 파일 업로드
+        logger.log('S3 업로드 시작...');
+        const uploadResult = await fetch(url, {
+          method: 'PUT',
+          body: audioBlob,
+        });
+
+        if (!uploadResult.ok) {
+          throw new Error('S3 업로드 실패');
+        }
+        logger.log('S3 업로드 완료');
+
+        // 4. 학습 기록 저장 API 호출
+        logger.log('학습 기록 저장 중...');
+        await kitAPI.saveKitStageLog({
+          kitStageId: 3,
+          evaluationScore: evaluationResult.score,
+          evaluationFeedback: evaluationResult.feedback,
+          isSuccess: true,
+          fileKey,
+        });
+
+        logger.log('학습 기록 저장 완료');
+      } catch (error) {
+        logger.error('업로드 또는 저장 실패:', error);
+      }
+    };
+
+    uploadAndSaveLog();
+  }, [evaluationResult, audioBlob]);
 
   if (!evaluationResult) {
     // 결과 데이터가 없으면 메인 페이지로 리다이렉트

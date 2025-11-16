@@ -1,8 +1,45 @@
+import { useEffect } from 'react';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import KitCard from '@/components/talkingkit/common/KitCard';
 import { kitsData } from '@/mocks/talkingkit/kitsData';
+import { useKitsByCategory } from '@/hooks/queries/useKitsByCategory';
+import { useKitDetail } from '@/hooks/queries/useKitDetail';
 
 const TalkingKit = () => {
+  const { data: kitsData_API, error } = useKitsByCategory(1);
+  const { data: kitDetail, error: detailError } = useKitDetail(1);
+
+  // API 응답 데이터 콘솔 출력 (카테고리별 키트 목록)
+  useEffect(() => {
+    if (kitsData_API) {
+      console.log('호흡 및 발성 기초 키트 API 응답:', kitsData_API);
+      console.log('키트 목록:', kitsData_API.result.kits);
+    }
+  }, [kitsData_API]);
+
+  useEffect(() => {
+    if (error) {
+      console.error('호흡 및 발성 기초 키트 조회 실패:', error);
+    }
+  }, [error]);
+
+  // 키트 상세 정보 API 응답 콘솔 출력
+  useEffect(() => {
+    if (kitDetail) {
+      console.log('키트 상세 정보 API 응답:', kitDetail);
+      console.log('키트 ID:', kitDetail.result.kitId);
+      console.log('키트 이름:', kitDetail.result.kitName);
+      console.log('키트 카테고리:', kitDetail.result.kitCategory);
+      console.log('총 단계 수:', kitDetail.result.totalStages);
+      console.log('단계 목록:', kitDetail.result.stages);
+    }
+  }, [kitDetail]);
+
+  useEffect(() => {
+    if (detailError) {
+      console.error('키트 상세 정보 조회 실패:', detailError);
+    }
+  }, [detailError]);
   return (
     <div className="bg-background-primary relative h-full">
       {/* 상단 바 */}

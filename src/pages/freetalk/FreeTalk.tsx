@@ -119,9 +119,41 @@ export default function FreeTalk() {
     };
   }, [conversation.isSessionReady, conversation.videoRef]);
 
-  const handleExit = () => {
-    navigate('/');
+  const handleExit = async () => {
+    // 종료하기 버튼: 5번째 대화 완료 전에는 세션 종료하지 않고 페이지만 이동
+    const completedCount = conversation.conversations.filter((c) => c.status === 'completed').length;
+
+    if (completedCount < 5) {
+      console.log('[EXIT] 5번째 대화 전 - 세션 유지하고 페이지만 이동');
+      navigate('/');
+      return;
+    }
+
+    // 5번째 대화 완료 후에만 세션 종료
+    try {
+      console.log('[EXIT] 5번째 대화 완료 - 세션 종료 후 이동');
+      if (conversation.isSessionReady) {
+        await conversation.endSession();
+      }
+    } finally {
+      navigate('/');
+    }
   };
+
+  useEffect(() => {
+    return () => {
+      // 컴포넌트 언마운트 시에도 5번째 대화 완료 후에만 종료
+      const completedCount = conversation.conversations.filter((c) => c.status === 'completed').length;
+
+      if (completedCount >= 5 && conversation.isSessionReady) {
+        console.log('[UNMOUNT] 5번째 대화 완료 - 세션 종료');
+        conversation.endSession().catch(() => {});
+      } else {
+        console.log('[UNMOUNT] 5번째 대화 전 - 세션 유지');
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
@@ -252,9 +284,15 @@ export default function FreeTalk() {
                 </div>
               </div>
 
-              {(conversation.showLoadingDots || conversation.userAnswer) && (
+              {(conversation.isRecording || conversation.showLoadingDots || conversation.userAnswer) && (
                 <div className="flex justify-end">
-                  {conversation.showLoadingDots && !conversation.userAnswer ? (
+                  {conversation.isRecording && conversation.userAnswer ? (
+                    <div className="border-gray-20 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px] opacity-60 transition-opacity">
+                      <p className="text-gray-80 text-center text-[20px] leading-normal font-normal wrap-break-word">
+                        {conversation.userAnswer}
+                      </p>
+                    </div>
+                  ) : conversation.showLoadingDots && !conversation.userAnswer ? (
                     <div className="border-gray-20 flex h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px]">
                       <LoadingDot className="h-[30px] w-[68px] animate-pulse" />
                     </div>
