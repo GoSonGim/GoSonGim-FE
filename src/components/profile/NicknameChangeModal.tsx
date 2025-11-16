@@ -96,15 +96,15 @@ export default function NicknameChangeModal({
         <div className="flex h-[51px] gap-[8px]">
           <button
             onClick={onClose}
-            className="text-body-01-regular flex-1 rounded-[8px] bg-gray-20 px-[45px] py-[12px] text-center text-gray-80 whitespace-nowrap"
+            className="text-body-01-regular bg-gray-20 text-gray-80 flex-1 cursor-pointer rounded-[8px] px-[45px] py-[12px] text-center whitespace-nowrap"
           >
             뒤로가기
           </button>
           <button
             onClick={handleChange}
             disabled={isButtonDisabled}
-            className={`text-body-01-regular flex-1 rounded-[8px] px-[45px] py-[12px] text-center text-white whitespace-nowrap ${
-              isButtonDisabled ? 'bg-gray-40' : 'bg-blue-1'
+            className={`text-body-01-regular flex-1 rounded-[8px] px-[45px] py-[12px] text-center whitespace-nowrap text-white ${
+              isButtonDisabled ? 'bg-gray-40' : 'bg-blue-1 cursor-pointer'
             }`}
           >
             변경하기
