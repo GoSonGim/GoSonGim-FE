@@ -10,7 +10,7 @@ interface DecibelDetectionOptions {
 }
 
 export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
-  const { maxDuration = 4000, updateInterval = 50 } = options;
+  const { maxDuration = 4000 } = options;
 
   const [isDetecting, setIsDetecting] = useState(false);
   const [currentDecibel, setCurrentDecibel] = useState(0);
@@ -19,7 +19,7 @@ export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
-  const meydaAnalyzerRef = useRef<Meyda.MeydaAnalyzer | null>(null);
+  const meydaAnalyzerRef = useRef<any | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const timerRef = useRef<number | null>(null);
   const decibelListRef = useRef<number[]>([]);
@@ -98,7 +98,7 @@ export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
         source,
         bufferSize: AUDIO_FFT_SIZE,
         featureExtractors: ['rms'],
-        callback: (features) => {
+        callback: (features: { rms?: number }) => {
           if (features.rms !== undefined && features.rms > 0) {
             // RMS를 데시벨로 변환
             // dB = 20 * log10(RMS) + offset

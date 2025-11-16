@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import clsx from 'clsx';

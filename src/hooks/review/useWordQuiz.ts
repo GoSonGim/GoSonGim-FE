@@ -28,14 +28,14 @@ export const useWordQuiz = () => {
     // 한글 파일명 URL 인코딩
     const encodedFileName = encodeURIComponent(word.text);
     const audioPath = `/audio/review/${encodedFileName}.mp3`;
-    
+
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
-    
+
     audioRef.current = new Audio(audioPath);
-    audioRef.current.play().catch((error) => {
+    audioRef.current.play().catch(() => {
       console.warn(`음성 파일을 찾을 수 없습니다: ${word.text}.mp3`);
     });
   };
