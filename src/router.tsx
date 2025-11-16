@@ -15,6 +15,9 @@ import ArticulationPracticeListen from '@/pages/review/practice/ArticulationPrac
 import WordQuiz from '@/pages/review/words/WordQuiz';
 import WordListPage from '@/pages/review/words/WordListPage';
 import Profile from '@/pages/profile/Profile';
+import WordListPage from '@/pages/profile/WordListPage';
+import ProfileGuide from '@/pages/profile/ProfileGuide';
+import AccountSettings from '@/pages/profile/AccountSettings';
 import FreeTalkIntro from '@/pages/freetalk/FreeTalkIntro';
 import FreeTalk from '@/pages/freetalk/FreeTalk';
 import HomeStudyTalk from '@/pages/studytalk/HomeStudyTalk';
@@ -62,6 +65,9 @@ export const router = createBrowserRouter([
           { path: '/review/word-quiz', element: <WordQuiz /> },
           { path: '/review/word-list', element: <WordListPage /> },
           { path: '/profile', element: <Profile /> },
+          { path: '/profile/words', element: <WordListPage /> },
+          { path: '/profile/guide', element: <ProfileGuide /> },
+          { path: '/profile/account-settings', element: <AccountSettings /> },
           { path: '/freetalk/intro', element: <FreeTalkIntro /> },
           { path: '/freetalk', element: <FreeTalk /> },
           { path: '/studytalk', element: <HomeStudyTalk /> },
