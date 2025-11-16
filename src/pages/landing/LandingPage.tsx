@@ -8,14 +8,14 @@ const LandingPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate('/home');
-    }, 2000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
 
   return (
     <div
-      className="flex h-full w-full flex-col items-center justify-center"
+      className="shine-effect flex h-full w-full flex-col items-center justify-center"
       style={{
         background: 'linear-gradient(270deg, #4C5EFF 0%, #2E3899 100%)',
       }}
