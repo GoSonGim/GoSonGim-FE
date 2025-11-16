@@ -100,4 +100,3 @@ export const parseApiError = (error: unknown): ParsedError => {
 export const getErrorMessage = (error: unknown): string => {
   return parseApiError(error).message;
 };
-

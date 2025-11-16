@@ -26,9 +26,9 @@ dist-ssr
 .cursorrules
 .claude
 CLAUDE.md
-.cursorrules
 .claude/
 .cursor/
+.cursorignore
 mcp.json
 
 .env
