@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import { useSituationDetail } from '@/hooks/queries/useSituationDetail';
+import { logger } from '@/utils/loggerUtils';
 
 const SituationDetail = () => {
   const navigate = useNavigate();
@@ -14,13 +15,13 @@ const SituationDetail = () => {
   // API 응답에서 데이터 가져오기
   const situationDetail = situationDetailData?.result;
 
-  // 디버깅: API 응답 확인
+  // API 응답 로깅
   useEffect(() => {
     if (situationDetail) {
-      console.log('상황극 상세 데이터:', situationDetail);
-      console.log('이미지 URL:', situationDetail.image);
-      console.log('이미지 URL 타입:', typeof situationDetail.image);
-      console.log('이미지 URL 길이:', situationDetail.image?.length);
+      logger.log('상황극 상세 데이터:', situationDetail);
+      logger.log('이미지 URL:', situationDetail.image);
+      logger.log('이미지 URL 타입:', typeof situationDetail.image);
+      logger.log('이미지 URL 길이:', situationDetail.image?.length);
     }
   }, [situationDetail]);
 
@@ -35,7 +36,7 @@ const SituationDetail = () => {
 
   const handleStartClick = () => {
     // 시작하기 버튼 클릭 시 동작 (추후 구현)
-    console.log('시작하기 클릭');
+    logger.log('시작하기 클릭');
   };
 
   return (
@@ -90,12 +91,12 @@ const SituationDetail = () => {
                   alt={situationDetail.situationName}
                   className="h-full w-full rounded-[9px] object-cover"
                   onError={(e) => {
-                    console.error('이미지 로드 실패:', situationDetail.image);
-                    console.error('이미지 에러 이벤트:', e);
+                    logger.error('이미지 로드 실패:', situationDetail.image);
+                    logger.error('이미지 에러 이벤트:', e);
                     setImageError(true);
                   }}
                   onLoad={() => {
-                    console.log('이미지 로드 성공:', situationDetail.image);
+                    logger.log('이미지 로드 성공:', situationDetail.image);
                     setImageError(false);
                   }}
                 />

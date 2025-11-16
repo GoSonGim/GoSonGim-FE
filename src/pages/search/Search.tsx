@@ -7,6 +7,7 @@ import { situationCategoriesMockData } from '@/mock/search/search.mock';
 import { useKitCategories } from '@/hooks/queries/useKitCategories';
 import { useSituations } from '@/hooks/queries/useSituations';
 import { getSituationCategoryQuery } from '@/utils/situationUtils';
+import { logger } from '@/utils/loggerUtils';
 
 // Lazy load home icon
 const HomeIcon = lazy(() => import('@/assets/svgs/studyfind/studyfind-home.svg'));
@@ -19,25 +20,25 @@ const Search = () => {
   const { data: kitCategoriesData, isLoading, error } = useKitCategories();
   const { data: situationsData } = useSituations('daily');
 
-  // API 응답 데이터 콘솔 출력
+  // API 응답 데이터 로깅
   useEffect(() => {
     if (kitCategoriesData) {
-      console.log('조음 키트 카테고리 API 응답:', kitCategoriesData);
-      console.log('카테고리 목록:', kitCategoriesData.result.categories);
+      logger.log('조음 키트 카테고리 API 응답:', kitCategoriesData);
+      logger.log('카테고리 목록:', kitCategoriesData.result.categories);
     }
   }, [kitCategoriesData]);
 
   useEffect(() => {
     if (error) {
-      console.error('조음 키트 카테고리 조회 실패:', error);
+      logger.error('조음 키트 카테고리 조회 실패:', error);
     }
   }, [error]);
 
-  // 상황극 API 응답 데이터 콘솔 출력
+  // 상황극 API 응답 데이터 로깅
   useEffect(() => {
     if (situationsData) {
-      console.log('상황극 목록 API 응답:', situationsData);
-      console.log('상황극 목록:', situationsData.result.situations);
+      logger.log('상황극 목록 API 응답:', situationsData);
+      logger.log('상황극 목록:', situationsData.result.situations);
     }
   }, [situationsData]);
 

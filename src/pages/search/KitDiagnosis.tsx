@@ -179,7 +179,8 @@ const KitDiagnosis = () => {
     if (savedKits.size === 0) {
       setShowModal(true);
     } else {
-      console.log('내 학습 가기로 라우팅');
+      logger.log('내 학습 가기로 라우팅');
+      // TODO: 내 학습 페이지로 라우팅
     }
   };
 
@@ -188,7 +189,8 @@ const KitDiagnosis = () => {
   };
 
   const handleConfirmNoSave = () => {
-    console.log('내 학습 가기로 라우팅');
+    logger.log('내 학습 가기로 라우팅');
+    // TODO: 내 학습 페이지로 라우팅
     setShowModal(false);
   };
 

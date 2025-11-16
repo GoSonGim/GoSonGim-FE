@@ -139,7 +139,7 @@ const LipSoundPractice = () => {
         size: wavBlob.size,
         type: wavBlob.type,
       });
-      console.log(`${completedRound}차 WAV Blob:`, wavBlob);
+      logger.log(`${completedRound}차 WAV Blob:`, wavBlob);
 
       const fileKey = await uploadRecordingToS3(completedRound, wavBlob);
 
