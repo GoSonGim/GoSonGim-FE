@@ -319,15 +319,16 @@ export default function FreeTalk() {
               {conversation.activeConversation?.answer !== undefined && (
                 <div className="flex justify-end">
                   {conversation.showLoadingDots ? (
-                    // 로딩 중 (아바타 응답 대기) - active conversation이 있을 때만
+                    // 아바타 응답 대기 중
                     <div className="border-gray-20 flex h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px]">
                       <LoadingDot className="h-[30px] w-[68px] animate-pulse" />
                     </div>
                   ) : (
-                    // 답변 박스 (녹음 중에는 빈 박스, 완료 시 최종 답변 표시)
+                    // 답변 박스 (실시간 텍스트 표시)
                     <div className="border-gray-20 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px]">
                       <p className="text-gray-80 text-center text-[20px] leading-normal font-normal wrap-break-word whitespace-pre-wrap">
                         {conversation.activeConversation.answer}
+                        {conversation.isWaitingUserAnswer && <span className="text-gray-60 ml-1 animate-pulse">|</span>}
                       </p>
                     </div>
                   )}
