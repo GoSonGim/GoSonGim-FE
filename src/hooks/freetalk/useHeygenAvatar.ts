@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
 import StreamingAvatar, { AvatarQuality, StreamingEvents, VoiceEmotion, TaskType } from '@heygen/streaming-avatar';
-import { heygenAPI } from '@/apis/heygen.api';
-import type { HeygenAvatarState, UseHeygenAvatarProps, UseHeygenAvatarReturn } from '@/types/freetalk/heygen.types';
-import { logger } from '@/utils/loggerUtils';
+import { heygenAPI } from '@/apis/freetalk';
+import type { HeygenAvatarState, UseHeygenAvatarProps, UseHeygenAvatarReturn } from '@/types/freetalk';
+import { logger } from '@/utils/common/loggerUtils';
 
 export const useHeygenAvatar = ({
   avatarId = 'default',

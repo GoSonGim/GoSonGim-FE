@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import type { Kit } from '@/types/kit.types';
+import type { Kit } from '@/types/kit';
 import type { TalkingKit } from '@/types/talkingkit';
 import BookmarkIcon from '@/assets/svgs/talkingkit/common/bookmarkempty.svg';
 

@@ -1,8 +1,7 @@
-export interface TalkingKit {
-  id: number;
-  category: string;
-  highlightedText: string;
-  mainText: string;
-  kitLabel: string;
-  isBookmarked: boolean;
-}
+// TalkingKit 기능 (breathing, pitch)
+export * from './models';
+export * from './breathing';
+export * from './pitch';
+
+// Kit 관련
+export * from './kit';

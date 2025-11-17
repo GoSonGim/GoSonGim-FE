@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
-import MouthIcon from '@/assets/svgs/studyfind/studyfind-mouth.svg';
+import MouthIcon from '@/assets/svgs/search/studyfind-mouth.svg';
 
 const LipSoundStep1 = () => {
   const navigate = useNavigate();

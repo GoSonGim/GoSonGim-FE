@@ -8,8 +8,8 @@ import CircularProgress from '@/components/freetalk/CircularProgress';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import { lipSoundPracticeWords } from '@/mock/search/lipSoundKit.mock';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
-import { logger } from '@/utils/loggerUtils';
-import { lipSoundAPI } from '@/apis/lipSound.api';
+import { logger } from '@/utils/common/loggerUtils';
+import { lipSoundAPI } from '@/apis/search';
 
 const LipSoundPractice = () => {
   const navigate = useNavigate();

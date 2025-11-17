@@ -2,11 +2,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useBreathingAnimation } from '@/hooks/talkingkit/breathing/useBreathingAnimation';
 import BreathingGraph from '@/components/talkingkit/breathing/BreathingGraph';
 import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressBar';
-import { kitsData } from '@/mocks/talkingkit/kitsData';
+import { kitsData } from '@/mock/talkingkit/kitsData';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
-import { logger } from '@/utils/loggerUtils';
-import { useKitDetail } from '@/hooks/queries/useKitDetail';
+import { logger } from '@/utils/common/loggerUtils';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 
 const BreathingExercise = () => {
   const { id } = useParams<{ id: string }>();

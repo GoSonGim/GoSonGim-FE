@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import Meyda from 'meyda';
-import { logger } from '@/utils/loggerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 import { handleError } from '@/utils/talkingkit/audioErrorHandlerUtils';
 import { AUDIO_FFT_SIZE, AUDIO_SMOOTHING_TIME_CONSTANT, AUDIO_CONFIG } from '@/constants/talkingkit/audio';
 

@@ -1,5 +1,5 @@
 import { useRef, useCallback } from 'react';
-import { logger } from '@/utils/loggerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 import { handleError } from '@/utils/talkingkit/audioErrorHandlerUtils';
 import {
   AUDIO_FFT_SIZE,

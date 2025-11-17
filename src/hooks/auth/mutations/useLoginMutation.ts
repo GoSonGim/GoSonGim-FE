@@ -1,0 +1,25 @@
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { authAPI } from '@/apis/auth';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { getErrorMessage } from '@/utils/common/errorHandlerUtils';
+import type { LoginRequest } from '@/types/auth';
+
+export const useLoginMutation = () => {
+  const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
+
+  return useMutation({
+    mutationFn: (data: LoginRequest) => authAPI.emailLogin(data),
+    onSuccess: (response) => {
+      const { user, tokens } = response.result;
+      login(user, tokens.accessToken, tokens.refreshToken);
+      navigate('/');
+    },
+    onError: (error) => {
+      const errorMessage = getErrorMessage(error);
+      console.error('로그인 실패:', errorMessage);
+      // 에러는 컴포넌트에서 처리
+    },
+  });
+};

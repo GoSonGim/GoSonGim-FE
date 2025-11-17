@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import KitCard from '@/components/talkingkit/common/KitCard';
-import { kitsData } from '@/mocks/talkingkit/kitsData';
-import { useKitsByCategory } from '@/hooks/queries/useKitsByCategory';
-import { useKitDetail } from '@/hooks/queries/useKitDetail';
+import { kitsData } from '@/mock/talkingkit/kitsData';
+import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 import { useNavigate } from 'react-router-dom';
 
 const TalkingKit = () => {

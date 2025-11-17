@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import KitListLayout from '@/components/talkingkit/layout/KitListLayout';
 import KitCard from '@/components/talkingkit/common/KitCard';
-import { useKitsByCategory } from '@/hooks/queries/useKitsByCategory';
-import { logger } from '@/utils/loggerUtils';
+import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory';
+import { logger } from '@/utils/common/loggerUtils';
 
 const ArticulationPositionKit = () => {
   const navigate = useNavigate();

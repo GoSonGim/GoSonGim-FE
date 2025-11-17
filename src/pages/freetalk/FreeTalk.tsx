@@ -8,7 +8,7 @@ import LoadingDot from '@/assets/svgs/home/loadingdot.svg';
 import { useTypingAnimation } from '@/hooks/freetalk/useTypingAnimation';
 import { useFreeTalkConversation } from '@/hooks/freetalk/useFreeTalkConversation';
 import { useChromaKey } from '@/hooks/freetalk/useChromaKey';
-import { logger } from '@/utils/loggerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 import clsx from 'clsx';
 
 export default function FreeTalk() {

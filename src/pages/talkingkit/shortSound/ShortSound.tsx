@@ -17,9 +17,9 @@ import {
   DUPLICATE_DETECTION_THRESHOLD,
   TARGET_POINT_TOLERANCE,
 } from '@/constants/talkingkit/shortSound';
-import { logger } from '@/utils/loggerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 import { handleError } from '@/utils/talkingkit/audioErrorHandlerUtils';
-import { useKitDetail } from '@/hooks/queries/useKitDetail';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 
 type Phase = 'ready' | 'playing' | 'result';
 

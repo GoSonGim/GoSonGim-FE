@@ -2,10 +2,10 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import LandingPage from '@/pages/landing/LandingPage';
 import Home from '@/pages/home/Home';
-import Login from '@/pages/login/Login';
-import LoginForm from '@/pages/loginForm/LoginForm';
-import SignupForm from '@/pages/signupForm/SignupForm';
-import NicknamePage from '@/pages/nickname/NicknamePage';
+import Login from '@/pages/auth/login/Login';
+import LoginForm from '@/pages/auth/loginForm/LoginForm';
+import SignupForm from '@/pages/auth/signupForm/SignupForm';
+import NicknamePage from '@/pages/auth/nickname/NicknamePage';
 import GoogleCallback from '@/pages/auth/GoogleCallback';
 import Search from '@/pages/search/Search';
 import KitDiagnosis from '@/pages/search/KitDiagnosis';

@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { authAPI } from '@/apis/auth.api';
+import { authAPI } from '@/apis/auth';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { getErrorMessage } from '@/utils/errorHandlerUtils';
+import { getErrorMessage } from '@/utils/common/errorHandlerUtils';
 
 const GoogleCallback = () => {
   const [searchParams] = useSearchParams();

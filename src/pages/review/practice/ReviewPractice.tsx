@@ -3,8 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import LeftIcon from '@/assets/svgs/review/review-leftarrow.svg';
 import RestudyIcon from '@/assets/svgs/review/review-restudy.svg';
 import AudioIcon from '@/assets/svgs/review/review-audio.svg';
-import CategoryFilter from '@/pages/studytalk/CategoryFilter';
-import SortFilter from '@/pages/studytalk/SortFilter';
+import CategoryFilter from '@/components/studytalk/CategoryFilter';
+import SortFilter from '@/components/studytalk/SortFilter';
 import { ARTICULATION_PRACTICE_KITS, ROLEPLAY_PRACTICE_KITS } from '@/mock/review/reviewPractice.mock';
 
 type CategoryOption = '전체' | '호흡' | '조음위치' | '조음방법';

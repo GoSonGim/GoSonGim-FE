@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { logger } from '@/utils/loggerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 
 interface ChromaKeyOptions {
   minHue: number; // 최소 색상 값 (0-360)

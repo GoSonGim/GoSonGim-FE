@@ -1,10 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-import HomeActive from '@/assets/svgs/bottomNav/homeActive.svg';
-import HomeDefault from '@/assets/svgs/bottomNav/homeDefault.svg';
-import SearchIcon from '@/assets/svgs/bottomNav/searchIcon.svg';
-import ReviewIcon from '@/assets/svgs/bottomNav/reviewIcon.svg';
-import ProfileIcon from '@/assets/svgs/bottomNav/profileIcon.svg';
+import HomeActive from '@/assets/svgs/common/bottomNav/homeActive.svg';
+import HomeDefault from '@/assets/svgs/common/bottomNav/homeDefault.svg';
+import SearchIcon from '@/assets/svgs/common/bottomNav/searchIcon.svg';
+import ReviewIcon from '@/assets/svgs/common/bottomNav/reviewIcon.svg';
+import ProfileIcon from '@/assets/svgs/common/bottomNav/profileIcon.svg';
 
 const BottomNav = () => {
   const location = useLocation();

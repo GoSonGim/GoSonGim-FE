@@ -2,15 +2,15 @@ import { useState, lazy, Suspense, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNav from '@/components/common/BottomNav';
 import ArrowButton from '@/assets/svgs/home/arrow-button.svg';
-import ArrowRight from '@/assets/svgs/studyfind/studyfind-arrowright.svg';
+import ArrowRight from '@/assets/svgs/search/studyfind-arrowright.svg';
 import { situationCategoriesMockData } from '@/mock/search/search.mock';
-import { useKitCategories } from '@/hooks/queries/useKitCategories';
-import { useSituations } from '@/hooks/queries/useSituations';
-import { getSituationCategoryQuery } from '@/utils/situationUtils';
-import { logger } from '@/utils/loggerUtils';
+import { useKitCategories } from '@/hooks/talkingkit/queries/useKitCategories';
+import { useSituations } from '@/hooks/search/queries/useSituations';
+import { getSituationCategoryQuery } from '@/utils/common/situationUtils';
+import { logger } from '@/utils/common/loggerUtils';
 
 // Lazy load home icon
-const HomeIcon = lazy(() => import('@/assets/svgs/studyfind/studyfind-home.svg'));
+const HomeIcon = lazy(() => import('@/assets/svgs/search/studyfind-home.svg'));
 
 type TabType = '조음발음' | '상황극';
 

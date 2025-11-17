@@ -1,5 +1,5 @@
 import { BLUE_PATH_START, INITIAL_BALL_POSITION } from '@/constants/talkingkit/breathing';
-import { logger } from '@/utils/loggerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 
 /**
  * SVG 경로를 따라 특정 진행률의 위치를 계산
