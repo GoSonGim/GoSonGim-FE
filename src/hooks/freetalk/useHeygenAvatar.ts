@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import StreamingAvatar, { AvatarQuality, StreamingEvents, VoiceEmotion, TaskType } from '@heygen/streaming-avatar';
 import { heygenAPI } from '@/apis/heygen.api';
 import type { HeygenAvatarState, UseHeygenAvatarProps, UseHeygenAvatarReturn } from '@/types/freetalk/heygen.types';
+import { logger } from '@/utils/loggerUtils';
 
 export const useHeygenAvatar = ({
   avatarId = 'default',
@@ -12,7 +13,6 @@ export const useHeygenAvatar = ({
 }: UseHeygenAvatarProps = {}): UseHeygenAvatarReturn => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const avatarInstanceRef = useRef<StreamingAvatar | null>(null);
-  const canEndSessionRef = useRef<boolean>(false); // 5번째 대화 완료 시에만 true로 설정
 
   const [avatarState, setAvatarState] = useState<HeygenAvatarState>('idle');
   const [isSessionReady, setIsSessionReady] = useState(false);
@@ -23,7 +23,6 @@ export const useHeygenAvatar = ({
     try {
       setAvatarState('loading');
       setError(null);
-      canEndSessionRef.current = false; // 세션 시작 시 플래그 리셋
 
       // 세션 토큰 발급
       const token = await heygenAPI.createSessionToken();
@@ -34,80 +33,64 @@ export const useHeygenAvatar = ({
 
       // 이벤트 리스너 등록
       avatar.on(StreamingEvents.STREAM_READY, (event: { detail: MediaStream }) => {
-        console.log('Stream ready:', event);
-        console.log('Video element:', videoRef.current);
-        console.log('MediaStream:', event.detail);
+        logger.log('Stream ready:', event);
 
         if (videoRef.current && event.detail) {
           videoRef.current.srcObject = event.detail;
-          // video element가 준비되면 재생 시도
           videoRef.current.play().catch((err) => {
-            console.error('Video play failed:', err);
+            logger.error('Video play failed:', err);
           });
           callbacks?.onStreamReady?.(event.detail);
-          console.log('Video srcObject set successfully');
-        } else {
-          console.warn('Video ref or stream detail is missing');
         }
         setIsSessionReady(true);
         setAvatarState('idle');
       });
 
       avatar.on(StreamingEvents.STREAM_DISCONNECTED, () => {
-        console.log('[STREAM_DISCONNECTED] 이벤트 발생');
-
-        // 5번째 대화 완료 후에만 세션 종료 허용
-        if (canEndSessionRef.current) {
-          console.log('[STREAM_DISCONNECTED] 5번째 대화 완료 - 세션 종료 허용');
-          setIsSessionReady(false);
-          setAvatarState('idle');
-          return;
-        }
-
-        // 그 외 모든 경우: 세션 무조건 유지
-        console.log('[STREAM_DISCONNECTED] 5번째 대화 전 - 세션 상태 무조건 유지 (isSessionReady 유지)');
-        // isSessionReady를 false로 변경하지 않음 - 세션 계속 유지
+        logger.log('Stream disconnected');
+        setIsSessionReady(false);
+        setAvatarState('idle');
       });
 
       avatar.on(StreamingEvents.AVATAR_START_TALKING, () => {
-        console.log('Avatar started talking');
+        logger.log('Avatar started talking');
         setAvatarState('speaking');
         callbacks?.onAvatarStartTalking?.();
       });
 
       avatar.on(StreamingEvents.AVATAR_STOP_TALKING, () => {
-        console.log('Avatar stopped talking');
+        logger.log('Avatar stopped talking');
         setAvatarState('idle');
         callbacks?.onAvatarStopTalking?.();
       });
 
       avatar.on(StreamingEvents.AVATAR_TALKING_MESSAGE, (message: { detail: { message: string } }) => {
-        console.log('Avatar message:', message);
+        logger.log('Avatar message:', message);
         callbacks?.onAvatarMessage?.(message.detail?.message || '');
       });
 
       avatar.on(StreamingEvents.USER_START, () => {
-        console.log('User started talking');
+        logger.log('User started talking');
         setAvatarState('listening');
         callbacks?.onUserStart?.();
       });
 
       avatar.on(StreamingEvents.USER_STOP, () => {
-        console.log('User stopped talking');
+        logger.log('User stopped talking');
         callbacks?.onUserStop?.();
       });
 
       avatar.on(StreamingEvents.USER_TALKING_MESSAGE, (message: { detail: { message: string } }) => {
-        console.log('User message:', message);
+        logger.log('User message:', message);
         callbacks?.onUserMessage?.(message.detail?.message || '');
       });
 
       avatar.on(StreamingEvents.USER_SILENCE, () => {
-        console.log('User is silent');
+        logger.log('User is silent');
         callbacks?.onUserSilence?.();
       });
 
-      // 아바타 세션 시작 - 최소 설정으로 시작
+      // 아바타 세션 시작
       const sessionConfig: {
         quality: typeof AvatarQuality.High;
         avatarName: string;
@@ -118,6 +101,14 @@ export const useHeygenAvatar = ({
         };
         language?: string;
         knowledgeBase?: string;
+        setSettings?: {
+          stt: {
+            provider: string;
+            language: string;
+            model: string;
+            punctuation: boolean;
+          };
+        };
       } = {
         quality: AvatarQuality.High,
         avatarName: avatarId,
@@ -141,21 +132,45 @@ export const useHeygenAvatar = ({
         sessionConfig.knowledgeBase = knowledgeBase;
       }
 
-      console.log('Creating avatar session with config:', sessionConfig);
+      // STT 설정을 sessionConfig에 추가
+      sessionConfig.setSettings = {
+        stt: {
+          provider: 'deepgram',
+          language: language || 'ko',
+          model: 'nova-2-general',
+          punctuation: true,
+        },
+      };
+
+      // STT 설정 적용 (세션 시작 시 한 번만)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const avatarWithSettings = avatar as any;
+      if ('setSettings' in avatar && typeof avatarWithSettings.setSettings === 'function') {
+        try {
+          const sttPayload = sessionConfig.setSettings;
+          logger.log('[SESSION START] Applying STT settings via setSettings:', sttPayload);
+          await avatarWithSettings.setSettings(sttPayload);
+          logger.log('[SESSION START] STT settings applied successfully');
+        } catch (settingsError) {
+          logger.warn('[SESSION START] Failed to apply STT settings:', settingsError);
+          // STT 설정 실패해도 세션은 계속 진행
+        }
+      }
+
+      logger.log('Creating avatar session with config:', sessionConfig);
       await avatar.createStartAvatar(sessionConfig);
 
-      console.log('Avatar session started successfully');
+      logger.log('Avatar session started successfully');
     } catch (err) {
-      console.error('Failed to start avatar session:', err);
+      logger.error('Failed to start avatar session:', err);
       let errorMessage = '아바타 세션 시작 실패';
 
       if (err instanceof Error) {
         errorMessage = err.message;
 
-        // 400 에러에 대한 더 자세한 정보 제공
         if (errorMessage.includes('400')) {
           errorMessage = `아바타 세션 생성 실패 (400 Bad Request)
-          
+
 가능한 원인:
 1. 세션 토큰이 만료되었거나 유효하지 않음
 2. avatarName이 잘못되었음 (기본값: 'default')
@@ -172,12 +187,9 @@ export const useHeygenAvatar = ({
     }
   };
 
-  // 세션 종료 (5번째 대화 완료 시에만 호출되어야 함)
+  // 세션 종료
   const endSession = async () => {
     try {
-      console.log('[END SESSION] 세션 종료 시작 (5번째 대화 완료)');
-      canEndSessionRef.current = true; // 5번째 대화 완료 플래그 설정
-
       if (avatarInstanceRef.current) {
         await avatarInstanceRef.current.stopAvatar();
         avatarInstanceRef.current = null;
@@ -187,9 +199,8 @@ export const useHeygenAvatar = ({
       if (videoRef.current) {
         videoRef.current.srcObject = null;
       }
-      console.log('[END SESSION] 세션 종료 완료');
     } catch (err) {
-      console.error('Failed to end avatar session:', err);
+      logger.error('Failed to end avatar session:', err);
     }
   };
 
@@ -200,9 +211,9 @@ export const useHeygenAvatar = ({
         throw new Error('아바타 세션이 준비되지 않았습니다.');
       }
       await avatarInstanceRef.current.startVoiceChat(options || {});
-      console.log('Voice chat started');
+      logger.log('Voice chat started');
     } catch (err) {
-      console.error('Failed to start listening:', err);
+      logger.error('Failed to start listening:', err);
       setError(err instanceof Error ? err.message : '음성 인식 시작 실패');
     }
   };
@@ -214,9 +225,9 @@ export const useHeygenAvatar = ({
         return;
       }
       await avatarInstanceRef.current.closeVoiceChat();
-      console.log('Voice chat stopped');
+      logger.log('Voice chat stopped');
     } catch (err) {
-      console.error('Failed to stop listening:', err);
+      logger.error('Failed to stop listening:', err);
     }
   };
 
@@ -232,9 +243,9 @@ export const useHeygenAvatar = ({
         task_type: TaskType.TALK,
       });
 
-      console.log('Avatar speaking:', text);
+      logger.log('Avatar speaking:', text);
     } catch (err) {
-      console.error('Failed to speak:', err);
+      logger.error('Failed to speak:', err);
       setError(err instanceof Error ? err.message : '아바타 말하기 실패');
     }
   };
@@ -245,12 +256,11 @@ export const useHeygenAvatar = ({
       if (!avatarInstanceRef.current || !isSessionReady) {
         throw new Error('아바타 세션이 준비되지 않았습니다.');
       }
-      // Voice Chat을 재시작하여 mute 상태 변경
       await avatarInstanceRef.current.closeVoiceChat();
       await avatarInstanceRef.current.startVoiceChat({ isInputAudioMuted: muted });
-      console.log(`Microphone ${muted ? 'muted' : 'unmuted'}`);
+      logger.log(`Microphone ${muted ? 'muted' : 'unmuted'}`);
     } catch (err) {
-      console.error('Failed to set microphone mute:', err);
+      logger.error('Failed to set microphone mute:', err);
     }
   };
 
@@ -258,9 +268,7 @@ export const useHeygenAvatar = ({
   useEffect(() => {
     return () => {
       if (avatarInstanceRef.current) {
-        console.log('[CLEANUP] 컴포넌트 언마운트 - 세션 종료');
-        canEndSessionRef.current = true; // 언마운트 시 종료 허용
-        avatarInstanceRef.current.stopAvatar().catch(console.error);
+        avatarInstanceRef.current.stopAvatar().catch(logger.error);
       }
     };
   }, []);
