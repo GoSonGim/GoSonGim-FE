@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import clsx from 'clsx';
-import EyeOpen from '@/assets/svgs/login/loginForm/eyeOpen.svg';
-import EyeClosed from '@/assets/svgs/login/loginForm/eyeClosed.svg';
-import Warning from '@/assets/svgs/login/loginForm/warning.svg';
-import WarningYellow from '@/assets/svgs/login/loginForm/warningYellow.svg';
-import GreenCheck from '@/assets/svgs/login/signIn/greenCheck.svg';
+import EyeOpen from '@/assets/svgs/auth/login/eyeOpen.svg';
+import EyeClosed from '@/assets/svgs/auth/login/eyeClosed.svg';
+import Warning from '@/assets/svgs/auth/login/warning.svg';
+import WarningYellow from '@/assets/svgs/auth/login/warningYellow.svg';
+import GreenCheck from '@/assets/svgs/auth/login/greenCheck.svg';
 
 interface InputProps {
   type: 'email' | 'password';

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
-import { useSituationDetail } from '@/hooks/queries/useSituationDetail';
-import { logger } from '@/utils/loggerUtils';
+import { useSituationDetail } from '@/hooks/search/queries/useSituationDetail';
+import { logger } from '@/utils/common/loggerUtils';
 
 const SituationDetail = () => {
   const navigate = useNavigate();

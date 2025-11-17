@@ -1,6 +1,6 @@
-import { NicknameInput } from '@/components/Nickname/input/NicknameInput';
-import { NextButton } from '@/components/Nickname/button/NextButton';
-import { useNickname } from '@/hooks/nickname/useNickname';
+import { NicknameInput } from '@/components/auth/NicknameInput';
+import { NextButton } from '@/components/auth/NextButton';
+import { useNickname } from '@/hooks/auth/useNickname';
 
 const NicknamePage = () => {
   const { nickname, handleNicknameChange, handleNext, isNextEnabled } = useNickname();

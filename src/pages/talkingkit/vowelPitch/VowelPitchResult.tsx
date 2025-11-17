@@ -4,7 +4,7 @@ import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer'
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import type { PitchEvaluationResult } from '@/types/talkingkit/pitch';
 import { kitAPI } from '@/apis/kit.api';
-import { logger } from '@/utils/loggerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 
 const VowelPitchResult = () => {
   const navigate = useNavigate();

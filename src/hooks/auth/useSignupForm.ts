@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { isValidEmail } from '@/utils/login/validationUtils';
-import { useSignupMutation } from '@/hooks/mutations/useSignupMutation';
-import { useValidateEmail } from '@/hooks/queries/useValidateEmail';
-import { getErrorMessage, parseApiError } from '@/utils/errorHandlerUtils';
-import { useDebounce } from '@/hooks/useDebounce';
+import { isValidEmail } from '@/utils/auth/validationUtils';
+import { useSignupMutation } from '@/hooks/auth/mutations/useSignupMutation';
+import { useValidateEmail } from '@/hooks/auth/queries/useValidateEmail';
+import { getErrorMessage, parseApiError } from '@/utils/common/errorHandlerUtils';
+import { useDebounce } from '@/hooks/common/useDebounce';
 
 export const useSignupForm = () => {
   const queryClient = useQueryClient();

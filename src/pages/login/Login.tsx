@@ -1,11 +1,11 @@
-import { Button } from '@/components/Login/button/Button';
-import { SignupBottomSheet } from '@/components/Login/signUp/SignupBottomSheet';
-import { useLogin } from '@/hooks/login/useLogin';
+import { Button } from '@/components/auth/Button';
+import { SignupBottomSheet } from '@/components/auth/SignupBottomSheet';
+import { useLogin } from '@/hooks/auth/useLogin';
 
-import EmailIcon from '@/assets/svgs/login/emailIcon.svg';
-import Divider from '@/assets/svgs/login/divider.svg';
-import Logo from '@/assets/svgs/login/logo.svg';
-import GoogleLogo from '@/assets/svgs/login/googleLogo.svg';
+import EmailIcon from '@/assets/svgs/auth/login/emailIcon.svg';
+import Divider from '@/assets/svgs/auth/login/divider.svg';
+import Logo from '@/assets/svgs/auth/login/logo.svg';
+import GoogleLogo from '@/assets/svgs/auth/login/googleLogo.svg';
 
 const Login = () => {
   const {

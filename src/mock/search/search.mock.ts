@@ -30,36 +30,36 @@ export const situationCategoriesMockData: SituationCategory[] = [
   {
     id: 'daily-life',
     title: '일상생활 및 가정',
-    icon: '@/assets/svgs/studyfind/studyfind-home',
+    icon: '@/assets/svgs/search/studyfind-home',
   },
   {
     id: 'shopping',
     title: '구매 및 쇼핑',
-    icon: '@/assets/svgs/studyfind/studyfind-home',
+    icon: '@/assets/svgs/search/studyfind-home',
   },
   {
     id: 'medical-service',
     title: '의료•공공 서비스',
-    icon: '@/assets/svgs/studyfind/studyfind-home',
+    icon: '@/assets/svgs/search/studyfind-home',
   },
   {
     id: 'transportation',
     title: '교통 및 길찾기',
-    icon: '@/assets/svgs/studyfind/studyfind-home',
+    icon: '@/assets/svgs/search/studyfind-home',
   },
   {
     id: 'job-education',
     title: '직업 및 교육',
-    icon: '@/assets/svgs/studyfind/studyfind-home',
+    icon: '@/assets/svgs/search/studyfind-home',
   },
   {
     id: 'social-relationship',
     title: '사교 및 관계',
-    icon: '@/assets/svgs/studyfind/studyfind-home',
+    icon: '@/assets/svgs/search/studyfind-home',
   },
   {
     id: 'emergency',
     title: '비상 및 문제해결',
-    icon: '@/assets/svgs/studyfind/studyfind-home',
+    icon: '@/assets/svgs/search/studyfind-home',
   },
 ];

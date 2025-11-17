@@ -5,7 +5,7 @@ import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer'
 import GraybigCircle from '@/assets/svgs/talkingkit/loudSound/biggraycircle.svg';
 import BlueRing from '@/assets/svgs/talkingkit/loudSound/bluering.svg';
 import { useLoudSound } from '@/hooks/talkingkit/loudSound/useLoudSound';
-import { useKitDetail } from '@/hooks/queries/useKitDetail';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 
 const LoudSound = () => {
   const navigate = useNavigate();

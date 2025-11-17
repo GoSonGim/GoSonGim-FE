@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '@/apis/auth.api';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { getErrorMessage } from '@/utils/errorHandlerUtils';
+import { getErrorMessage } from '@/utils/common/errorHandlerUtils';
 import type { LoginRequest } from '@/types/auth.types';
 
 export const useLoginMutation = () => {

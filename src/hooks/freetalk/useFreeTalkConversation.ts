@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { Conversation } from '@/mock/freetalk/freeTalk.mock';
 import { useHeygenAvatar } from './useHeygenAvatar';
-import { logger } from '@/utils/loggerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 
 interface UseFreeTalkConversationReturn {
   conversations: Conversation[];

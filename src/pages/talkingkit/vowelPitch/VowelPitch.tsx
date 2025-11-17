@@ -7,7 +7,7 @@ import PitchVisualizer from '@/components/talkingkit/vowelPitch/PitchVisualizer'
 import CircularProgress from '@/components/talkingkit/progressBar/CircularProgress';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
-import { useKitDetail } from '@/hooks/queries/useKitDetail';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 
 const VowelPitch = () => {
   const navigate = useNavigate();

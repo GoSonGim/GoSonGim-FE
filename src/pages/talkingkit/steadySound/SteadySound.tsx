@@ -4,7 +4,7 @@ import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
 import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressBar';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import BreathAnimation from '@/assets/svgs/talkingkit/breathing/breathanimation.svg';
-import { useKitDetail } from '@/hooks/queries/useKitDetail';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 
 type Phase = 'ready' | 'playing' | 'complete';
 

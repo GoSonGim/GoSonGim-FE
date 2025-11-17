@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import SituationCard from '@/components/talkingkit/common/SituationCard';
-import { useSituations } from '@/hooks/queries/useSituations';
-import { getSituationCategoryTitle, getSituationCategoryId } from '@/utils/situationUtils';
+import { useSituations } from '@/hooks/search/queries/useSituations';
+import { getSituationCategoryTitle, getSituationCategoryId } from '@/utils/common/situationUtils';
 import type { Situation } from '@/types/situation.types';
 
 const SituationCategory = () => {

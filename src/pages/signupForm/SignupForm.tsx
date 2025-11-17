@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Input } from '@/components/Login/input/Input';
-import { LoginButton } from '@/components/Login/button/LoginButton';
-import { useSignupForm } from '@/hooks/signupForm/useSignupForm';
-import BackIcon from '@/assets/svgs/login/signIn/back.svg';
+import { Input } from '@/components/auth/Input';
+import { LoginButton } from '@/components/auth/LoginButton';
+import { useSignupForm } from '@/hooks/auth/useSignupForm';
+import BackIcon from '@/assets/svgs/auth/login/back.svg';
 
 const SignupForm = () => {
   const navigate = useNavigate();

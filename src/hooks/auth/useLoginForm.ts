@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { isValidEmail } from '@/utils/login/validationUtils';
-import { useLoginMutation } from '@/hooks/mutations/useLoginMutation';
-import { getErrorMessage, parseApiError } from '@/utils/errorHandlerUtils';
+import { isValidEmail } from '@/utils/auth/validationUtils';
+import { useLoginMutation } from '@/hooks/auth/mutations/useLoginMutation';
+import { getErrorMessage, parseApiError } from '@/utils/common/errorHandlerUtils';
 
 export const useLoginForm = () => {
   const [email, setEmail] = useState('');

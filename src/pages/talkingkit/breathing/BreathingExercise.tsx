@@ -5,8 +5,8 @@ import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressB
 import { kitsData } from '@/mock/talkingkit/kitsData';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
-import { logger } from '@/utils/loggerUtils';
-import { useKitDetail } from '@/hooks/queries/useKitDetail';
+import { logger } from '@/utils/common/loggerUtils';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 
 const BreathingExercise = () => {
   const { id } = useParams<{ id: string }>();

@@ -8,7 +8,7 @@ import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
 import DecibelBar from '@/components/talkingkit/loudSound/DecibelBar';
 import { evaluateVolume } from '@/utils/talkingkit/volumeEvaluation';
 import type { VolumeEvaluationResult } from '@/utils/talkingkit/volumeEvaluation';
-import { useKitDetail } from '@/hooks/queries/useKitDetail';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 
 const LoudSoundVolume = () => {
   const navigate = useNavigate();

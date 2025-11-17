@@ -1,9 +1,9 @@
-import { BottomSheet } from '@/components/Login/signUp/BottomSheet';
-import { Button } from '@/components/Login/button/Button';
-import EmailIcon from '@/assets/svgs/login/emailIcon.svg';
-import GoogleLogo from '@/assets/svgs/login/googleLogo.svg';
-import DragHandle from '@/assets/svgs/login/signInSheet/dragHandle.svg';
-import DividerLine from '@/assets/svgs/login/signInSheet/dividerLine.svg';
+import { BottomSheet } from '@/components/auth/BottomSheet';
+import { Button } from '@/components/auth/Button';
+import EmailIcon from '@/assets/svgs/auth/login/emailIcon.svg';
+import GoogleLogo from '@/assets/svgs/auth/login/googleLogo.svg';
+import DragHandle from '@/assets/svgs/auth/signup/dragHandle.svg';
+import DividerLine from '@/assets/svgs/auth/signup/dividerLine.svg';
 
 interface SignupBottomSheetProps {
   isOpen: boolean;

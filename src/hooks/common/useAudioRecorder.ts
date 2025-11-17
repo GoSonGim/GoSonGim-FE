@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
-import { audioBufferToWav } from '@/utils/audioUtils';
-import { logger } from '@/utils/loggerUtils';
+import { audioBufferToWav } from '@/utils/common/audioUtils';
+import { logger } from '@/utils/common/loggerUtils';
 
 interface UseAudioRecorderReturn {
   isRecording: boolean;
