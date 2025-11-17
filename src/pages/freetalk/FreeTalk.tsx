@@ -5,9 +5,9 @@ import Mike1 from '@/assets/svgs/home/mike1.svg';
 import Mike2 from '@/assets/svgs/home/mike2.svg';
 import GrayCircle from '@/assets/svgs/home/talkbanned.svg';
 import LoadingDot from '@/assets/svgs/home/loadingdot.svg';
-// 배경 이미지는 public 폴더에서 로드
 import { useTypingAnimation } from '@/hooks/freetalk/useTypingAnimation';
 import { useFreeTalkConversation } from '@/hooks/freetalk/useFreeTalkConversation';
+import { useChromaKey } from '@/hooks/freetalk/useChromaKey';
 import clsx from 'clsx';
 
 export default function FreeTalk() {
@@ -21,6 +21,14 @@ export default function FreeTalk() {
   // 현재 질문 및 타이핑 애니메이션
   const currentQuestion = conversation.activeConversation?.question || '';
   const { displayedText, isComplete } = useTypingAnimation(currentQuestion, 30);
+
+  // 크로마키 처리
+  useChromaKey({
+    videoRef: conversation.videoRef,
+    canvasRef,
+    isSessionReady: conversation.isSessionReady,
+    backgroundImageUrl: '/images/avatarBackground.svg',
+  });
 
   // 버튼 상태 및 conversations 디버깅
   useEffect(() => {
@@ -65,91 +73,6 @@ export default function FreeTalk() {
       });
     }
   }, [conversation.conversations, displayedText, conversation.showLoadingDots]);
-
-  // 크로마키 배경 처리
-  useEffect(() => {
-    const video = conversation.videoRef.current;
-    const canvas = canvasRef.current;
-
-    if (!video || !canvas || !conversation.isSessionReady) return;
-
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!ctx) return;
-
-    // Canvas 크기를 video와 동일하게 설정
-    const updateCanvasSize = () => {
-      if (video.videoWidth && video.videoHeight) {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-      }
-    };
-
-    video.addEventListener('loadedmetadata', updateCanvasSize);
-    updateCanvasSize();
-
-    // 배경 이미지 로드 (public 폴더에서)
-    const bgImage = new Image();
-    bgImage.src = '/images/freetalk-background.svg';
-
-    let animationId: number;
-
-    const processFrame = () => {
-      if (video.readyState >= video.HAVE_CURRENT_DATA && !video.paused && !video.ended) {
-        // 배경 이미지 먼저 그리기
-        if (bgImage.complete) {
-          ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-        }
-
-        // 임시 캔버스에 비디오 그리기
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        // 픽셀 데이터 가져오기
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-
-        // 크로마키 처리 (녹색 제거)
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i];
-          const g = data[i + 1];
-          const b = data[i + 2];
-
-          // 녹색 범위 판단 (조정 가능)
-          if (g > 100 && g > r * 1.5 && g > b * 1.5) {
-            data[i + 3] = 0; // 투명하게
-          }
-        }
-
-        // 배경 이미지 다시 그리기
-        if (bgImage.complete) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
-        }
-
-        // 처리된 비디오 그리기
-        ctx.putImageData(imageData, 0, 0);
-      }
-
-      animationId = requestAnimationFrame(processFrame);
-    };
-
-    const startProcessing = () => {
-      if (bgImage.complete) {
-        processFrame();
-      }
-    };
-
-    bgImage.onload = startProcessing;
-    if (bgImage.complete) {
-      startProcessing();
-    }
-
-    return () => {
-      if (animationId) {
-        cancelAnimationFrame(animationId);
-      }
-      video.removeEventListener('loadedmetadata', updateCanvasSize);
-    };
-  }, [conversation.isSessionReady, conversation.videoRef]);
 
   const handleExit = async () => {
     // 종료하기 버튼: 5번째 대화 완료 전에는 세션 종료하지 않고 페이지만 이동
@@ -232,7 +155,7 @@ export default function FreeTalk() {
         </div>
 
         <div className="shrink-0 px-4 pb-6">
-          <div className="relative box-border flex h-[224px] w-full items-center justify-center overflow-hidden rounded-[16px] bg-black">
+          <div className="relative box-border flex h-[280px] w-full items-center justify-center overflow-hidden rounded-[16px] bg-black">
             {/* 원본 비디오 (숨김 - 크로마키 처리용) */}
             <video ref={conversation.videoRef} autoPlay playsInline className="hidden" />
 
