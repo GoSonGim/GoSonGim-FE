@@ -7,7 +7,7 @@ import type {
   KitStageLogRequest,
   KitStageLogResponse,
   KitDiagnosisResponse,
-} from '@/types/kit.types';
+} from '@/types/kit';
 
 export const kitAPI = {
   // 조음 키트 카테고리 목록 조회

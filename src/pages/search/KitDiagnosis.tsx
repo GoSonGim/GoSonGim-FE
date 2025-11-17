@@ -13,7 +13,7 @@ import { diagnosisSentence } from '@/mock/search/kitDiagnosis.mock';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
 import { kitAPI } from '@/apis/kit.api';
 import { logger } from '@/utils/common/loggerUtils';
-import type { KitDiagnosisResponse } from '@/types/kit.types';
+import type { KitDiagnosisResponse } from '@/types/kit';
 
 type StepType = 'start' | 'loading' | 'result';
 

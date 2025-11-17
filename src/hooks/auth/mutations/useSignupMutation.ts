@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authAPI } from '@/apis/auth.api';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { getErrorMessage } from '@/utils/common/errorHandlerUtils';
-import type { SignupRequest } from '@/types/auth.types';
+import type { SignupRequest } from '@/types/auth';
 
 export const useSignupMutation = () => {
   const navigate = useNavigate();

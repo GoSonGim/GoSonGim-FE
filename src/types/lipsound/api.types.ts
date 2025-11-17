@@ -1,5 +1,6 @@
-// ===== Lip Sound Evaluation =====
+import type { LipSoundIndividualResult, LipSoundOverallResult } from './models';
 
+// ===== Presigned Upload =====
 export interface PresignedUploadResponse {
   fileKey: string;
   url: string;
@@ -14,6 +15,7 @@ export interface PresignedUploadResult {
   result: PresignedUploadResponse;
 }
 
+// ===== Lip Sound Evaluation Request =====
 export interface LipSoundEvaluationRequestItem {
   kitStageId: number; // 1, 2, 3
   fileKey: string; // 업로드된 파일 경로
@@ -22,28 +24,7 @@ export interface LipSoundEvaluationRequestItem {
 
 export type LipSoundEvaluationRequest = LipSoundEvaluationRequestItem[];
 
-export interface PronunciationScores {
-  accuracy: number;
-  fluency: number;
-  completeness: number;
-  prosody: number;
-}
-
-export interface LipSoundIndividualResult {
-  kitStageId: number;
-  targetWord: string;
-  recognizedText: string;
-  pronunciation: PronunciationScores;
-  evaluationScore: number;
-  isSuccess: boolean;
-  downloadFileKey?: string;
-}
-
-export interface LipSoundOverallResult {
-  overallScore: number;
-  overallFeedback: string;
-}
-
+// ===== Lip Sound Evaluation Response =====
 export interface LipSoundEvaluationResponse {
   success: boolean;
   status: number;

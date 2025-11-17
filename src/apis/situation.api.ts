@@ -1,5 +1,5 @@
 import { apiClient } from '@/apis/client';
-import type { SituationListResponse, SituationDetailResponse } from '@/types/situation.types';
+import type { SituationListResponse, SituationDetailResponse } from '@/types/situation';
 
 export const situationAPI = {
   // 상황극 목록 조회

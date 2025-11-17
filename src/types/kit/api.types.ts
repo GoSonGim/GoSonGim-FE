@@ -1,9 +1,6 @@
-// ===== Kit Category =====
-export interface KitCategory {
-  categoryId: number;
-  categoryName: string;
-}
+import type { KitCategory, Kit, KitStage, DiagnosisScores, DiagnosisRecommendedKit } from './models';
 
+// ===== Kit Category =====
 export interface KitCategoryResponse {
   success: boolean;
   status: number;
@@ -15,12 +12,7 @@ export interface KitCategoryResponse {
   };
 }
 
-// ===== Kit =====
-export interface Kit {
-  kitId: number;
-  kitName: string;
-}
-
+// ===== Kit List =====
 export interface KitListResponse {
   success: boolean;
   status: number;
@@ -33,11 +25,6 @@ export interface KitListResponse {
 }
 
 // ===== Kit Detail =====
-export interface KitStage {
-  stageId: number;
-  stageName: string;
-}
-
 export interface KitDetailResponse {
   success: boolean;
   status: number;
@@ -64,14 +51,16 @@ export interface PresignedUploadResult {
   };
 }
 
-// ===== Kit Stage Log =====
-export interface KitStageLogRequest {
+// ===== Kit Stage Log & Evaluation =====
+export interface KitEvaluationRequest {
   kitStageId: number;
   evaluationScore: number;
   evaluationFeedback: string;
   isSuccess: boolean;
   fileKey: string;
 }
+
+export interface KitStageLogRequest extends KitEvaluationRequest {}
 
 export interface KitStageLogResponse {
   success: boolean;
@@ -82,18 +71,6 @@ export interface KitStageLogResponse {
 }
 
 // ===== Kit Diagnosis =====
-export interface DiagnosisScores {
-  accuracy: number;
-  fluency: number;
-  completeness: number;
-  prosody: number;
-}
-
-export interface DiagnosisRecommendedKit {
-  kitId: number;
-  kitName: string;
-}
-
 export interface KitDiagnosisResponse {
   success: boolean;
   status: number;

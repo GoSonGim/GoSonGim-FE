@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
-import type { LipSoundEvaluationResponse } from '@/types/lipSound.types';
+import type { LipSoundEvaluationResponse } from '@/types/lipsound';
 
 const LipSoundResult = () => {
   const navigate = useNavigate();

@@ -1,16 +1,4 @@
-// ===== User & Auth Tokens =====
-export interface User {
-  id: number;
-  email: string;
-}
-
-export interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
-  tokenType: string;
-  expiresIn: number;
-  refreshExpiresIn: number;
-}
+import type { User, AuthTokens } from './models';
 
 // ===== Login =====
 export interface LoginRequest {
@@ -103,16 +91,5 @@ export interface LogoutResponse {
   result: {
     success: boolean;
     message: string;
-  };
-}
-
-// ===== Error Response =====
-export interface ErrorResponse {
-  success: false;
-  status: number;
-  message: string;
-  timestamp: string;
-  error: {
-    code: string;
   };
 }

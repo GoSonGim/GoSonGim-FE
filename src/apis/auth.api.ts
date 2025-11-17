@@ -11,7 +11,7 @@ import type {
   RefreshTokenResponse,
   LogoutRequest,
   LogoutResponse,
-} from '@/types/auth.types';
+} from '@/types/auth';
 
 export const authAPI = {
   // 이메일 로그인

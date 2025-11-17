@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import type { Situation } from '@/types/situation.types';
+import type { Situation } from '@/types/situation';
 import BookmarkIcon from '@/assets/svgs/talkingkit/common/bookmarkempty.svg';
 
 interface SituationCardProps {

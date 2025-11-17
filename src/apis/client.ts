@@ -1,6 +1,6 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/stores/useAuthStore';
-import type { RefreshTokenResponse } from '@/types/auth.types';
+import type { RefreshTokenResponse } from '@/types/auth';
 
 // Vercel Rewrites를 사용하므로 개발/프로덕션 모두 상대 경로 사용
 // 이렇게 하면 Same-Origin이 되어 CORS 문제가 발생하지 않음

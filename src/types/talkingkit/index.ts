@@ -1,8 +1,3 @@
-export interface TalkingKit {
-  id: number;
-  category: string;
-  highlightedText: string;
-  mainText: string;
-  kitLabel: string;
-  isBookmarked: boolean;
-}
+export * from './models';
+export * from './breathing';
+export * from './pitch';

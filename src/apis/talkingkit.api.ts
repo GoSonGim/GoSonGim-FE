@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { KitEvaluationRequest } from '@/types/audio';
+import type { KitEvaluationRequest } from '@/types/kit';
 import { logger } from '@/utils/common/loggerUtils';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';

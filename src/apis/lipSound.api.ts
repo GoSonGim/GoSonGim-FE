@@ -3,7 +3,7 @@ import type {
   LipSoundEvaluationRequest,
   LipSoundEvaluationResponse,
   PresignedUploadResult,
-} from '@/types/lipSound.types';
+} from '@/types/lipsound';
 
 export const lipSoundAPI = {
   /**
