@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { authAPI } from '@/apis/auth.api';
+import { authAPI } from '@/apis/auth';
 
 export const useValidateEmail = (email: string, enabled: boolean = true) => {
   return useQuery({

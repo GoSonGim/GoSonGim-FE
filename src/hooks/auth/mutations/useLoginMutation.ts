@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { authAPI } from '@/apis/auth.api';
+import { authAPI } from '@/apis/auth';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { getErrorMessage } from '@/utils/common/errorHandlerUtils';
 import type { LoginRequest } from '@/types/auth';

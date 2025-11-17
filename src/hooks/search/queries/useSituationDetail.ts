@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { situationAPI } from '@/apis/situation.api';
+import { situationAPI } from '@/apis/search';
 
 export const useSituationDetail = (situationId: number) => {
   return useQuery({

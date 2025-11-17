@@ -11,9 +11,9 @@ import CheckIcon from '@/assets/svgs/search/studyfind-check.svg';
 import CircularProgress from '@/components/freetalk/CircularProgress';
 import { diagnosisSentence } from '@/mock/search/kitDiagnosis.mock';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
-import { kitAPI } from '@/apis/kit.api';
+import { kitAPI } from '@/apis/talkingkit';
 import { logger } from '@/utils/common/loggerUtils';
-import type { KitDiagnosisResponse } from '@/types/kit';
+import type { KitDiagnosisResponse } from '@/types/talkingkit';
 
 type StepType = 'start' | 'loading' | 'result';
 

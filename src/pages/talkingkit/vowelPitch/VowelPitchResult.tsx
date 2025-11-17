@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import type { PitchEvaluationResult } from '@/types/talkingkit/pitch';
-import { kitAPI } from '@/apis/kit.api';
+import { kitAPI } from '@/apis/talkingkit';
 import { logger } from '@/utils/common/loggerUtils';
 
 const VowelPitchResult = () => {
