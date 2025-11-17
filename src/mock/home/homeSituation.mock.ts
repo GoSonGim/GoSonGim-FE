@@ -1,6 +1,6 @@
 export interface SituationPracticeKit {
   id: number;
-  category: '일상' | '구매' | '의료' | '직업' | '사회';
+  category: '일상' | '구매' | '의료' | '교통' | '직업' | '사교' | '비상';
   title: string;
   createdAt: string;
 }
@@ -10,8 +10,10 @@ export const categoryFullNames: Record<SituationPracticeKit['category'], string>
   일상: '일상',
   구매: '구매',
   의료: '의료 및 공공 서비스',
+  교통: '교통',
   직업: '직업',
-  사회: '사회',
+  사교: '사교',
+  비상: '비상',
 };
 
 export const situationPracticeKitsMockData: SituationPracticeKit[] = [
@@ -47,7 +49,7 @@ export const situationPracticeKitsMockData: SituationPracticeKit[] = [
   },
   {
     id: 6,
-    category: '사회',
+    category: '사교',
     title: '은행에서\n계좌 개설하기',
     createdAt: '2025-01-10',
   },
