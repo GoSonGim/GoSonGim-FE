@@ -1,5 +1,5 @@
-import { BottomSheet } from '@/components/auth/BottomSheet';
-import { Button } from '@/components/auth/Button';
+import { BottomSheet } from '@/components/auth/common/BottomSheet';
+import { Button } from '@/components/auth/common/Button';
 import EmailIcon from '@/assets/svgs/auth/login/emailIcon.svg';
 import GoogleLogo from '@/assets/svgs/auth/login/googleLogo.svg';
 import DragHandle from '@/assets/svgs/auth/signup/dragHandle.svg';

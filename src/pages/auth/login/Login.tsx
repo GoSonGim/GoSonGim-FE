@@ -1,5 +1,5 @@
-import { Button } from '@/components/auth/Button';
-import { SignupBottomSheet } from '@/components/auth/SignupBottomSheet';
+import { Button } from '@/components/auth/common/Button';
+import { SignupBottomSheet } from '@/components/auth/login/SignupBottomSheet';
 import { useLogin } from '@/hooks/auth/useLogin';
 
 import EmailIcon from '@/assets/svgs/auth/login/emailIcon.svg';

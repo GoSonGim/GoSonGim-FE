@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { Input } from '@/components/auth/Input';
-import { LoginButton } from '@/components/auth/LoginButton';
+import { Input } from '@/components/auth/common/Input';
+import { LoginButton } from '@/components/auth/loginForm/LoginButton';
 import { useLoginForm } from '@/hooks/auth/useLoginForm';
 import BackIcon from '@/assets/svgs/auth/login/back.svg';
 
