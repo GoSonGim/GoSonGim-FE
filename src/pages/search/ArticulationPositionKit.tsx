@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import KitListLayout from '@/components/talkingkit/layout/KitListLayout';
 import KitCard from '@/components/talkingkit/common/KitCard';
 import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory';
+import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
 import { logger } from '@/utils/common/loggerUtils';
 
 const ArticulationPositionKit = () => {
   const navigate = useNavigate();
   const { data: kitsData, isLoading, error } = useKitsByCategory(2);
+  const { getBookmarkStatus } = useBookmarkStatus('KIT');
 
   // API 응답 데이터 로깅
   useEffect(() => {
@@ -58,15 +60,33 @@ const ArticulationPositionKit = () => {
       ) : (
         <>
           <div className="flex gap-4">
-            {kits.slice(0, 2).map((kit) => (
-              <KitCard key={kit.kitId} kit={kit} onClick={() => handleKitClick(kit.kitId, kit.kitName)} />
-            ))}
+            {kits.slice(0, 2).map((kit) => {
+              const { isBookmarked, bookmarkId } = getBookmarkStatus(kit.kitId);
+              return (
+                <KitCard
+                  key={kit.kitId}
+                  kit={kit}
+                  onClick={() => handleKitClick(kit.kitId, kit.kitName)}
+                  isBookmarked={isBookmarked}
+                  bookmarkId={bookmarkId}
+                />
+              );
+            })}
           </div>
           {kits.length > 2 && (
             <div className="flex gap-4">
-              {kits.slice(2, 4).map((kit) => (
-                <KitCard key={kit.kitId} kit={kit} onClick={() => handleKitClick(kit.kitId, kit.kitName)} />
-              ))}
+              {kits.slice(2, 4).map((kit) => {
+                const { isBookmarked, bookmarkId } = getBookmarkStatus(kit.kitId);
+                return (
+                  <KitCard
+                    key={kit.kitId}
+                    kit={kit}
+                    onClick={() => handleKitClick(kit.kitId, kit.kitName)}
+                    isBookmarked={isBookmarked}
+                    bookmarkId={bookmarkId}
+                  />
+                );
+              })}
             </div>
           )}
         </>

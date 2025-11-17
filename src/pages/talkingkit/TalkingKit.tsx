@@ -4,12 +4,14 @@ import KitCard from '@/components/talkingkit/common/KitCard';
 import { kitsData } from '@/mock/talkingkit/kitsData';
 import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory';
 import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
 import { useNavigate } from 'react-router-dom';
 
 const TalkingKit = () => {
   const navigate = useNavigate();
   const { data: kitsData_API, error } = useKitsByCategory(1);
   const { data: kitDetail, error: detailError } = useKitDetail(1);
+  const { getBookmarkStatus } = useBookmarkStatus('KIT');
 
   // API 응답 데이터 콘솔 출력 (카테고리별 키트 목록)
   useEffect(() => {
@@ -63,14 +65,16 @@ const TalkingKit = () => {
       <div className="mt-10 px-4">
         <div className="flex flex-col gap-4">
           <div className="flex gap-4">
-            {kitsData.slice(0, 2).map((kit) => (
-              <KitCard key={kit.id} kit={kit} />
-            ))}
+            {kitsData.slice(0, 2).map((kit) => {
+              const { isBookmarked, bookmarkId } = getBookmarkStatus(kit.id);
+              return <KitCard key={kit.id} kit={kit} isBookmarked={isBookmarked} bookmarkId={bookmarkId} />;
+            })}
           </div>
           <div className="flex gap-4">
-            {kitsData.slice(2, 3).map((kit) => (
-              <KitCard key={kit.id} kit={kit} />
-            ))}
+            {kitsData.slice(2, 3).map((kit) => {
+              const { isBookmarked, bookmarkId } = getBookmarkStatus(kit.id);
+              return <KitCard key={kit.id} kit={kit} isBookmarked={isBookmarked} bookmarkId={bookmarkId} />;
+            })}
           </div>
         </div>
       </div>
