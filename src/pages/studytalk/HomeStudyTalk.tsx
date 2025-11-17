@@ -1,5 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useBookmarkList } from '@/hooks/bookmark/queries/useBookmarkList';
+import type { BookmarkSortType } from '@/types/bookmark';
 import BottomNav from '@/components/common/BottomNav';
 import StudyTalkTabs from '@/components/studytalk/StudyTalkTabs';
 import CategoryFilter from '@/components/studytalk/CategoryFilter';
@@ -8,9 +10,6 @@ import SortFilter from '@/components/studytalk/SortFilter';
 import PracticeKitCard from '@/components/studytalk/PracticeKitCard';
 import SituationPracticeCard from '@/components/studytalk/SituationPracticeCard';
 import EmptyState from '@/components/studytalk/EmptyState';
-import { practiceKitsMockData } from '@/mock/home/homeStudyTalk.mock';
-import { situationPracticeKitsMockData, categoryFullNames } from '@/mock/home/homeSituation.mock';
-import { useStudyTalkStore } from '@/stores/studyTalkStore';
 import ChevronLeft from '@/assets/svgs/home/leftarrow.svg';
 
 type TabType = '조음발음' | '상황극';
@@ -29,47 +28,30 @@ export default function HomeStudyTalk() {
   const [selectedSituationCategory, setSelectedSituationCategory] = useState<SituationCategoryOption>('전체');
   const [selectedSituationSort, setSelectedSituationSort] = useState<SortOption>('최신순');
 
-  const { removedKits, removeKit, removedSituationKits, removeSituationKit } = useStudyTalkStore();
+  // 조음발음 키트 북마크 목록 조회
+  const {
+    data: kitBookmarksData,
+    isLoading: isKitLoading,
+    error: kitError,
+  } = useBookmarkList({
+    type: 'KIT',
+    category: selectedCategory === '전체' ? undefined : selectedCategory,
+    sort: (selectedSort === '최신순' ? 'latest' : 'oldest') as BookmarkSortType,
+  });
 
-  // 조음발음 연습: 필터링 및 정렬된 키트 목록 계산
-  const visibleKits = useMemo(() => {
-    // 제거되지 않은 키트만 필터링
-    let filtered = practiceKitsMockData.filter((kit) => !removedKits.includes(kit.id));
+  // 상황극 북마크 목록 조회
+  const {
+    data: situationBookmarksData,
+    isLoading: isSituationLoading,
+    error: situationError,
+  } = useBookmarkList({
+    type: 'SITUATION',
+    category: selectedSituationCategory === '전체' ? undefined : selectedSituationCategory,
+    sort: (selectedSituationSort === '최신순' ? 'latest' : 'oldest') as BookmarkSortType,
+  });
 
-    // 카테고리 필터링
-    if (selectedCategory !== '전체') {
-      filtered = filtered.filter((kit) => kit.category === selectedCategory);
-    }
-
-    // 정렬
-    const sorted = [...filtered].sort((a, b) => {
-      const dateA = new Date(a.createdAt).getTime();
-      const dateB = new Date(b.createdAt).getTime();
-      return selectedSort === '최신순' ? dateB - dateA : dateA - dateB;
-    });
-
-    return sorted;
-  }, [removedKits, selectedCategory, selectedSort]);
-
-  // 상황극 연습: 필터링 및 정렬된 키트 목록 계산
-  const visibleSituationKits = useMemo(() => {
-    // 제거되지 않은 키트만 필터링
-    let filtered = situationPracticeKitsMockData.filter((kit) => !removedSituationKits.includes(kit.id));
-
-    // 카테고리 필터링
-    if (selectedSituationCategory !== '전체') {
-      filtered = filtered.filter((kit) => kit.category === selectedSituationCategory);
-    }
-
-    // 정렬
-    const sorted = [...filtered].sort((a, b) => {
-      const dateA = new Date(a.createdAt).getTime();
-      const dateB = new Date(b.createdAt).getTime();
-      return selectedSituationSort === '최신순' ? dateB - dateA : dateA - dateB;
-    });
-
-    return sorted;
-  }, [removedSituationKits, selectedSituationCategory, selectedSituationSort]);
+  const visibleKits = kitBookmarksData?.result.data || [];
+  const visibleSituationKits = situationBookmarksData?.result.data || [];
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
@@ -114,7 +96,11 @@ export default function HomeStudyTalk() {
 
             {/* Grid or Empty State */}
             <div className="mt-[16px] px-[16px]">
-              {visibleKits.length === 0 ? (
+              {isKitLoading ? (
+                <div className="text-body-14-regular text-gray-60">로딩 중...</div>
+              ) : kitError ? (
+                <div className="text-body-14-regular text-red-500">오류가 발생했습니다.</div>
+              ) : visibleKits.length === 0 ? (
                 <div className="mt-[48px]">
                   <EmptyState />
                 </div>
@@ -125,11 +111,10 @@ export default function HomeStudyTalk() {
                     <div key={rowIndex} className="flex gap-[16px]">
                       {visibleKits.slice(rowIndex * 2, rowIndex * 2 + 2).map((kit) => (
                         <PracticeKitCard
-                          key={kit.id}
-                          id={kit.id}
-                          category={kit.category}
-                          title={kit.title}
-                          onRemove={removeKit}
+                          key={kit.bookmarkId}
+                          bookmarkId={kit.bookmarkId}
+                          category={kit.kitCategory}
+                          title={kit.kitName}
                         />
                       ))}
                     </div>
@@ -154,7 +139,11 @@ export default function HomeStudyTalk() {
 
             {/* Grid or Empty State */}
             <div className="mt-[16px] px-[16px]">
-              {visibleSituationKits.length === 0 ? (
+              {isSituationLoading ? (
+                <div className="text-body-14-regular text-gray-60">로딩 중...</div>
+              ) : situationError ? (
+                <div className="text-body-14-regular text-red-500">오류가 발생했습니다.</div>
+              ) : visibleSituationKits.length === 0 ? (
                 <div className="mt-[48px]">
                   <EmptyState />
                 </div>
@@ -165,11 +154,10 @@ export default function HomeStudyTalk() {
                     <div key={rowIndex} className="flex gap-[16px]">
                       {visibleSituationKits.slice(rowIndex * 2, rowIndex * 2 + 2).map((kit) => (
                         <SituationPracticeCard
-                          key={kit.id}
-                          id={kit.id}
-                          categoryFull={categoryFullNames[kit.category]}
-                          title={kit.title}
-                          onRemove={removeSituationKit}
+                          key={kit.bookmarkId}
+                          bookmarkId={kit.bookmarkId}
+                          categoryFull={kit.kitCategory}
+                          title={kit.kitName}
                         />
                       ))}
                     </div>
