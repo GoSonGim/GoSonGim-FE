@@ -3,7 +3,7 @@ import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import SituationCard from '@/components/talkingkit/common/SituationCard';
 import { useSituations } from '@/hooks/search/queries/useSituations';
 import { getSituationCategoryTitle, getSituationCategoryId } from '@/utils/common/situationUtils';
-import type { Situation } from '@/types/situation';
+import type { Situation } from '@/types/search';
 
 const SituationCategory = () => {
   const navigate = useNavigate();

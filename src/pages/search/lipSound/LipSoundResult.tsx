@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
-import type { LipSoundEvaluationResponse } from '@/types/lipsound';
+import type { LipSoundEvaluationResponse } from '@/types/search';
 
 const LipSoundResult = () => {
   const navigate = useNavigate();
@@ -68,7 +68,7 @@ const LipSoundResult = () => {
 
                   {/* 개별 결과 */}
                   <div className="flex flex-col gap-4">
-                    {individualResults.map((result) => (
+                    {individualResults.map((result: LipSoundEvaluationResponse['result']['individualResults'][0]) => (
                       <div key={result.kitStageId} className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-sm">
                         <div className="flex items-center justify-between">
                           <p className="text-heading-02-semibold text-gray-100">{result.targetWord}</p>

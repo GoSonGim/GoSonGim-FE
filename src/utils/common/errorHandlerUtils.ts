@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import type { ErrorResponse } from '@/types/auth';
+import type { ErrorResponse } from '@/types/common';
 
 export interface ParsedError {
   message: string;
