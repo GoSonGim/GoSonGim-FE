@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { Conversation } from '@/mock/freetalk/freeTalk.mock';
 import { useHeygenAvatar } from './useHeygenAvatar';
+import { logger } from '@/utils/loggerUtils';
 
 interface UseFreeTalkConversationReturn {
   conversations: Conversation[];
@@ -44,13 +45,13 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
 
   // 아바타 메시지 콜백 (스트리밍 - 한 단어씩 들어옴)
   const handleAvatarMessage = useCallback((message: string) => {
-    console.log('[AVATAR STREAM] 📥 아바타 단어:', message);
+    logger.log('[AVATAR STREAM] 📥 아바타 단어:', message);
 
     // 버퍼에 누적
     avatarMessageBufferRef.current += message;
 
-    console.log('[AVATAR STREAM] 📝 현재 버퍼 누적:', avatarMessageBufferRef.current);
-    console.log('[AVATAR STREAM] 📏 버퍼 길이:', avatarMessageBufferRef.current.length);
+    logger.log('[AVATAR STREAM] 📝 현재 버퍼 누적:', avatarMessageBufferRef.current);
+    logger.log('[AVATAR STREAM] 📏 버퍼 길이:', avatarMessageBufferRef.current.length);
 
     setConversations((prev) => {
       // active conversation이 없으면 즉시 생성
@@ -82,18 +83,18 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
   const handleUserMessage = useCallback((message: string) => {
     // 녹음 중일 때만 메시지 처리
     if (!isRecordingRef.current) {
-      console.log('[USER STREAM] ⏸️ 무시됨 (녹음 중 아님):', message);
+      logger.log('[USER STREAM] ⏸️ 무시됨 (녹음 중 아님):', message);
       return;
     }
 
-    console.log('[USER STREAM] 📥 사용자 단어:', message);
+    logger.log('[USER STREAM] 📥 사용자 단어:', message);
 
     // 버퍼에 누적
     userMessageBufferRef.current += message;
 
-    console.log('[USER STREAM] 📝 현재 버퍼 누적:', userMessageBufferRef.current);
-    console.log('[USER STREAM] 📏 버퍼 길이:', userMessageBufferRef.current.length);
-    console.log('[USER STREAM] 🔢 isRecordingRef:', isRecordingRef.current);
+    logger.log('[USER STREAM] 📝 현재 버퍼 누적:', userMessageBufferRef.current);
+    logger.log('[USER STREAM] 📏 버퍼 길이:', userMessageBufferRef.current.length);
+    logger.log('[USER STREAM] 🔢 isRecordingRef:', isRecordingRef.current);
 
     // 실시간으로 화면에 표시
     setConversations((prev) =>
@@ -111,23 +112,23 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
 
   // 아바타 말하기 시작
   const handleAvatarStartTalking = useCallback(() => {
-    console.log('=== 아바타 말하기 시작 ===');
+    logger.log('=== 아바타 말하기 시작 ===');
     setShowLoadingDots(false);
 
     // active conversation이 있으면 그대로 사용 (질문만 업데이트될 것임)
     setConversations((prev) => {
       const activeConv = prev.find((c) => c.status === 'active');
 
-      console.log('[AVATAR START] 현재 active conversation:', activeConv?.id);
+      logger.log('[AVATAR START] 현재 active conversation:', activeConv?.id);
 
       // 이미 active 대화가 있으면 그대로 유지 (USER_STOP에서 이미 생성됨)
       if (activeConv) {
-        console.log('[AVATAR START] ✅ Active conversation 유지, ID:', activeConv.id);
+        logger.log('[AVATAR START] ✅ Active conversation 유지, ID:', activeConv.id);
         return prev;
       }
 
       // active conversation이 없으면 새로 생성 (첫 대화)
-      console.log('[AVATAR START] 📝 첫 대화 - 새 active conversation 생성, ID:', conversationIdRef.current);
+      logger.log('[AVATAR START] 📝 첫 대화 - 새 active conversation 생성, ID:', conversationIdRef.current);
       return [
         ...prev.filter((c) => c.status === 'completed'),
         {
@@ -143,12 +144,12 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
   // 아바타 말하기 완료
   const handleAvatarStopTalking = useCallback(() => {
     const fullMessage = avatarMessageBufferRef.current.trim();
-    console.log('='.repeat(60));
-    console.log('[AVATAR COMPLETE] ✅ 아바타 말하기 완료');
-    console.log('[AVATAR COMPLETE] 📝 버퍼 내용:', avatarMessageBufferRef.current);
-    console.log('[AVATAR COMPLETE] ✅ 최종 문장 (trim 후):', fullMessage);
-    console.log('[AVATAR COMPLETE] 📏 최종 문장 길이:', fullMessage.length);
-    console.log('='.repeat(60));
+    logger.log('='.repeat(60));
+    logger.log('[AVATAR COMPLETE] ✅ 아바타 말하기 완료');
+    logger.log('[AVATAR COMPLETE] 📝 버퍼 내용:', avatarMessageBufferRef.current);
+    logger.log('[AVATAR COMPLETE] ✅ 최종 문장 (trim 후):', fullMessage);
+    logger.log('[AVATAR COMPLETE] 📏 최종 문장 길이:', fullMessage.length);
+    logger.log('='.repeat(60));
 
     // 이미 실시간 업데이트됨, 로딩만 제거
     setShowLoadingDots(false);
@@ -160,20 +161,20 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
   const handleUserStopTalking = useCallback(() => {
     // 중복 호출 방지
     if (isProcessingUserStopRef.current) {
-      console.log('[USER STOP] ⏸️ 이미 처리 중 - 무시');
+      logger.log('[USER STOP] ⏸️ 이미 처리 중 - 무시');
       return;
     }
 
     // 녹음 중일 때만 처리
     if (!isRecordingRef.current) {
-      console.log('[USER STOP] ⏸️ 무시됨 (녹음 중 아님)');
+      logger.log('[USER STOP] ⏸️ 무시됨 (녹음 중 아님)');
       return;
     }
 
-    console.log('='.repeat(60));
-    console.log('[USER STOP] 🛑 사용자 말하기 완료 (아바타 판단)');
-    console.log('[USER STOP] ⏰ 1초 대기 후 버퍼 확인 시작...');
-    console.log('='.repeat(60));
+    logger.log('='.repeat(60));
+    logger.log('[USER STOP] 🛑 사용자 말하기 완료 (아바타 판단)');
+    logger.log('[USER STOP] ⏰ 1초 대기 후 버퍼 확인 시작...');
+    logger.log('='.repeat(60));
 
     // 처리 시작 플래그 설정
     isProcessingUserStopRef.current = true;
@@ -184,15 +185,15 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
     // 이전 타이머가 있으면 취소
     if (userStopTimeoutRef.current) {
       clearTimeout(userStopTimeoutRef.current);
-      console.log('[USER STOP] ⏰ 이전 타이머 취소');
+      logger.log('[USER STOP] ⏰ 이전 타이머 취소');
     }
 
     // 5초 대기 후 버퍼 확인 및 처리
     userStopTimeoutRef.current = window.setTimeout(() => {
-      console.log('='.repeat(60));
-      console.log('[USER STOP] ⏰ 대기 완료 - 버퍼 확인 시작');
-      console.log('[USER STOP] 📝 버퍼 내용 (원본):', userMessageBufferRef.current);
-      console.log('[USER STOP] 📏 버퍼 길이 (원본):', userMessageBufferRef.current.length);
+      logger.log('='.repeat(60));
+      logger.log('[USER STOP] ⏰ 대기 완료 - 버퍼 확인 시작');
+      logger.log('[USER STOP] 📝 버퍼 내용 (원본):', userMessageBufferRef.current);
+      logger.log('[USER STOP] 📏 버퍼 길이 (원본):', userMessageBufferRef.current.length);
 
       // 대기 상태 종료
       setIsWaitingUserAnswer(false);
@@ -200,29 +201,29 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
       // 버퍼 내용을 즉시 추출하여 별도 변수에 저장
       const capturedAnswer = userMessageBufferRef.current.trim();
 
-      console.log('[USER STOP] ✅ 추출된 답변 (trim 후):', capturedAnswer);
-      console.log('[USER STOP] 📏 추출된 답변 길이:', capturedAnswer.length);
-      console.log('='.repeat(60));
+      logger.log('[USER STOP] ✅ 추출된 답변 (trim 후):', capturedAnswer);
+      logger.log('[USER STOP] 📏 추출된 답변 길이:', capturedAnswer.length);
+      logger.log('='.repeat(60));
 
       // 답변이 있을 때만 저장
       if (capturedAnswer.length > 0) {
-        console.log('[USER STOP] ✅ 답변이 있음 - conversation 업데이트');
+        logger.log('[USER STOP] ✅ 답변이 있음 - conversation 업데이트');
 
         // ✅ setConversations 호출 전에 다음 ID 계산 및 증가 (한 번만 실행)
         conversationIdRef.current++;
         const nextId = conversationIdRef.current;
-        console.log('[USER STOP] 🆔 다음 대화 ID 증가:', nextId);
+        logger.log('[USER STOP] 🆔 다음 대화 ID 증가:', nextId);
 
         // 답변 저장 + 즉시 completed로 변경 + 새 active 생성
         setConversations((prev) => {
           // 완료된 대화 개수 확인
           const completedCount = prev.filter((c) => c.status === 'completed').length;
-          console.log('[USER STOP] 📊 현재 완료된 대화 수:', completedCount, '/ 5');
+          logger.log('[USER STOP] 📊 현재 완료된 대화 수:', completedCount, '/ 5');
 
           // active conversation을 completed로 변경
           const completedConversations = prev.map((conv) => {
             if (conv.status === 'active') {
-              console.log('[USER STOP] 📝 대화 완료 처리:', {
+              logger.log('[USER STOP] 📝 대화 완료 처리:', {
                 id: conv.id,
                 question: conv.question,
                 answer: capturedAnswer,
@@ -239,9 +240,9 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
 
           // 5번째 대화 완료 시 세션 종료
           if (completedCount >= 4) {
-            console.log('='.repeat(60));
-            console.log('[SESSION END] 🎉 5번째 대화 완료! 세션 종료');
-            console.log('='.repeat(60));
+            logger.log('='.repeat(60));
+            logger.log('[SESSION END] 🎉 5번째 대화 완료! 세션 종료');
+            logger.log('='.repeat(60));
 
             setIsRecording(false);
             isRecordingRef.current = false;
@@ -256,7 +257,7 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
                 }
                 alert('대화가 완료되었습니다! 수고하셨어요 😊');
               } catch (error) {
-                console.error('Failed to end session:', error);
+                logger.error('Failed to end session:', error);
               }
             }, 1000);
 
@@ -269,7 +270,7 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
           setShowLoadingDots(true);
 
           // 즉시 새 active conversation 생성 (nextId는 이미 증가됨)
-          console.log('[USER STOP] 📝 새 active conversation 생성, ID:', nextId);
+          logger.log('[USER STOP] 📝 새 active conversation 생성, ID:', nextId);
           return [
             ...completedConversations,
             {
@@ -281,9 +282,9 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
           ];
         });
 
-        console.log('[USER STOP] ✅ 버퍼 유지 (다음 녹음 시 초기화)');
+        logger.log('[USER STOP] ✅ 버퍼 유지 (다음 녹음 시 초기화)');
       } else {
-        console.log('[USER STOP] ⚠️ 답변이 비어있음 - 녹음 종료');
+        logger.log('[USER STOP] ⚠️ 답변이 비어있음 - 녹음 종료');
         setIsRecording(false);
         isRecordingRef.current = false;
       }
@@ -291,7 +292,7 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
       // 처리 완료 플래그 해제
       setTimeout(() => {
         isProcessingUserStopRef.current = false;
-        console.log('[USER STOP] 🔓 처리 완료 플래그 해제');
+        logger.log('[USER STOP] 🔓 처리 완료 플래그 해제');
       }, 100);
 
       // 타이머 ref 초기화
@@ -336,7 +337,7 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
     if (avatar.isSessionReady && conversations.length === 0) {
       const startConversation = async () => {
         try {
-          console.log('=== 아바타 세션 준비 완료. 아바타 첫 인사 시작 ===');
+          logger.log('=== 아바타 세션 준비 완료. 아바타 첫 인사 시작 ===');
           setShowLoadingDots(true);
           avatarMessageBufferRef.current = '';
 
@@ -344,9 +345,9 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
             '안녕하세요! 저는 당신의 한국어 회화 연습을 도와줄 AI 선생님이에요. ' +
               '오늘은 일상 대화를 연습해볼까요? 예를 들어, 좋아하는 음식이나 취미, 최근에 본 영화에 대해 이야기해주세요!',
           );
-          console.log('아바타 첫 인사 완료.');
+          logger.log('아바타 첫 인사 완료.');
         } catch (error) {
-          console.error('Failed to auto-start conversation:', error);
+          logger.error('Failed to auto-start conversation:', error);
           setShowLoadingDots(false);
         }
       };
@@ -360,23 +361,23 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
   // 마이크 클릭 핸들러 (녹음 시작)
   const handleMicClick = async () => {
     if (!avatar.isSessionReady) {
-      console.log('Avatar session not ready');
+      logger.log('Avatar session not ready');
       return;
     }
 
     if (!activeConversation || isRecording) return;
 
-    console.log('='.repeat(60));
-    console.log('[MIC] 🎤 마이크 클릭 - 녹음 시작');
-    console.log('[MIC] 🆔 현재 대화 ID:', activeConversation.id);
-    console.log('[MIC] 🧹 이전 버퍼 내용:', userMessageBufferRef.current);
-    console.log('='.repeat(60));
+    logger.log('='.repeat(60));
+    logger.log('[MIC] 🎤 마이크 클릭 - 녹음 시작');
+    logger.log('[MIC] 🆔 현재 대화 ID:', activeConversation.id);
+    logger.log('[MIC] 🧹 이전 버퍼 내용:', userMessageBufferRef.current);
+    logger.log('='.repeat(60));
 
     // 대기 중인 USER_STOP 타이머 취소
     if (userStopTimeoutRef.current) {
       clearTimeout(userStopTimeoutRef.current);
       userStopTimeoutRef.current = null;
-      console.log('[MIC] ⏰ 대기 중인 USER_STOP 타이머 취소');
+      logger.log('[MIC] ⏰ 대기 중인 USER_STOP 타이머 취소');
     }
 
     // 대기 상태 초기화
@@ -388,17 +389,17 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
 
     // 버퍼 초기화 (이전 대화의 잔여 데이터 제거)
     userMessageBufferRef.current = '';
-    console.log('[MIC] 🧹 버퍼 초기화 완료');
+    logger.log('[MIC] 🧹 버퍼 초기화 완료');
 
     // 처리 플래그 리셋
     isProcessingUserStopRef.current = false;
-    console.log('[MIC] 🔓 처리 플래그 리셋');
+    logger.log('[MIC] 🔓 처리 플래그 리셋');
 
     // 빈 답변 박스 미리 생성
     setConversations((prev) =>
       prev.map((conv) => {
         if (conv.status === 'active') {
-          console.log('[MIC] 📝 빈 답변 박스 생성');
+          logger.log('[MIC] 📝 빈 답변 박스 생성');
           return {
             ...conv,
             answer: '',
@@ -411,15 +412,15 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
     try {
       // 첫 번째 녹음 시에만 Voice Chat 시작
       if (!isVoiceChatActiveRef.current) {
-        console.log('[MIC] 🎙️ 첫 녹음: Voice Chat 시작 (이후 계속 유지)');
+        logger.log('[MIC] 🎙️ 첫 녹음: Voice Chat 시작 (이후 계속 유지)');
         await avatar.startListening();
         isVoiceChatActiveRef.current = true;
-        console.log('[MIC] ✅ Voice Chat 시작 완료');
+        logger.log('[MIC] ✅ Voice Chat 시작 완료');
       } else {
-        console.log('[MIC] ✅ Voice Chat 이미 활성화됨 - 계속 녹음');
+        logger.log('[MIC] ✅ Voice Chat 이미 활성화됨 - 계속 녹음');
       }
     } catch (error) {
-      console.error('[MIC] ❌ Failed to start voice chat:', error);
+      logger.error('[MIC] ❌ Failed to start voice chat:', error);
       if (error instanceof Error && error.name === 'NotAllowedError') {
         alert('마이크 권한이 필요합니다. 브라우저 설정에서 마이크 권한을 허용해주세요.');
       }
@@ -431,7 +432,7 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
   // 녹음 중단 핸들러 (수동 중단용 - 실제로는 USER_STOP 이벤트로 자동 처리)
   const handleStopRecording = async () => {
     // 이 함수는 비상용 - 일반적으로 USER_STOP 이벤트가 자동으로 처리
-    console.log('[MANUAL STOP] 수동 녹음 중단');
+    logger.log('[MANUAL STOP] 수동 녹음 중단');
     if (!isRecording) return;
 
     setIsRecording(false);

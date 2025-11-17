@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { logger } from '@/utils/loggerUtils';
 
 interface ChromaKeyOptions {
   minHue: number; // 최소 색상 값 (0-360)
@@ -103,8 +104,6 @@ export function useChromaKey({
         // 1. 비디오 프레임만 그리기
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        console.log('[CHROMA] Canvas:', canvas.width, 'x', canvas.height, 'BgImage complete:', bgImage.complete);
-
         // 2. 픽셀 데이터 가져오기
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
@@ -166,12 +165,12 @@ export function useChromaKey({
 
     // 배경 이미지 로드 및 처리 시작
     bgImage.onload = () => {
-      console.log('[CHROMA] 배경 이미지 로드 완료:', bgImage.width, 'x', bgImage.height);
+      logger.log('[CHROMA] 배경 이미지 로드 완료:', bgImage.width, 'x', bgImage.height);
       processFrame();
     };
 
     bgImage.onerror = (e) => {
-      console.error('[CHROMA] 배경 이미지 로드 실패:', backgroundImageUrl, e);
+      logger.error('[CHROMA] 배경 이미지 로드 실패:', backgroundImageUrl, e);
     };
 
     // 이미지 src 설정 (onload 설정 후에 해야 함)
@@ -179,7 +178,7 @@ export function useChromaKey({
 
     // 이미 로드된 경우 즉시 시작
     if (bgImage.complete) {
-      console.log('[CHROMA] 배경 이미지 이미 로드됨');
+      logger.log('[CHROMA] 배경 이미지 이미 로드됨');
       processFrame();
     }
 

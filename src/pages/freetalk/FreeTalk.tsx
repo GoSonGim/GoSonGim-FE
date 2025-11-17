@@ -8,6 +8,7 @@ import LoadingDot from '@/assets/svgs/home/loadingdot.svg';
 import { useTypingAnimation } from '@/hooks/freetalk/useTypingAnimation';
 import { useFreeTalkConversation } from '@/hooks/freetalk/useFreeTalkConversation';
 import { useChromaKey } from '@/hooks/freetalk/useChromaKey';
+import { logger } from '@/utils/loggerUtils';
 import clsx from 'clsx';
 
 export default function FreeTalk() {
@@ -32,24 +33,24 @@ export default function FreeTalk() {
 
   // 버튼 상태 및 conversations 디버깅
   useEffect(() => {
-    console.log('[DEBUG] 🎯 상태 체크:');
-    console.log('[DEBUG] - conversations:', conversation.conversations.length, '개');
-    console.log(
+    logger.log('[DEBUG] 🎯 상태 체크:');
+    logger.log('[DEBUG] - conversations:', conversation.conversations.length, '개');
+    logger.log(
       '[DEBUG] - conversations 상세:',
       conversation.conversations
         .map((c) => `ID${c.id}:${c.status}(Q:${c.question?.substring(0, 20)}..., A:${c.answer?.substring(0, 20)}...)`)
         .join(' | '),
     );
-    console.log('[DEBUG] - activeConversation:', conversation.activeConversation ? 'O' : 'X');
+    logger.log('[DEBUG] - activeConversation:', conversation.activeConversation ? 'O' : 'X');
     if (conversation.activeConversation) {
-      console.log('[DEBUG]   → ID:', conversation.activeConversation.id);
-      console.log('[DEBUG]   → question:', conversation.activeConversation.question);
+      logger.log('[DEBUG]   → ID:', conversation.activeConversation.id);
+      logger.log('[DEBUG]   → question:', conversation.activeConversation.question);
     }
-    console.log('[DEBUG] - isSessionReady:', conversation.isSessionReady ? 'O' : 'X');
-    console.log('[DEBUG] - isComplete:', isComplete ? 'O' : 'X');
-    console.log('[DEBUG] - isRecording:', conversation.isRecording ? 'O' : 'X');
-    console.log('[DEBUG] - showLoadingDots:', conversation.showLoadingDots ? 'O' : 'X');
-    console.log(
+    logger.log('[DEBUG] - isSessionReady:', conversation.isSessionReady ? 'O' : 'X');
+    logger.log('[DEBUG] - isComplete:', isComplete ? 'O' : 'X');
+    logger.log('[DEBUG] - isRecording:', conversation.isRecording ? 'O' : 'X');
+    logger.log('[DEBUG] - showLoadingDots:', conversation.showLoadingDots ? 'O' : 'X');
+    logger.log(
       '[DEBUG] ➡️ 버튼 활성화:',
       conversation.activeConversation && conversation.isSessionReady && isComplete && !conversation.showLoadingDots
         ? '✅ YES'
@@ -79,14 +80,14 @@ export default function FreeTalk() {
     const completedCount = conversation.conversations.filter((c) => c.status === 'completed').length;
 
     if (completedCount < 5) {
-      console.log('[EXIT] 5번째 대화 전 - 세션 유지하고 페이지만 이동');
+      logger.log('[EXIT] 5번째 대화 전 - 세션 유지하고 페이지만 이동');
       navigate('/');
       return;
     }
 
     // 5번째 대화 완료 후에만 세션 종료
     try {
-      console.log('[EXIT] 5번째 대화 완료 - 세션 종료 후 이동');
+      logger.log('[EXIT] 5번째 대화 완료 - 세션 종료 후 이동');
       if (conversation.isSessionReady) {
         await conversation.endSession();
       }
@@ -101,10 +102,10 @@ export default function FreeTalk() {
       const completedCount = conversation.conversations.filter((c) => c.status === 'completed').length;
 
       if (completedCount >= 5 && conversation.isSessionReady) {
-        console.log('[UNMOUNT] 5번째 대화 완료 - 세션 종료');
+        logger.log('[UNMOUNT] 5번째 대화 완료 - 세션 종료');
         conversation.endSession().catch(() => {});
       } else {
-        console.log('[UNMOUNT] 5번째 대화 전 - 세션 유지');
+        logger.log('[UNMOUNT] 5번째 대화 전 - 세션 유지');
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
