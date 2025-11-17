@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import clsx from 'clsx';
+import { useRemoveBookmarkMutation } from '@/hooks/bookmark/mutations/useRemoveBookmarkMutation';
 import BookmarkIcon from '@/assets/svgs/home/bookmarkchecked.svg';
 import DeleteConfirmModal from '@/components/common/DeleteConfirmModal';
 
 interface PracticeKitCardProps {
-  id: number;
+  bookmarkId: number;
   category: string;
   title: string;
-  onRemove: (id: number) => void;
 }
 
-export default function PracticeKitCard({ id, category, title, onRemove }: PracticeKitCardProps) {
+export default function PracticeKitCard({ bookmarkId, category, title }: PracticeKitCardProps) {
   const [showModal, setShowModal] = useState(false);
+  const removeBookmarkMutation = useRemoveBookmarkMutation();
 
   const handleConfirmDelete = () => {
-    onRemove(id);
+    removeBookmarkMutation.mutate(bookmarkId);
     setShowModal(false);
   };
 
