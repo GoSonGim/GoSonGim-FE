@@ -35,8 +35,9 @@ const SituationDetail = () => {
   };
 
   const handleStartClick = () => {
-    // 시작하기 버튼 클릭 시 동작 (추후 구현)
-    logger.log('시작하기 클릭');
+    // 상황극 대화 페이지로 이동
+    logger.log('시작하기 클릭', { situationId: situationIdNum });
+    navigate(`/situation/${situationIdNum}/conversation`);
   };
 
   return (
@@ -47,7 +48,7 @@ const SituationDetail = () => {
           {/* 뒤로가기 버튼 */}
           <button
             onClick={handleBackClick}
-            className="absolute left-4 flex size-12 items-center justify-center overflow-hidden p-2 cursor-pointer"
+            className="absolute left-4 flex size-12 cursor-pointer items-center justify-center overflow-hidden p-2"
             aria-label="뒤로가기"
           >
             <div className="h-[18px] w-[10px]">

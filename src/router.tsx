@@ -17,6 +17,9 @@ import LipSoundPractice from '@/pages/search/lipSound/LipSoundPractice';
 import LipSoundResult from '@/pages/search/lipSound/LipSoundResult';
 import SituationCategory from '@/pages/search/SituationCategory';
 import SituationDetail from '@/pages/situation/SituationDetail';
+import SituationConversation from '@/pages/situation/SituationConversation';
+import SituationPractice from '@/pages/situation/SituationPractice';
+import SituationFeedback from '@/pages/situation/SituationFeedback';
 import Review from '@/pages/review/Review';
 import ReviewCalendar from '@/pages/review/ReviewCalendar';
 import ReviewPractice from '@/pages/review/practice/ReviewPractice';
@@ -77,6 +80,9 @@ export const router = createBrowserRouter([
           { path: '/search/articulation-position/lip-sound/result', element: <LipSoundResult /> },
           { path: '/search/situation/:category', element: <SituationCategory /> },
           { path: '/search/situation/:category/:situationId', element: <SituationDetail /> },
+          { path: '/situation/:situationId/conversation', element: <SituationConversation /> },
+          { path: '/situation/:situationId/practice', element: <SituationPractice /> },
+          { path: '/situation/:situationId/feedback', element: <SituationFeedback /> },
           { path: '/review', element: <Review /> },
           { path: '/review/calendar', element: <ReviewCalendar /> },
           { path: '/review/practice', element: <ReviewPractice /> },
