@@ -30,24 +30,24 @@ export default function HomeMyStudy({ className }: HomeMyStudyProps) {
   // bookmarkId로 kitId를 찾는 매핑 생성
   const bookmarkIdToKitIdMap = useMemo(() => {
     const map = new Map<number, number>();
-    
+
     // KIT 북마크 매핑
     kitListData?.result.data.forEach((item: BookmarkItem) => {
       map.set(item.bookmarkId, item.kitId);
     });
-    
+
     // SITUATION 북마크 매핑
     situationListData?.result.data.forEach((item: BookmarkItem) => {
       map.set(item.bookmarkId, item.kitId);
     });
-    
+
     return map;
   }, [kitListData, situationListData]);
 
   const handleCardClick = (item: BookmarkPreviewItem) => {
     // bookmarkId로 kitId 조회
     const kitId = bookmarkIdToKitIdMap.get(item.bookmarkId);
-    
+
     if (kitId !== undefined) {
       if (item.type === 'KIT') {
         // 입술 소리 키트 (kitId: 4)인 경우

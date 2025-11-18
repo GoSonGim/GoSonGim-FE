@@ -80,12 +80,7 @@ const VowelPitch = () => {
 
   return (
     <>
-      <Step2Layout
-        headerTitle="길게 소리내기"
-        title={stage2Name}
-        showAction={false}
-        onBackClick={() => navigate(-1)}
-      >
+      <Step2Layout headerTitle="길게 소리내기" title={stage2Name} showAction={false} onBackClick={() => navigate(-1)}>
         <PitchVisualizer
           pitchDataList={pitchDataList}
           baselineFrequency={baselineFrequency}
