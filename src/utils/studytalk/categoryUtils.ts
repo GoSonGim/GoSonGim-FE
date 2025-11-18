@@ -1,13 +1,13 @@
 // 상황극 카테고리 한글 매핑 (영문 → 한글)
 export const getSituationCategoryName = (category: string): string => {
   const categoryMap: Record<string, string> = {
-    SOCIAL: '사교',
-    TRAFFIC: '교통',
-    JOB: '직업',
-    EMERGENCY: '비상',
-    MEDICAL: '의료',
-    PURCHASE: '구매',
-    DAILY: '일상',
+    SOCIAL: '사교 및 관계',
+    TRAFFIC: '교통 및 길찾기',
+    JOB: '직업 및 교육',
+    EMERGENCY: '비상 및 문제해결',
+    MEDICAL: '의료 및 공공 서비스',
+    PURCHASE: '구매 및 쇼핑',
+    DAILY: '일상생활 및 가정',
   };
 
   return categoryMap[category] || category;
@@ -39,7 +39,7 @@ export const getKitCategoryParam = (category: string): string | undefined => {
   return mapping[category];
 };
 
-// 상황극 카테고리 URL 쿼리 변환 (한글 → 영문 소문자)
+// 상황극 카테고리 URL 쿼리 변환 (한글/영문 → 영문 소문자)
 export const getSituationCategoryQuery = (category: string): string => {
   const mapping: Record<string, string> = {
     일상: 'daily',
@@ -58,18 +58,4 @@ export const getSituationCategoryQuery = (category: string): string => {
     EMERGENCY: 'emergency',
   };
   return mapping[category] || 'daily';
-};
-
-// 짧은 카테고리명 변환 (영문 → 한글)
-export const getShortCategoryName = (category: string): string => {
-  const mapping: Record<string, string> = {
-    DAILY: '일상',
-    PURCHASE: '구매',
-    MEDICAL: '의료',
-    TRAFFIC: '교통',
-    JOB: '직업',
-    SOCIAL: '사교',
-    EMERGENCY: '비상',
-  };
-  return mapping[category] || category;
 };

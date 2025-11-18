@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 
 import { useRandomSituations } from '@/hooks/home/useRandomSituations';
-import { getShortCategoryName, getSituationCategoryQuery } from '@/utils/studytalk/categoryUtils';
+import { getSituationCategoryName, getSituationCategoryQuery } from '@/utils/studytalk/categoryUtils';
 import ArrowRight from '@/assets/svgs/home/arrow-right.svg';
 
 interface HomeStudyPracticeProps {
@@ -48,7 +48,7 @@ export default function HomeStudyPractice({ className }: HomeStudyPracticeProps)
             <div className="flex items-center gap-1 leading-normal">
               <p className="text-heading-02-semibold whitespace-nowrap text-gray-100">{situation.situationName}</p>
               <p className="text-detail-02 whitespace-nowrap text-gray-50">
-                •{getShortCategoryName(situation.categoryEnum)}
+                •{getSituationCategoryName(situation.categoryEnum)}
               </p>
             </div>
             <button
