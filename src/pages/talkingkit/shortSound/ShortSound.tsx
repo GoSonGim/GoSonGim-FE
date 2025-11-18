@@ -119,7 +119,7 @@ const ShortSound = () => {
       stopVoice();
       stopBall();
     }
-    navigate('/talkingkit');
+    navigate(-1);
   };
 
   // 시작 전 화면

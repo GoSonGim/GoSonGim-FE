@@ -84,7 +84,7 @@ const VowelPitch = () => {
         headerTitle="길게 소리내기"
         title={stage2Name}
         showAction={false}
-        onBackClick={() => navigate('/talkingkit')}
+        onBackClick={() => navigate(-1)}
       >
         <PitchVisualizer
           pitchDataList={pitchDataList}
