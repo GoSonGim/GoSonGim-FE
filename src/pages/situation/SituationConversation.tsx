@@ -1,0 +1,143 @@
+import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSituationConversation } from '@/hooks/situation/useSituationConversation';
+import { TurnIndicator, AvatarVideo, RecordButton } from '@/components/situation/common';
+import { ConversationList } from '@/components/situation/conversation';
+import { FailureModal } from '@/components/situation/feedback';
+import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
+import type { Turn, FinalSummary } from '@/types/situation';
+import { logger } from '@/utils/common/loggerUtils';
+
+/**
+ * 상황극 대화 페이지
+ */
+export default function SituationConversation() {
+  const navigate = useNavigate();
+  const { situationId } = useParams<{ situationId: string }>();
+  const situationIdNum = situationId ? parseInt(situationId, 10) : 0;
+
+  // 실패 모달 상태
+  const [isFailureModalOpen, setIsFailureModalOpen] = useState(false);
+  const [failedTurn, setFailedTurn] = useState<Turn | null>(null);
+
+  // 대화 관리
+  const conversation = useSituationConversation({
+    situationId: situationIdNum,
+    onSessionEnd: (finalSummary: FinalSummary) => {
+      logger.log('[PAGE] 세션 종료, 피드백 페이지로 이동', finalSummary);
+      // 피드백 페이지로 이동하면서 데이터 전달
+      navigate(`/situation/${situationIdNum}/feedback`, {
+        state: { finalSummary },
+      });
+    },
+    onEvaluationFailed: (turn: Turn) => {
+      logger.log('[PAGE] 평가 실패, 모달 표시', turn);
+      setFailedTurn(turn);
+      setIsFailureModalOpen(true);
+    },
+  });
+
+  // 뒤로가기
+  const handleBack = () => {
+    if (conversation.sessionId) {
+      const confirmLeave = window.confirm('대화를 종료하시겠습니까? 진행 중인 내용은 저장되지 않습니다.');
+      if (!confirmLeave) return;
+      
+      conversation.endConversation().catch(logger.error);
+    }
+    navigate(-1);
+  };
+
+  // 연습하기 버튼 클릭
+  const handlePractice = () => {
+    setIsFailureModalOpen(false);
+    navigate(`/situation/${situationIdNum}/practice`, {
+      state: { failedTurn },
+    });
+  };
+
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setIsFailureModalOpen(false);
+    setFailedTurn(null);
+  };
+
+  // 녹음 버튼 활성화 조건
+  const isRecordButtonDisabled =
+    !conversation.isSessionReady ||
+    conversation.isProcessing ||
+    conversation.avatarState === 'speaking' ||
+    conversation.currentTurnIndex === 0;
+
+  return (
+    <div className="bg-background-primary relative flex h-full flex-col">
+      {/* 상단 헤더 */}
+      <div className="h-16 w-full shrink-0 overflow-hidden bg-white">
+        <div className="relative flex h-full items-center justify-center">
+          {/* 뒤로가기 버튼 */}
+          <button
+            onClick={handleBack}
+            className="absolute left-4 flex size-12 cursor-pointer items-center justify-center overflow-hidden p-2"
+            aria-label="뒤로가기"
+          >
+            <div className="h-[18px] w-[10px]">
+              <LeftArrowIcon className="h-full w-full" />
+            </div>
+          </button>
+
+          {/* 제목 */}
+          <p className="text-heading-02-regular text-gray-100">상황극 대화</p>
+
+          {/* 턴 표시 */}
+          <div className="absolute right-4">
+            <TurnIndicator currentTurn={conversation.currentTurnIndex} totalTurns={5} />
+          </div>
+        </div>
+      </div>
+
+      {/* 메인 컨텐츠 */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* 아바타 비디오 */}
+        <div className="shrink-0 px-4 pb-6 pt-6">
+          <AvatarVideo
+            videoRef={conversation.videoRef}
+            isSessionReady={conversation.isSessionReady}
+            avatarState={conversation.avatarState}
+            avatarError={conversation.avatarError}
+            onStartSession={conversation.startConversation}
+          />
+        </div>
+
+        {/* 대화 목록 */}
+        <ConversationList
+          turns={conversation.turns}
+          currentTurnIndex={conversation.currentTurnIndex}
+          isProcessing={conversation.isProcessing}
+        />
+      </div>
+
+      {/* 하단 녹음 버튼 */}
+      <div className="flex shrink-0 justify-center py-6">
+        <RecordButton
+          isRecording={conversation.isRecording}
+          isDisabled={isRecordButtonDisabled}
+          onStartRecording={conversation.startRecording}
+          onStopRecording={conversation.stopRecording}
+          size="large"
+        />
+      </div>
+
+      {/* 평가 실패 모달 */}
+      {failedTurn && (
+        <FailureModal
+          isOpen={isFailureModalOpen}
+          feedback={failedTurn.evaluation?.feedback || ''}
+          score={failedTurn.evaluation?.score || 0}
+          onClose={handleCloseModal}
+          onPractice={handlePractice}
+        />
+      )}
+    </div>
+  );
+}
+
