@@ -23,7 +23,7 @@ export default function SituationPracticeCard({ bookmarkId, categoryFull, title 
     <>
       <div
         className={clsx(
-          'bg-gray-5 flex h-[138px] w-[173px] flex-col items-end gap-[4px] rounded-[16px] border border-[#f1f1f5] p-[8px] pr-0 transition-colors',
+          'bg-gray-5 flex h-[138px] w-[173px] flex-col items-end gap-[4px] rounded-[16px] border border-[#f1f1f5] p-[8px] pr-0 shadow-lg transition-colors',
           'cursor-pointer hover:bg-[#eef0f2]',
         )}
       >

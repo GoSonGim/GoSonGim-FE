@@ -40,8 +40,8 @@ export default function HomeMyStudy({ className }: HomeMyStudyProps) {
             {bookmarkList.map((item: BookmarkPreviewItem, index: number) => (
               <div
                 key={item.bookmarkId} // 북마크 고유 ID (number)
-                className={`embla__slide group flex h-32 w-[152px] min-w-[152px] cursor-pointer flex-col items-end justify-between rounded-2xl p-3 transition-colors ${
-                  index === 0 ? 'bg-white shadow-sm hover:bg-[#f1f1f5]' : 'bg-white hover:bg-[#f1f1f5]'
+                className={`embla__slide group flex h-32 w-[152px] min-w-[152px] cursor-pointer flex-col items-end justify-between rounded-2xl p-3 shadow-lg transition-colors ${
+                  index === 0 ? 'bg-white hover:bg-[#f1f1f5]' : 'bg-white hover:bg-[#f1f1f5]'
                 }`}
               >
                 <div className="flex w-full flex-col items-start leading-normal">

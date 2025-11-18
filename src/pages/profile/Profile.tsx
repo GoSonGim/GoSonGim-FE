@@ -34,7 +34,7 @@ const Profile = () => {
       {/* 메인 컨텐츠 */}
       <div className="flex flex-col gap-4 px-4 pt-6">
         {/* 프로필 정보 카드 */}
-        <div className="flex flex-col gap-6 rounded-[16px] bg-white px-3 py-6">
+        <div className="flex flex-col gap-6 rounded-[16px] bg-white px-3 py-6 shadow-lg">
           <div className="flex flex-col items-end gap-6">
             {/* 사용자 이름 및 레벨 */}
             <div className="flex w-full items-center justify-between">
@@ -94,7 +94,7 @@ const Profile = () => {
         </div>
 
         {/* 그래프 섹션 (가로 스크롤) */}
-        <div className="embla overflow-hidden" ref={emblaRef}>
+        <div className="embla overflow-hidden py-6" ref={emblaRef}>
           <div className="embla__container flex gap-[14px]">
             <GraphCard
               title="단어 성공 그래프"

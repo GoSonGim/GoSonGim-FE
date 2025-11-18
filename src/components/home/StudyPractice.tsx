@@ -14,7 +14,10 @@ export default function HomeStudyPractice({ className }: HomeStudyPracticeProps)
 
       <div className="flex flex-col gap-2">
         {homeStudyPracticeMockData.map((item) => (
-          <div key={item.id} className="flex items-center justify-between rounded-2xl bg-white px-3 py-4 cursor-pointer hover:bg-[#f1f1f5]">
+          <div
+            key={item.id}
+            className="flex cursor-pointer items-center justify-between rounded-2xl bg-white px-3 py-4 shadow-lg hover:bg-[#f1f1f5]"
+          >
             <div className="flex items-center gap-1 leading-normal">
               <p className="text-heading-02-semibold whitespace-nowrap text-gray-100">{item.title}</p>
               <p className="text-detail-02 whitespace-nowrap text-gray-50">•{item.category}</p>

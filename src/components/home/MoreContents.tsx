@@ -23,7 +23,7 @@ export default function HomeMoreContents({ className }: HomeMoreContentsProps) {
   };
 
   return (
-    <div className={`flex flex-col gap-6 ${className || ''}`}>
+    <div className={`flex flex-col gap-6 shadow-lg ${className || ''}`}>
       <p className="text-[22px] leading-normal font-semibold text-gray-100">추가 연습 컨텐츠</p>
 
       <div className="flex flex-col gap-2">
@@ -31,14 +31,10 @@ export default function HomeMoreContents({ className }: HomeMoreContentsProps) {
           <div
             key={item.id}
             onClick={() => handleItemClick(item.id)}
-            className="flex items-start gap-4 rounded-2xl bg-white px-3 py-[11px] cursor-pointer hover:bg-[#f1f1f5]"
+            className="flex cursor-pointer items-start gap-4 rounded-2xl bg-white px-3 py-[11px] hover:bg-[#f1f1f5]"
           >
             <div className="bg-blue-3 flex size-14 shrink-0 items-center justify-center rounded-2xl">
-              {item.icon === 'chat' ? (
-                <ChatIcon className="h-9 w-9" />
-              ) : (
-                <PlusIcon className="h-[27px] w-[27px]" />
-              )}
+              {item.icon === 'chat' ? <ChatIcon className="h-9 w-9" /> : <PlusIcon className="h-[27px] w-[27px]" />}
             </div>
             <div className="flex flex-col items-start leading-normal">
               <p className="text-detail-02 whitespace-nowrap text-gray-50">{item.subtitle}</p>
