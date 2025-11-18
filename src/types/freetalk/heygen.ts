@@ -20,6 +20,11 @@ export interface UseHeygenAvatarProps {
   callbacks?: HeygenEventCallbacks;
 }
 
+export interface SpeakOptions {
+  text: string;
+  taskType?: import('@heygen/streaming-avatar').TaskType;
+}
+
 export interface UseHeygenAvatarReturn {
   videoRef: React.RefObject<HTMLVideoElement | null>;
   avatarState: HeygenAvatarState;
@@ -29,7 +34,7 @@ export interface UseHeygenAvatarReturn {
   endSession: () => Promise<void>;
   startListening: (options?: { isInputAudioMuted?: boolean }) => Promise<void>;
   stopListening: () => Promise<void>;
-  speak: (text: string) => Promise<void>;
+  speak: (options: SpeakOptions) => Promise<void>;
   setMicrophoneMuted: (muted: boolean) => Promise<void>;
 }
 

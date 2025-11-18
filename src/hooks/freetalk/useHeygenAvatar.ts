@@ -252,19 +252,19 @@ export const useHeygenAvatar = ({
     }
   };
 
-  // 아바타가 말하기 (TALK 모드)
-  const speak = async (text: string) => {
+  // 아바타가 말하기
+  const speak = async (options: { text: string; taskType?: TaskType }) => {
     try {
       if (!avatarInstanceRef.current || !isSessionReady) {
         throw new Error('아바타 세션이 준비되지 않았습니다.');
       }
 
       await avatarInstanceRef.current.speak({
-        text: text,
-        task_type: TaskType.TALK,
+        text: options.text,
+        task_type: options.taskType || TaskType.TALK,
       });
 
-      logger.log('Avatar speaking:', text);
+      logger.log('Avatar speaking:', options.text);
     } catch (err) {
       logger.error('Failed to speak:', err);
       setError(err instanceof Error ? err.message : '아바타 말하기 실패');

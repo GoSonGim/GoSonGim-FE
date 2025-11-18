@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useSituationPractice } from '@/hooks/situation/useSituationPractice';
 import { SentenceInput, PracticeSession } from '@/components/situation/practice';
+import { AvatarVideo } from '@/components/situation/common';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import type { Turn } from '@/types/situation';
 import { logger } from '@/utils/common/loggerUtils';
@@ -47,12 +48,20 @@ export default function SituationPractice() {
   };
 
   // 연습 시작
-  const handleStartPractice = () => {
+  const handleStartPractice = async () => {
     if (!practice.sentence || practice.sentence.trim() === '') {
       alert('문장을 입력해주세요.');
       return;
     }
-    setStep('practice');
+
+    try {
+      logger.log('[PRACTICE] 아바타 세션 시작 중...');
+      await practice.startSession();
+      setStep('practice');
+    } catch (error) {
+      logger.error('[PRACTICE] 아바타 세션 시작 실패:', error);
+      alert('아바타 세션을 시작할 수 없습니다. 다시 시도해주세요.');
+    }
   };
 
   // 다시 시작하기 (대화 페이지로 복귀, 세션은 유지하고 대화만 리셋)
@@ -118,8 +127,19 @@ export default function SituationPractice() {
             <div className="flex flex-col gap-2">
               <h2 className="text-heading-02-semibold text-gray-100">문장을 따라 읽어보세요</h2>
               <p className="text-body-02-regular text-gray-60">
-                듣기 버튼을 눌러 문장을 듣고, 녹음 버튼을 눌러 따라해보세요.
+                아바타를 보며 문장을 듣고, 녹음 버튼을 눌러 3번 따라해보세요.
               </p>
+            </div>
+
+            {/* 아바타 비디오 */}
+            <div className="shrink-0">
+              <AvatarVideo
+                videoRef={practice.videoRef}
+                isSessionReady={practice.isSessionReady}
+                avatarState={practice.avatarState}
+                avatarError={practice.avatarError}
+                onStartSession={practice.startSession}
+              />
             </div>
 
             <PracticeSession

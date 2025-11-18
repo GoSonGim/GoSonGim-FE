@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { TaskType } from '@heygen/streaming-avatar';
 import { useHeygenAvatar } from '@/hooks/freetalk/useHeygenAvatar';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
 import { useFileUpload } from '@/hooks/files/useFileUpload';
@@ -123,7 +124,7 @@ export const useSituationConversation = ({
 
       // 4. 아바타가 첫 질문 말하기
       logger.log('[CONVERSATION] Step 3: 아바타가 첫 질문 말하기');
-      await avatar.speak(firstQuestion);
+      await avatar.speak({ text: firstQuestion, taskType: TaskType.REPEAT });
 
       setIsProcessing(false);
     } catch (error) {
@@ -256,7 +257,7 @@ export const useSituationConversation = ({
         currentQuestionRef.current = nextQuestion;
 
         // 아바타가 다음 질문 말하기
-        await avatar.speak(nextQuestion);
+        await avatar.speak({ text: nextQuestion, taskType: TaskType.REPEAT });
       }
 
       setIsProcessing(false);

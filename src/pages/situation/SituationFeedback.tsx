@@ -4,12 +4,11 @@ import type { FinalSummary } from '@/types/situation';
 
 /**
  * 상황극 최종 피드백 페이지
- * Figma: 394-2381
  */
 export default function SituationFeedback() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // 대화 페이지에서 전달받은 최종 요약 데이터
   const finalSummary = location.state?.finalSummary as FinalSummary | undefined;
 
@@ -30,4 +29,3 @@ export default function SituationFeedback() {
     </div>
   );
 }
-

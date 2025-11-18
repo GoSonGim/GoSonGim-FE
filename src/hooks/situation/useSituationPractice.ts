@@ -1,5 +1,7 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
+import { useHeygenAvatar } from '@/hooks/freetalk/useHeygenAvatar';
+import { TaskType } from '@heygen/streaming-avatar';
 import { logger } from '@/utils/common/loggerUtils';
 
 interface PracticeRecording {
@@ -20,10 +22,17 @@ interface UseSituationPracticeReturn {
   isRecording: boolean;
   isSpeaking: boolean;
   maxPracticeCount: number;
-  
+
+  // 아바타
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  isSessionReady: boolean;
+  avatarState: 'idle' | 'loading' | 'speaking' | 'listening' | 'error';
+  avatarError: string | null;
+
   // 액션
   setSentence: (sentence: string) => void;
-  speakSentence: () => void;
+  startSession: () => Promise<void>;
+  speakSentence: () => Promise<void>;
   startRecording: () => Promise<void>;
   stopRecording: () => Promise<void>;
   reset: () => void;
@@ -32,33 +41,62 @@ interface UseSituationPracticeReturn {
 /**
  * 상황극 문장 연습 훅
  * - 문장 작성
- * - TTS로 문장 듣기 (Web Speech API)
+ * - 아바타가 문장 읽어주기
  * - 3회 녹음 연습
  */
 export const useSituationPractice = ({
   onPracticeComplete,
 }: UseSituationPracticeProps = {}): UseSituationPracticeReturn => {
   const maxPracticeCount = 3;
-  
+
   // 상태
   const [sentence, setSentence] = useState('');
   const [practiceCount, setPracticeCount] = useState(0);
   const [recordings, setRecordings] = useState<PracticeRecording[]>([]);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  
-  // Refs
-  const synthRef = useRef<SpeechSynthesis | null>(null);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
-  
+
+  // 아바타 훅
+  const avatar = useHeygenAvatar({
+    callbacks: {
+      onAvatarStartTalking: () => {
+        logger.log('[PRACTICE] 아바타 말하기 시작');
+      },
+      onAvatarStopTalking: () => {
+        logger.log('[PRACTICE] 아바타 말하기 종료');
+      },
+    },
+  });
+
   // 오디오 녹음
   const audioRecorder = useAudioRecorder();
 
+  // 아바타 말하는 중 여부
+  const isSpeaking = avatar.avatarState === 'speaking';
+
   /**
-   * TTS로 문장 읽기 (Web Speech API)
+   * 아바타 세션 시작
    */
-  const speakSentence = useCallback(() => {
+  const startSession = useCallback(async () => {
+    try {
+      logger.log('[PRACTICE] 아바타 세션 시작');
+      await avatar.startSession();
+      logger.log('[PRACTICE] 아바타 세션 준비 완료');
+    } catch (error) {
+      logger.error('[PRACTICE] 아바타 세션 시작 실패:', error);
+      throw error;
+    }
+  }, [avatar]);
+
+  /**
+   * 아바타가 문장 읽어주기
+   */
+  const speakSentence = useCallback(async () => {
     if (!sentence || sentence.trim() === '') {
       logger.warn('[PRACTICE] 문장이 비어있습니다');
+      return;
+    }
+
+    if (!avatar.isSessionReady) {
+      logger.warn('[PRACTICE] 아바타 세션이 준비되지 않았습니다');
       return;
     }
 
@@ -68,45 +106,16 @@ export const useSituationPractice = ({
     }
 
     try {
-      // Web Speech API 초기화
-      if (!synthRef.current) {
-        synthRef.current = window.speechSynthesis;
-      }
+      logger.log('[PRACTICE] 아바타 말하기 시작', { sentence });
 
-      // 기존 재생 중지
-      synthRef.current.cancel();
-
-      // SpeechSynthesisUtterance 생성
-      const utterance = new SpeechSynthesisUtterance(sentence);
-      utterance.lang = 'ko-KR';
-      utterance.rate = 0.9; // 속도 (0.1 ~ 10)
-      utterance.pitch = 1.0; // 음높이 (0 ~ 2)
-      utterance.volume = 1.0; // 볼륨 (0 ~ 1)
-
-      utterance.onstart = () => {
-        logger.log('[PRACTICE] TTS 재생 시작');
-        setIsSpeaking(true);
-      };
-
-      utterance.onend = () => {
-        logger.log('[PRACTICE] TTS 재생 완료');
-        setIsSpeaking(false);
-      };
-
-      utterance.onerror = (event) => {
-        logger.error('[PRACTICE] TTS 에러:', event);
-        setIsSpeaking(false);
-      };
-
-      utteranceRef.current = utterance;
-      synthRef.current.speak(utterance);
-      
-      logger.log('[PRACTICE] TTS 재생 요청', { sentence });
+      await avatar.speak({
+        text: sentence,
+        taskType: TaskType.REPEAT,
+      });
     } catch (error) {
-      logger.error('[PRACTICE] TTS 실패:', error);
-      setIsSpeaking(false);
+      logger.error('[PRACTICE] 아바타 말하기 실패:', error);
     }
-  }, [sentence, isSpeaking]);
+  }, [sentence, isSpeaking, avatar]);
 
   /**
    * 녹음 시작
@@ -137,7 +146,7 @@ export const useSituationPractice = ({
   const stopRecording = useCallback(async () => {
     try {
       logger.log('[PRACTICE] 녹음 중지');
-      
+
       const audioBlob = await audioRecorder.stopRecording();
       if (!audioBlob) {
         throw new Error('녹음 데이터가 없습니다');
@@ -175,16 +184,10 @@ export const useSituationPractice = ({
    */
   const reset = useCallback(() => {
     logger.log('[PRACTICE] 연습 초기화');
-    
-    // TTS 중지
-    if (synthRef.current) {
-      synthRef.current.cancel();
-    }
-    
+
     setSentence('');
     setPracticeCount(0);
     setRecordings([]);
-    setIsSpeaking(false);
   }, []);
 
   return {
@@ -195,13 +198,19 @@ export const useSituationPractice = ({
     isRecording: audioRecorder.isRecording,
     isSpeaking,
     maxPracticeCount,
-    
+
+    // 아바타
+    videoRef: avatar.videoRef,
+    isSessionReady: avatar.isSessionReady,
+    avatarState: avatar.avatarState,
+    avatarError: avatar.error,
+
     // 액션
     setSentence,
+    startSession,
     speakSentence,
     startRecording,
     stopRecording,
     reset,
   };
 };
-
