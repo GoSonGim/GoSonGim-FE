@@ -158,9 +158,30 @@ export const useHeygenAvatar = ({
       }
 
       logger.log('Creating avatar session with config:', sessionConfig);
-      await avatar.createStartAvatar(sessionConfig);
+      
+      // STREAM_READY 이벤트를 기다리는 Promise 생성
+      const streamReadyPromise = new Promise<void>((resolve) => {
+        const handler = () => {
+          logger.log('[SESSION START] STREAM_READY event received');
+          resolve();
+          avatar.off(StreamingEvents.STREAM_READY, handler);
+        };
+        avatar.on(StreamingEvents.STREAM_READY, handler);
+      });
 
+      // 아바타 세션 시작
+      await avatar.createStartAvatar(sessionConfig);
       logger.log('Avatar session started successfully');
+
+      // STREAM_READY 이벤트 대기 (최대 5초)
+      await Promise.race([
+        streamReadyPromise,
+        new Promise<void>((_, reject) =>
+          setTimeout(() => reject(new Error('STREAM_READY timeout')), 5000),
+        ),
+      ]);
+
+      logger.log('[SESSION START] Stream is ready, session fully initialized');
     } catch (err) {
       logger.error('Failed to start avatar session:', err);
       let errorMessage = '아바타 세션 시작 실패';

@@ -85,27 +85,39 @@ const SituationDetail = () => {
             </div>
 
             {/* 이미지 영역 */}
-            <div className="relative h-[264px] w-full overflow-hidden rounded-[9px] bg-[#d9d9d9]">
+            <div className="bg-gray-20 relative h-[264px] w-full overflow-hidden rounded-[9px]">
               {situationDetail.image && situationDetail.image.trim() !== '' && !imageError ? (
                 <img
                   src={situationDetail.image}
                   alt={situationDetail.situationName}
                   className="h-full w-full rounded-[9px] object-cover"
+                  loading="lazy"
                   onError={(e) => {
-                    logger.error('이미지 로드 실패:', situationDetail.image);
-                    logger.error('이미지 에러 이벤트:', e);
+                    logger.error('이미지 로드 실패:', {
+                      url: situationDetail.image,
+                      error: e,
+                      type: e.type,
+                    });
                     setImageError(true);
                   }}
                   onLoad={() => {
                     logger.log('이미지 로드 성공:', situationDetail.image);
-                    setImageError(false);
                   }}
                 />
               ) : (
-                <div className="absolute inset-0 flex h-full items-center justify-center">
-                  <p className="text-body-01-regular text-gray-60">
-                    {!situationDetail.image || situationDetail.image.trim() === '' ? '이미지 없음' : '이미지 로드 실패'}
-                  </p>
+                <div className="bg-gray-20 flex h-full items-center justify-center">
+                  <div className="text-center">
+                    <p className="text-body-01-regular text-gray-60">
+                      {!situationDetail.image || situationDetail.image.trim() === ''
+                        ? '이미지가 없습니다'
+                        : '이미지를 불러올 수 없습니다'}
+                    </p>
+                    {imageError && situationDetail.image && (
+                      <p className="text-caption-01-regular mt-1 text-gray-50">
+                        URL: {situationDetail.image.substring(0, 50)}...
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

@@ -87,18 +87,19 @@ export default function SituationConversation() {
 
           {/* 제목 */}
           <p className="text-heading-02-regular text-gray-100">상황극 대화</p>
-
-          {/* 턴 표시 */}
-          <div className="absolute right-4">
-            <TurnIndicator currentTurn={conversation.currentTurnIndex} totalTurns={5} />
-          </div>
         </div>
       </div>
 
       {/* 메인 컨텐츠 */}
       <div className="flex flex-1 flex-col overflow-hidden">
+        {/* 턴 표시 (FreeTalk 스타일) */}
+        <TurnIndicator
+          currentTurn={conversation.currentTurnIndex}
+          totalTurns={5}
+          completedTurns={conversation.turns.filter((t) => t.answer).map((t) => t.turnIndex)}
+        />
         {/* 아바타 비디오 */}
-        <div className="shrink-0 px-4 pb-6 pt-6">
+        <div className="shrink-0 px-4 pb-6">
           <AvatarVideo
             videoRef={conversation.videoRef}
             isSessionReady={conversation.isSessionReady}
@@ -117,7 +118,7 @@ export default function SituationConversation() {
       </div>
 
       {/* 하단 녹음 버튼 */}
-      <div className="flex shrink-0 justify-center py-6">
+      <div className="flex shrink-0 justify-center py-3">
         <RecordButton
           isRecording={conversation.isRecording}
           isDisabled={isRecordButtonDisabled}

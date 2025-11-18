@@ -16,7 +16,7 @@ export const ConversationItem = ({ turn, showAnswer = true }: ConversationItemPr
       {turn.question && (
         <div className="flex justify-start">
           <div className="bg-blue-1 flex min-h-[62px] max-w-[361px] items-center justify-center rounded-tl-[2px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[16px] px-4 py-4">
-            <p className="text-body-01-regular whitespace-pre-wrap break-words text-center text-white">
+            <p className="text-body-01-regular wrap-break-word whitespace-pre-wrap text-center text-white">
               {turn.question}
             </p>
           </div>
@@ -32,7 +32,7 @@ export const ConversationItem = ({ turn, showAnswer = true }: ConversationItemPr
               turn.evaluation?.isSuccess === false ? 'bg-red-50' : 'bg-white',
             )}
           >
-            <p className="text-body-01-regular text-gray-80 whitespace-pre-wrap break-words text-center">
+            <p className="text-body-01-regular wrap-break-word text-gray-80 whitespace-pre-wrap text-center">
               {turn.answer}
             </p>
           </div>

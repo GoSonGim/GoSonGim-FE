@@ -7,7 +7,6 @@ import { useReplyMutation } from './mutations/useReplyMutation';
 import { useCompleteSessionMutation } from './mutations/useCompleteSessionMutation';
 import { useSttMutation } from './mutations/useSttMutation';
 import { logger } from '@/utils/common/loggerUtils';
-import { TaskType } from '@heygen/streaming-avatar';
 import type { Turn, FinalSummary } from '@/types/situation';
 
 interface UseSituationConversationProps {
@@ -96,20 +95,10 @@ export const useSituationConversation = ({
       setIsProcessing(true);
       logger.log('[CONVERSATION] 대화 시작');
 
-      // 1. 아바타 세션 시작
+      // 1. 아바타 세션 시작 (STREAM_READY까지 대기 포함)
       logger.log('[CONVERSATION] Step 1: 아바타 세션 시작');
       await avatar.startSession();
-
-      // 아바타 준비 대기 (최대 5초)
-      let waitCount = 0;
-      while (!avatar.isSessionReady && waitCount < 50) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        waitCount++;
-      }
-
-      if (!avatar.isSessionReady) {
-        throw new Error('아바타 세션 준비 실패');
-      }
+      logger.log('[CONVERSATION] 아바타 세션 준비 완료!');
 
       // 2. 백엔드 세션 시작
       logger.log('[CONVERSATION] Step 2: 백엔드 세션 시작');
