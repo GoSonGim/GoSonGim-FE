@@ -1,8 +1,12 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBookmarkList } from '@/hooks/bookmark/queries/useBookmarkList';
 import type { BookmarkSortType, BookmarkItem } from '@/types/bookmark';
-import { getSituationCategoryName } from '@/utils/studytalk/categoryUtils';
+import {
+  getSituationCategoryName,
+  getSituationCategoryParam,
+  getKitCategoryParam,
+} from '@/utils/studytalk/categoryUtils';
 import BottomNav from '@/components/common/BottomNav';
 import StudyTalkTabs from '@/components/studytalk/StudyTalkTabs';
 import CategoryFilter from '@/components/studytalk/CategoryFilter';
@@ -29,6 +33,9 @@ export default function HomeStudyTalk() {
   const [selectedSituationCategory, setSelectedSituationCategory] = useState<SituationCategoryOption>('전체');
   const [selectedSituationSort, setSelectedSituationSort] = useState<SortOption>('최신순');
 
+  // KIT 카테고리 변환
+  const kitCategoryParam = getKitCategoryParam(selectedCategory);
+
   // 조음발음 키트 북마크 목록 조회
   const {
     data: kitBookmarksData,
@@ -36,9 +43,12 @@ export default function HomeStudyTalk() {
     error: kitError,
   } = useBookmarkList({
     type: 'KIT',
-    category: selectedCategory === '전체' ? undefined : selectedCategory,
+    category: kitCategoryParam,
     sort: (selectedSort === '최신순' ? 'latest' : 'oldest') as BookmarkSortType,
   });
+
+  // SITUATION 카테고리 변환
+  const situationCategoryParam = getSituationCategoryParam(selectedSituationCategory);
 
   // 상황극 북마크 목록 조회
   const {
@@ -47,12 +57,20 @@ export default function HomeStudyTalk() {
     error: situationError,
   } = useBookmarkList({
     type: 'SITUATION',
-    category: selectedSituationCategory === '전체' ? undefined : selectedSituationCategory,
+    category: situationCategoryParam,
     sort: (selectedSituationSort === '최신순' ? 'latest' : 'oldest') as BookmarkSortType,
   });
 
-  const visibleKits = kitBookmarksData?.result.data || [];
-  const visibleSituationKits = situationBookmarksData?.result.data || [];
+  // 정렬 로직 적용
+  const visibleKits = useMemo(() => {
+    const data = kitBookmarksData?.result.data || [];
+    return selectedSort === '오래된순' ? [...data].reverse() : data;
+  }, [kitBookmarksData, selectedSort]);
+
+  const visibleSituationKits = useMemo(() => {
+    const data = situationBookmarksData?.result.data || [];
+    return selectedSituationSort === '오래된순' ? [...data].reverse() : data;
+  }, [situationBookmarksData, selectedSituationSort]);
 
   const handleTabChange = (tab: TabType) => {
     setActiveTab(tab);
