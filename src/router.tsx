@@ -16,7 +16,7 @@ import LipSoundStep2 from '@/pages/search/lipSound/LipSoundStep2';
 import LipSoundPractice from '@/pages/search/lipSound/LipSoundPractice';
 import LipSoundResult from '@/pages/search/lipSound/LipSoundResult';
 import SituationCategory from '@/pages/search/SituationCategory';
-import SituationDetail from '@/pages/search/SituationDetail';
+import SituationDetail from '@/pages/situation/SituationDetail';
 import Review from '@/pages/review/Review';
 import ReviewCalendar from '@/pages/review/ReviewCalendar';
 import ReviewPractice from '@/pages/review/practice/ReviewPractice';
