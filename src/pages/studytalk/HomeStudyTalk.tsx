@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBookmarkList } from '@/hooks/bookmark/queries/useBookmarkList';
-import type { BookmarkSortType } from '@/types/bookmark';
+import type { BookmarkSortType, BookmarkItem } from '@/types/bookmark';
+import { getSituationCategoryName } from '@/utils/studytalk/categoryUtils';
 import BottomNav from '@/components/common/BottomNav';
 import StudyTalkTabs from '@/components/studytalk/StudyTalkTabs';
 import CategoryFilter from '@/components/studytalk/CategoryFilter';
@@ -109,7 +110,7 @@ export default function HomeStudyTalk() {
                   {/* 2열 그리드 */}
                   {Array.from({ length: Math.ceil(visibleKits.length / 2) }).map((_, rowIndex) => (
                     <div key={rowIndex} className="flex gap-[16px]">
-                      {visibleKits.slice(rowIndex * 2, rowIndex * 2 + 2).map((kit) => (
+                      {visibleKits.slice(rowIndex * 2, rowIndex * 2 + 2).map((kit: BookmarkItem) => (
                         <PracticeKitCard
                           key={kit.bookmarkId}
                           bookmarkId={kit.bookmarkId}
@@ -152,11 +153,11 @@ export default function HomeStudyTalk() {
                   {/* 2열 그리드 */}
                   {Array.from({ length: Math.ceil(visibleSituationKits.length / 2) }).map((_, rowIndex) => (
                     <div key={rowIndex} className="flex gap-[16px]">
-                      {visibleSituationKits.slice(rowIndex * 2, rowIndex * 2 + 2).map((kit) => (
+                      {visibleSituationKits.slice(rowIndex * 2, rowIndex * 2 + 2).map((kit: BookmarkItem) => (
                         <SituationPracticeCard
                           key={kit.bookmarkId}
                           bookmarkId={kit.bookmarkId}
-                          categoryFull={kit.kitCategory}
+                          categoryFull={getSituationCategoryName(kit.kitCategory)}
                           title={kit.kitName}
                         />
                       ))}
