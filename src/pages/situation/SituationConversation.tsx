@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useSituationConversation } from '@/hooks/situation/useSituationConversation';
 import { TurnIndicator, AvatarVideo, RecordButton } from '@/components/situation/common';
 import { ConversationList } from '@/components/situation/conversation';
@@ -13,8 +13,12 @@ import { logger } from '@/utils/common/loggerUtils';
  */
 export default function SituationConversation() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { situationId } = useParams<{ situationId: string }>();
   const situationIdNum = situationId ? parseInt(situationId, 10) : 0;
+
+  // location state에서 상황극 이름 가져오기
+  const situationName = location.state?.situationName as string | undefined;
 
   // 실패 모달 상태
   const [isFailureModalOpen, setIsFailureModalOpen] = useState(false);
@@ -52,7 +56,7 @@ export default function SituationConversation() {
   const handlePractice = () => {
     setIsFailureModalOpen(false);
     navigate(`/situation/${situationIdNum}/practice`, {
-      state: { failedTurn },
+      state: { failedTurn, situationName },
     });
   };
 
@@ -86,7 +90,7 @@ export default function SituationConversation() {
           </button>
 
           {/* 제목 */}
-          <p className="text-heading-02-regular text-gray-100">상황극 대화</p>
+          <p className="text-heading-02-regular text-gray-100">{situationName || '상황극 대화'}</p>
         </div>
       </div>
 

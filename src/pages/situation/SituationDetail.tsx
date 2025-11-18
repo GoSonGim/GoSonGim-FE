@@ -37,7 +37,9 @@ const SituationDetail = () => {
   const handleStartClick = () => {
     // 상황극 대화 페이지로 이동
     logger.log('시작하기 클릭', { situationId: situationIdNum });
-    navigate(`/situation/${situationIdNum}/conversation`);
+    navigate(`/situation/${situationIdNum}/conversation`, {
+      state: { situationName: situationDetail?.situationName },
+    });
   };
 
   return (

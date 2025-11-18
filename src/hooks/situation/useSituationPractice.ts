@@ -92,11 +92,13 @@ export const useSituationPractice = ({
   const speakSentence = useCallback(async () => {
     if (!sentence || sentence.trim() === '') {
       logger.warn('[PRACTICE] 문장이 비어있습니다');
+      alert('문장을 입력해주세요.');
       return;
     }
 
     if (!avatar.isSessionReady) {
       logger.warn('[PRACTICE] 아바타 세션이 준비되지 않았습니다');
+      alert('아바타가 준비되지 않았습니다. 잠시 후 다시 시도해주세요.');
       return;
     }
 
@@ -114,6 +116,7 @@ export const useSituationPractice = ({
       });
     } catch (error) {
       logger.error('[PRACTICE] 아바타 말하기 실패:', error);
+      alert('아바타 음성 재생에 실패했습니다.\n\nHeyGen API 크레딧을 확인해주세요.');
     }
   }, [sentence, isSpeaking, avatar]);
 
@@ -128,6 +131,7 @@ export const useSituationPractice = ({
 
     if (isSpeaking) {
       logger.warn('[PRACTICE] TTS 재생 중에는 녹음할 수 없습니다');
+      alert('아바타가 말하는 중입니다. 잠시만 기다려주세요.');
       return;
     }
 
@@ -136,6 +140,15 @@ export const useSituationPractice = ({
       await audioRecorder.startRecording();
     } catch (error) {
       logger.error('[PRACTICE] 녹음 시작 실패:', error);
+
+      if (error instanceof Error && error.message.includes('Permission denied')) {
+        alert(
+          '마이크 권한이 필요합니다.\n\n브라우저 주소창 왼쪽의 자물쇠 아이콘을 클릭하여\n마이크 권한을 "허용"으로 변경해주세요.',
+        );
+      } else {
+        alert('녹음을 시작할 수 없습니다. 다시 시도해주세요.');
+      }
+
       throw error;
     }
   }, [practiceCount, isSpeaking, audioRecorder, maxPracticeCount]);

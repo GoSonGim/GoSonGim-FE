@@ -23,16 +23,16 @@ export const SentenceInput = ({
   };
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div className="flex h-full w-full flex-col gap-2">
       <textarea
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
         maxLength={maxLength}
         disabled={disabled}
-        className="text-body-01-regular border-gray-20 placeholder:text-gray-60 focus:border-blue-1 disabled:bg-gray-10 disabled:text-gray-60 min-h-[120px] w-full resize-none rounded-[12px] border border-solid px-4 py-3 text-gray-100 focus:outline-none"
+        className="text-body-01-regular border-gray-20 placeholder:text-gray-60 focus:border-blue-1 disabled:bg-gray-10 disabled:text-gray-60 h-full w-full resize-none rounded-[16px] border border-solid px-6 py-4 text-gray-100 focus:outline-none"
       />
-      <div className="flex justify-end">
+      <div className="flex justify-end px-2">
         <span className="text-caption-01-regular text-gray-60">
           {value.length} / {maxLength}
         </span>

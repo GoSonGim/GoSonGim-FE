@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useSituationPractice } from '@/hooks/situation/useSituationPractice';
-import { SentenceInput, PracticeSession } from '@/components/situation/practice';
+import { PracticeSession } from '@/components/situation/practice';
 import { AvatarVideo } from '@/components/situation/common';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import type { Turn } from '@/types/situation';
@@ -18,10 +18,12 @@ export default function SituationPractice() {
 
   // 실패한 턴 데이터 (대화 페이지에서 전달)
   const failedTurn = location.state?.failedTurn as Turn | undefined;
+  const situationName = location.state?.situationName as string | undefined;
 
   // 연습 단계 상태
   const [step, setStep] = useState<'input' | 'practice' | 'complete'>('input');
   const [showCompleteMessage, setShowCompleteMessage] = useState(false);
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
 
   const practice = useSituationPractice({
     onPracticeComplete: () => {
@@ -35,6 +37,7 @@ export default function SituationPractice() {
   useEffect(() => {
     if (failedTurn?.answer) {
       practice.setSentence(failedTurn.answer);
+      setShowPlaceholder(false); // 값이 있으면 placeholder 숨김
     }
   }, [failedTurn, practice]);
 
@@ -87,61 +90,80 @@ export default function SituationPractice() {
           </button>
 
           {/* 제목 */}
-          <p className="text-heading-02-regular text-gray-100">문장 연습</p>
+          <p className="text-heading-02-regular text-gray-100">{situationName || '문장 연습'}</p>
         </div>
       </div>
 
-      {/* 메인 컨텐츠 */}
-      <div className="flex flex-1 flex-col overflow-y-auto px-6 py-6">
-        {step === 'input' && (
-          // 1단계: 문장 작성
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-heading-02-semibold text-gray-100">연습할 문장을 작성하세요</h2>
-              <p className="text-body-02-regular text-gray-60">작성한 문장을 3번 따라 읽어보세요.</p>
+      {step === 'input' && (
+        // 1단계: 문장 작성 (Figma: 394-2654)
+        <div className="flex flex-1 flex-col">
+          {/* 아바타 영상 플레이스홀더 */}
+          <div className="mx-[14px] mt-6 flex h-[224px] items-center justify-center overflow-hidden rounded-[16px] bg-white px-[56px] py-[56px]">
+            <p className="text-body-01-medium text-blue-1 text-center">
+              말씀하시려던 문장을 작성하고 <br /> 시작하기 버튼을 눌러주세요.
+            </p>
+          </div>
+
+          {/* 입력 필드 */}
+          <div className="mx-4 mt-3 mb-[203px]">
+            <input
+              type="text"
+              value={practice.sentence}
+              onChange={(e) => {
+                const newValue = e.target.value;
+                practice.setSentence(newValue);
+                // 값이 있으면 placeholder 숨김, 없으면 표시
+                setShowPlaceholder(!newValue || newValue.trim() === '');
+              }}
+              placeholder={showPlaceholder ? '말씀하시려던 문장을 작성해주세요' : ''}
+              maxLength={100}
+              onFocus={() => setShowPlaceholder(false)}
+              onBlur={() => {
+                if (!practice.sentence || practice.sentence.trim() === '') {
+                  setShowPlaceholder(true);
+                }
+              }}
+              className="text-body-01-regular placeholder:text-gray-40 border-blue-1 h-[60px] w-full rounded-[16px] border border-solid px-4 text-center text-gray-100 focus:outline-none"
+            />
+          </div>
+
+          {/* 피드백 표시 (실패한 경우) */}
+          {failedTurn?.evaluation && (
+            <div className="mx-4 mt-4 rounded-[16px] bg-red-50 p-4">
+              <p className="text-caption-01-semibold mb-1 text-red-500">평가 피드백</p>
+              <p className="text-body-02-regular text-gray-80">{failedTurn.evaluation.feedback}</p>
             </div>
+          )}
 
-            {/* 피드백 표시 (실패한 경우) */}
-            {failedTurn?.evaluation && (
-              <div className="rounded-[12px] bg-red-50 p-4">
-                <p className="text-caption-01-semibold mb-1 text-red-500">평가 피드백</p>
-                <p className="text-body-02-regular text-gray-80">{failedTurn.evaluation.feedback}</p>
-              </div>
-            )}
-
-            <SentenceInput value={practice.sentence} onChange={practice.setSentence} maxLength={100} />
-
+          {/* 하단 고정 버튼 */}
+          <div className="absolute right-[52px] bottom-[78px] left-[53px]">
             <button
               onClick={handleStartPractice}
               disabled={!practice.sentence || practice.sentence.trim() === ''}
-              className="bg-blue-1 hover:bg-blue-1-hover text-body-01-semibold disabled:bg-gray-20 disabled:text-gray-60 h-12 rounded-[8px] text-white transition-colors disabled:cursor-not-allowed"
+              className="bg-blue-1 hover:bg-blue-1-hover text-heading-02-semibold disabled:bg-gray-20 disabled:text-gray-60 h-[48px] w-full rounded-[100px] text-white transition-colors disabled:cursor-not-allowed"
             >
-              연습 시작
+              시작하기
             </button>
           </div>
-        )}
+        </div>
+      )}
 
-        {step === 'practice' && (
-          // 2단계: 3회 연습
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-heading-02-semibold text-gray-100">문장을 따라 읽어보세요</h2>
-              <p className="text-body-02-regular text-gray-60">
-                아바타를 보며 문장을 듣고, 녹음 버튼을 눌러 3번 따라해보세요.
-              </p>
-            </div>
+      {step === 'practice' && (
+        // 2단계: 3회 연습 (Figma: 601-4227)
+        <div className="flex flex-1 flex-col overflow-hidden">
+          {/* 아바타 비디오 */}
+          <div className="shrink-0 px-4 pb-6">
+            <AvatarVideo
+              videoRef={practice.videoRef}
+              isSessionReady={practice.isSessionReady}
+              avatarState={practice.avatarState}
+              avatarError={practice.avatarError}
+              onStartSession={practice.startSession}
+            />
+          </div>
 
-            {/* 아바타 비디오 */}
-            <div className="shrink-0">
-              <AvatarVideo
-                videoRef={practice.videoRef}
-                isSessionReady={practice.isSessionReady}
-                avatarState={practice.avatarState}
-                avatarError={practice.avatarError}
-                onStartSession={practice.startSession}
-              />
-            </div>
-
+          {/* 연습 세션 */}
+          <div className="flex-1 overflow-y-auto px-6 pb-6">
             <PracticeSession
               sentence={practice.sentence}
               practiceCount={practice.practiceCount}
@@ -153,45 +175,45 @@ export default function SituationPractice() {
               onStopRecording={practice.stopRecording}
             />
           </div>
-        )}
+        </div>
+      )}
 
-        {step === 'complete' && (
-          // 3단계: 완료
-          <div className="flex h-full flex-col items-center justify-center gap-6">
-            <div className="text-6xl">🎉</div>
+      {step === 'complete' && (
+        // 3단계: 완료
+        <div className="flex flex-1 flex-col items-center justify-center gap-6 px-6">
+          <div className="text-6xl">🎉</div>
 
-            <div className="flex flex-col gap-2 text-center">
-              <h2 className="text-heading-01-bold text-gray-100">연습 완료!</h2>
-              <p className="text-body-01-regular text-gray-60">문장 연습을 모두 마쳤습니다.</p>
-            </div>
-
-            {showCompleteMessage && (
-              <div className="bg-blue-1/10 w-full max-w-[400px] rounded-[12px] p-4">
-                <p className="text-body-01-medium text-blue-1 text-center">
-                  다시 시작하기 버튼을 눌러
-                  <br />
-                  대화를 이어가세요!
-                </p>
-              </div>
-            )}
-
-            <div className="flex w-full max-w-[400px] flex-col gap-3">
-              <button
-                onClick={handleRestart}
-                className="bg-blue-1 hover:bg-blue-1-hover text-body-01-semibold h-12 rounded-[8px] text-white transition-colors"
-              >
-                다시 시작하기
-              </button>
-              <button
-                onClick={handleBack}
-                className="text-body-01-semibold border-gray-20 text-gray-80 hover:bg-gray-10 h-12 rounded-[8px] border border-solid transition-colors"
-              >
-                나가기
-              </button>
-            </div>
+          <div className="flex flex-col gap-2 text-center">
+            <h2 className="text-heading-01-bold text-gray-100">연습 완료!</h2>
+            <p className="text-body-01-regular text-gray-60">문장 연습을 모두 마쳤습니다.</p>
           </div>
-        )}
-      </div>
+
+          {showCompleteMessage && (
+            <div className="bg-blue-1/10 w-full rounded-[12px] p-4">
+              <p className="text-body-01-medium text-blue-1 text-center">
+                다시 시작하기 버튼을 눌러
+                <br />
+                대화를 이어가세요!
+              </p>
+            </div>
+          )}
+
+          <div className="flex w-full flex-col gap-3">
+            <button
+              onClick={handleRestart}
+              className="bg-blue-1 hover:bg-blue-1-hover text-body-01-semibold h-[56px] rounded-[8px] text-white transition-colors"
+            >
+              다시 시작하기
+            </button>
+            <button
+              onClick={handleBack}
+              className="text-body-01-semibold border-gray-20 text-gray-80 hover:bg-gray-10 h-[56px] rounded-[8px] border border-solid transition-colors"
+            >
+              나가기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
