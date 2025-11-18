@@ -45,7 +45,7 @@ const SituationCard = ({ situation, onClick, isBookmarked = false, bookmarkId }:
       className="relative h-[138px] w-[173px] cursor-pointer rounded-[16px] border border-[#f1f1f5] bg-white transition-shadow hover:shadow-md"
       onClick={handleClick}
     >
-      <div className="flex h-[138px] w-[173px] flex-col items-end gap-[4px] overflow-hidden rounded-[inherit] py-2 pr-0 pl-2">
+      <div className="flex h-[138px] w-[173px] flex-col items-end gap-[4px] overflow-hidden rounded-[inherit] py-2 pr-0 pl-2 shadow-lg">
         <button
           onClick={handleBookmarkClick}
           className="relative size-12 shrink-0 overflow-hidden"

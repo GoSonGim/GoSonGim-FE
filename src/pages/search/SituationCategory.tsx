@@ -38,7 +38,7 @@ const SituationCategory = () => {
           {/* 뒤로가기 버튼 */}
           <button
             onClick={handleBackClick}
-            className="absolute left-4 flex size-12 items-center justify-center overflow-hidden p-2"
+            className="absolute left-4 flex size-12 items-center justify-center overflow-hidden p-2 cursor-pointer"
             aria-label="뒤로가기"
           >
             <div className="h-[18px] w-[10px]">
