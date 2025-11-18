@@ -11,10 +11,20 @@ export type SituationCategoryType = '전체' | '일상' | '구매' | '의료' | 
 // 북마크 아이템 (목록 조회용)
 export interface BookmarkItem {
   bookmarkId: number;
-  kitId: number;
+  kitId: number; // SITUATION 타입일 때는 situationId로 사용됨
   kitName: string;
   kitCategory: string;
   createdAt: string;
+}
+
+// KIT 타입 북마크 아이템
+export interface KitBookmarkItem extends BookmarkItem {
+  type: 'KIT';
+}
+
+// SITUATION 타입 북마크 아이템
+export interface SituationBookmarkItem extends BookmarkItem {
+  type: 'SITUATION';
 }
 
 // 북마크 미리보기 아이템
@@ -24,5 +34,6 @@ export interface BookmarkPreviewItem {
   title: string;
   category: string;
   createdAt: string;
+  kitId?: number; // KIT/SITUATION의 ID (API 응답에 포함되면 사용)
 }
 

@@ -76,6 +76,16 @@ export default function HomeStudyTalk() {
     setActiveTab(tab);
   };
 
+  const handleKitCardClick = (kitId: number) => {
+    // 입술 소리 키트 (kitId: 4)인 경우 특별한 경로로 이동
+    if (kitId === 4) {
+      navigate('/search/articulation-position/lip-sound/step1');
+    } else {
+      // 다른 키트들은 기본 경로로 이동
+      navigate(`/talkingkit/${kitId}`);
+    }
+  };
+
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
       {/* Header */}
@@ -127,8 +137,10 @@ export default function HomeStudyTalk() {
                         <PracticeKitCard
                           key={kit.bookmarkId}
                           bookmarkId={kit.bookmarkId}
+                          kitId={kit.kitId}
                           category={kit.kitCategory}
                           title={kit.kitName}
+                          onClick={() => handleKitCardClick(kit.kitId)}
                         />
                       ))}
                     </div>
@@ -170,6 +182,7 @@ export default function HomeStudyTalk() {
                         <SituationPracticeCard
                           key={kit.bookmarkId}
                           bookmarkId={kit.bookmarkId}
+                          situationId={kit.kitId}
                           categoryFull={getSituationCategoryName(kit.kitCategory)}
                           title={kit.kitName}
                         />

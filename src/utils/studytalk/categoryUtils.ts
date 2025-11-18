@@ -38,3 +38,17 @@ export const getKitCategoryParam = (category: string): string | undefined => {
   };
   return mapping[category];
 };
+
+// 상황극 카테고리 URL 쿼리 변환 (한글 → 영문 소문자)
+export const getSituationCategoryQuery = (category: string): string => {
+  const mapping: Record<string, string> = {
+    일상: 'daily',
+    구매: 'purchase',
+    의료: 'medical',
+    교통: 'traffic',
+    직업: 'job',
+    사교: 'social',
+    비상: 'emergency',
+  };
+  return mapping[category] || 'daily';
+};

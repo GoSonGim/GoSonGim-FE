@@ -31,8 +31,7 @@ const ArticulationPositionKit = () => {
 
   const handleKitClick = (kitId: number, kitName: string) => {
     // 입술 소리 키트 (kitId가 특정 값일 때 특정 라우트로 이동)
-    // TODO: 서버에서 kitId 값 확인 후 조건 수정 필요
-    if (kitId === 101) {
+    if (kitId === 4) {
       navigate('/search/articulation-position/lip-sound/step1');
     } else {
       logger.log(`조음 위치별 키트 클릭: ${kitId} - ${kitName}`);

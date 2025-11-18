@@ -1,8 +1,10 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useBookmarkPreview } from '@/hooks/bookmark/queries/useBookmarkPreview';
-import type { BookmarkPreviewItem } from '@/types/bookmark';
-import { getSituationCategoryName } from '@/utils/studytalk/categoryUtils';
+import { useBookmarkList } from '@/hooks/bookmark/queries/useBookmarkList';
+import type { BookmarkPreviewItem, BookmarkItem } from '@/types/bookmark';
+import { getSituationCategoryName, getSituationCategoryQuery } from '@/utils/studytalk/categoryUtils';
 import ArrowButtonIcon from '@/assets/svgs/home/arrow-button.svg';
 
 interface HomeMyStudyProps {
@@ -19,7 +21,50 @@ export default function HomeMyStudy({ className }: HomeMyStudyProps) {
 
   const { data: bookmarkData, isLoading, error } = useBookmarkPreview(10);
 
+  // 북마크 목록 API 추가 호출 (kitId 매칭을 위해)
+  const { data: kitListData } = useBookmarkList({ type: 'KIT', sort: 'latest' });
+  const { data: situationListData } = useBookmarkList({ type: 'SITUATION', sort: 'latest' });
+
   const bookmarkList = bookmarkData?.result.bookmarkList || [];
+
+  // bookmarkId로 kitId를 찾는 매핑 생성
+  const bookmarkIdToKitIdMap = useMemo(() => {
+    const map = new Map<number, number>();
+    
+    // KIT 북마크 매핑
+    kitListData?.result.data.forEach((item: BookmarkItem) => {
+      map.set(item.bookmarkId, item.kitId);
+    });
+    
+    // SITUATION 북마크 매핑
+    situationListData?.result.data.forEach((item: BookmarkItem) => {
+      map.set(item.bookmarkId, item.kitId);
+    });
+    
+    return map;
+  }, [kitListData, situationListData]);
+
+  const handleCardClick = (item: BookmarkPreviewItem) => {
+    // bookmarkId로 kitId 조회
+    const kitId = bookmarkIdToKitIdMap.get(item.bookmarkId);
+    
+    if (kitId !== undefined) {
+      if (item.type === 'KIT') {
+        // 입술 소리 키트 (kitId: 4)인 경우
+        if (kitId === 4) {
+          navigate('/search/articulation-position/lip-sound/step1');
+        } else {
+          navigate(`/talkingkit/${kitId}`);
+        }
+      } else if (item.type === 'SITUATION') {
+        const categoryQuery = getSituationCategoryQuery(getSituationCategoryName(item.category));
+        navigate(`/search/situation/${categoryQuery}/${kitId}`);
+      }
+    } else {
+      // kitId를 찾을 수 없으면 studytalk 페이지로 이동
+      navigate('/studytalk');
+    }
+  };
 
   return (
     <div className={`flex flex-col gap-2 rounded-2xl px-0 py-2 ${className || ''}`}>
@@ -40,6 +85,7 @@ export default function HomeMyStudy({ className }: HomeMyStudyProps) {
             {bookmarkList.map((item: BookmarkPreviewItem, index: number) => (
               <div
                 key={item.bookmarkId} // 북마크 고유 ID (number)
+                onClick={() => handleCardClick(item)}
                 className={`embla__slide group flex h-32 w-[152px] min-w-[152px] cursor-pointer flex-col items-end justify-between rounded-2xl p-3 shadow-lg transition-colors ${
                   index === 0 ? 'bg-white hover:bg-[#f1f1f5]' : 'bg-white hover:bg-[#f1f1f5]'
                 }`}
