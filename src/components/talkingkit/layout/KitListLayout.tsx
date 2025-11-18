@@ -17,7 +17,7 @@ const KitListLayout = ({ title, children, onBack }: KitListLayoutProps) => {
           {/* 뒤로가기 버튼 */}
           <button
             onClick={onBack}
-            className="absolute left-4 flex size-12 items-center justify-center overflow-hidden p-2"
+            className="absolute left-4 flex size-12 items-center justify-center overflow-hidden p-2 cursor-pointer"
           >
             <div className="h-[18px] w-[10px]">
               <LeftArrowIcon className="h-full w-full" />

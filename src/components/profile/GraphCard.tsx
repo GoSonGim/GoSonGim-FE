@@ -23,7 +23,7 @@ export default function GraphCard({
   onArrowClick,
 }: GraphCardProps) {
   return (
-    <div className="embla__slide flex min-w-[343px] cursor-pointer flex-col gap-2 rounded-[16px] bg-white p-4">
+    <div className="embla__slide flex min-w-[343px] cursor-pointer flex-col gap-2 rounded-[16px] bg-white p-4 shadow-lg">
       <div className="flex items-start justify-between">
         <p className="text-heading-01 text-black">{title}</p>
         {showArrow && ArrowIcon && (

@@ -21,7 +21,7 @@ const LoudSound = () => {
   };
 
   const handleBack = () => {
-    navigate('/talkingkit');
+    navigate(-1);
   };
 
   const handleNext = () => {

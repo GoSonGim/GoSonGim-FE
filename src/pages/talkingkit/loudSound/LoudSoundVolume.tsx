@@ -75,7 +75,7 @@ const LoudSoundVolume = () => {
       stopDetection();
       setIsRecording(false);
     }
-    navigate('/talkingkit/3/loud-sound');
+    navigate(-1);
   };
 
   // 감지가 끝나면 (isDetecting이 false가 되면) 완료 처리

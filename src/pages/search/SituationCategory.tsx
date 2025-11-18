@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import SituationCard from '@/components/talkingkit/common/SituationCard';
 import { useSituations } from '@/hooks/search/queries/useSituations';
+import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
 import { getSituationCategoryTitle, getSituationCategoryId } from '@/utils/common/situationUtils';
 import type { Situation } from '@/types/search';
 
@@ -12,6 +13,7 @@ const SituationCategory = () => {
   // 카테고리 파라미터가 없으면 기본값 사용
   const categoryQuery = category || 'daily';
   const { data: situationsData, isLoading, error } = useSituations(categoryQuery);
+  const { getBookmarkStatus } = useBookmarkStatus('SITUATION');
 
   // 카테고리 ID로 제목 가져오기 (category는 API 쿼리 파라미터이므로 변환 필요)
   const categoryId = getSituationCategoryId(categoryQuery);
@@ -36,7 +38,7 @@ const SituationCategory = () => {
           {/* 뒤로가기 버튼 */}
           <button
             onClick={handleBackClick}
-            className="absolute left-4 flex size-12 items-center justify-center overflow-hidden p-2"
+            className="absolute left-4 flex size-12 items-center justify-center overflow-hidden p-2 cursor-pointer"
             aria-label="뒤로가기"
           >
             <div className="h-[18px] w-[10px]">
@@ -67,9 +69,17 @@ const SituationCategory = () => {
           <div className="flex flex-col gap-4">
             {gridRows.map((row, rowIndex) => (
               <div key={rowIndex} className="flex gap-4">
-                {row.map((situation) => (
-                  <SituationCard key={situation.situationId} situation={situation} />
-                ))}
+                {row.map((situation) => {
+                  const { isBookmarked, bookmarkId } = getBookmarkStatus(situation.situationId);
+                  return (
+                    <SituationCard
+                      key={situation.situationId}
+                      situation={situation}
+                      isBookmarked={isBookmarked}
+                      bookmarkId={bookmarkId}
+                    />
+                  );
+                })}
               </div>
             ))}
           </div>

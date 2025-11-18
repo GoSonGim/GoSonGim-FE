@@ -10,7 +10,7 @@ const LipSoundStep1 = () => {
   };
 
   const handleBackClick = () => {
-    navigate('/search/articulation-position');
+    navigate(-1);
   };
 
   return (

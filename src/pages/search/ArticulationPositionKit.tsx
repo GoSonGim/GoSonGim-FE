@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import KitListLayout from '@/components/talkingkit/layout/KitListLayout';
 import KitCard from '@/components/talkingkit/common/KitCard';
 import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory';
+import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
 import { logger } from '@/utils/common/loggerUtils';
 
 const ArticulationPositionKit = () => {
   const navigate = useNavigate();
   const { data: kitsData, isLoading, error } = useKitsByCategory(2);
+  const { getBookmarkStatus } = useBookmarkStatus('KIT');
 
   // API 응답 데이터 로깅
   useEffect(() => {
@@ -29,8 +31,7 @@ const ArticulationPositionKit = () => {
 
   const handleKitClick = (kitId: number, kitName: string) => {
     // 입술 소리 키트 (kitId가 특정 값일 때 특정 라우트로 이동)
-    // TODO: 서버에서 kitId 값 확인 후 조건 수정 필요
-    if (kitId === 101) {
+    if (kitId === 4) {
       navigate('/search/articulation-position/lip-sound/step1');
     } else {
       logger.log(`조음 위치별 키트 클릭: ${kitId} - ${kitName}`);
@@ -58,15 +59,33 @@ const ArticulationPositionKit = () => {
       ) : (
         <>
           <div className="flex gap-4">
-            {kits.slice(0, 2).map((kit) => (
-              <KitCard key={kit.kitId} kit={kit} onClick={() => handleKitClick(kit.kitId, kit.kitName)} />
-            ))}
+            {kits.slice(0, 2).map((kit) => {
+              const { isBookmarked, bookmarkId } = getBookmarkStatus(kit.kitId);
+              return (
+                <KitCard
+                  key={kit.kitId}
+                  kit={kit}
+                  onClick={() => handleKitClick(kit.kitId, kit.kitName)}
+                  isBookmarked={isBookmarked}
+                  bookmarkId={bookmarkId}
+                />
+              );
+            })}
           </div>
           {kits.length > 2 && (
             <div className="flex gap-4">
-              {kits.slice(2, 4).map((kit) => (
-                <KitCard key={kit.kitId} kit={kit} onClick={() => handleKitClick(kit.kitId, kit.kitName)} />
-              ))}
+              {kits.slice(2, 4).map((kit) => {
+                const { isBookmarked, bookmarkId } = getBookmarkStatus(kit.kitId);
+                return (
+                  <KitCard
+                    key={kit.kitId}
+                    kit={kit}
+                    onClick={() => handleKitClick(kit.kitId, kit.kitName)}
+                    isBookmarked={isBookmarked}
+                    bookmarkId={bookmarkId}
+                  />
+                );
+              })}
             </div>
           )}
         </>
