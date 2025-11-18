@@ -1,5 +1,5 @@
 import { useBookmarkList } from './queries/useBookmarkList';
-import type { BookmarkType } from '@/types/bookmark';
+import type { BookmarkType, BookmarkItem } from '@/types/bookmark';
 
 /**
  * 특정 키트 또는 상황극의 북마크 상태를 확인하는 훅
@@ -13,7 +13,7 @@ export const useBookmarkStatus = (type: BookmarkType) => {
   const bookmarks = data?.result.data || [];
 
   const getBookmarkStatus = (id: number) => {
-    const bookmark = bookmarks.find((b) => b.kitId === id);
+    const bookmark = bookmarks.find((b: BookmarkItem) => b.kitId === id);
     return {
       isBookmarked: !!bookmark,
       bookmarkId: bookmark?.bookmarkId,
