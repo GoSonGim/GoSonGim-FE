@@ -49,6 +49,27 @@ export const getSituationCategoryQuery = (category: string): string => {
     직업: 'job',
     사교: 'social',
     비상: 'emergency',
+    DAILY: 'daily',
+    PURCHASE: 'purchase',
+    MEDICAL: 'medical',
+    TRAFFIC: 'traffic',
+    JOB: 'job',
+    SOCIAL: 'social',
+    EMERGENCY: 'emergency',
   };
   return mapping[category] || 'daily';
+};
+
+// 짧은 카테고리명 변환 (영문 → 한글)
+export const getShortCategoryName = (category: string): string => {
+  const mapping: Record<string, string> = {
+    DAILY: '일상',
+    PURCHASE: '구매',
+    MEDICAL: '의료',
+    TRAFFIC: '교통',
+    JOB: '직업',
+    SOCIAL: '사교',
+    EMERGENCY: '비상',
+  };
+  return mapping[category] || category;
 };
