@@ -36,7 +36,7 @@ export default function SituationPracticeCard({ bookmarkId, categoryFull, title 
         </button>
 
         <div className="flex w-full flex-col items-start px-[4px]">
-          <p className="text-detail-02 leading-[1.5] text-[#8a94a0]">{categoryFull}</p>
+          <p className="text-detail-02 leading-normal text-gray-50">{categoryFull}</p>
           <p className="text-heading-02-semibold whitespace-pre-line text-gray-100" style={{ lineHeight: '1.3' }}>
             {title}
           </p>

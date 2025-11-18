@@ -97,11 +97,6 @@ export default function HomeStudyTalk() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto bg-white px-0 pt-[16px] pb-40 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {/* Section Title */}
-        <div className="mb-[16px] flex items-center px-[16px] py-0">
-          <p className="text-heading-01 text-center text-gray-100">상황극 연습</p>
-        </div>
-
         {activeTab === '조음발음' ? (
           <>
             {/* 조음발음 연습 탭 */}
