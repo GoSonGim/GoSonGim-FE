@@ -11,14 +11,10 @@ export default function HomeMoreContents({ className }: HomeMoreContentsProps) {
   const navigate = useNavigate();
 
   const handleItemClick = (id: number) => {
-    console.log('클릭된 아이템 ID:', id);
     if (id === 1) {
-      // 자유대화 시작하기
-      console.log('자유대화 페이지로 이동 시도');
       navigate('/freetalk');
-    } else {
-      // 조음키트 진단 받기 - 추후 구현
-      console.log('조음키트 진단 받기 클릭');
+    } else if (id === 2) {
+      navigate('/search/diagnosis');
     }
   };
 
