@@ -112,7 +112,7 @@ const Search = () => {
             {/* 진단 받기 섹션 */}
             <button
               onClick={handleDiagnosisClick}
-              className="border-blue-2 flex h-[88px] w-full items-center justify-between rounded-2xl border bg-white p-4 transition-colors"
+              className="border-blue-2 flex h-[88px] w-full items-center justify-between rounded-2xl border bg-white p-4 shadow-lg transition-colors"
             >
               <div className="flex w-[232px] flex-col items-start leading-normal">
                 <p className="text-detail-01 w-full text-gray-50">체계적인 근육 강화와 발음 연습!</p>
@@ -134,7 +134,7 @@ const Search = () => {
                     <button
                       key={kit.categoryId}
                       onClick={() => handleKitClick(kit.categoryId)}
-                      className="border-gray-10 hover:bg-gray-10 flex w-full cursor-pointer items-center justify-between rounded-2xl border bg-white px-4 py-[19px] transition-colors"
+                      className="border-gray-10 hover:bg-gray-10 flex w-full cursor-pointer items-center justify-between rounded-2xl border bg-white px-4 py-[19px] shadow-lg transition-colors"
                     >
                       <p className="text-heading-02-semibold text-gray-100">{kit.categoryName}</p>
                       <div className="size-5 cursor-pointer">
@@ -159,7 +159,7 @@ const Search = () => {
                     <button
                       key={category.id}
                       onClick={() => handleCategoryClick(category.id)}
-                      className="hover:bg-gray-10 flex w-[173px] cursor-pointer flex-col gap-4 rounded-2xl bg-white px-4 py-2 transition-colors"
+                      className="hover:bg-gray-10 flex w-[173px] cursor-pointer flex-col gap-4 rounded-2xl bg-white px-4 py-2 shadow-lg transition-colors"
                     >
                       <p className="text-heading-02-semibold min-w-full text-gray-100">{category.title}</p>
                       <div className="flex w-full justify-end">

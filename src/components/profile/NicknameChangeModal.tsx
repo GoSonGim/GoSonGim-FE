@@ -1,20 +1,17 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useUpdateNicknameMutation } from '@/hooks/profile/mutations/useUpdateNicknameMutation';
 
 interface NicknameChangeModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentNickname: string;
-  onChangeNickname: (newNickname: string) => void;
 }
 
-export default function NicknameChangeModal({
-  isOpen,
-  onClose,
-  currentNickname,
-  onChangeNickname,
-}: NicknameChangeModalProps) {
+export default function NicknameChangeModal({ isOpen, onClose, currentNickname }: NicknameChangeModalProps) {
   const [newNickname, setNewNickname] = useState('');
+  const [error, setError] = useState('');
+  const updateNicknameMutation = useUpdateNicknameMutation();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -32,6 +29,7 @@ export default function NicknameChangeModal({
   useEffect(() => {
     if (!isOpen) {
       setNewNickname('');
+      setError('');
     }
   }, [isOpen]);
 
@@ -41,14 +39,31 @@ export default function NicknameChangeModal({
     onClose();
   };
 
-  const handleChange = () => {
-    if (newNickname.trim()) {
-      onChangeNickname(newNickname.trim());
-      setNewNickname('');
+  const handleInputChange = (value: string) => {
+    setNewNickname(value);
+    if (value.length > 20) {
+      setError('20자 이하로 입력해주세요!');
+    } else {
+      setError('');
     }
   };
 
-  const isButtonDisabled = !newNickname.trim();
+  const handleChange = () => {
+    if (newNickname.trim() && newNickname.length <= 20) {
+      updateNicknameMutation.mutate(
+        { nickname: newNickname.trim() },
+        {
+          onSuccess: () => {
+            setNewNickname('');
+            setError('');
+            onClose();
+          },
+        },
+      );
+    }
+  };
+
+  const isButtonDisabled = !newNickname.trim() || newNickname.length > 20 || updateNicknameMutation.isPending;
 
   return createPortal(
     <div
@@ -79,7 +94,7 @@ export default function NicknameChangeModal({
               <input
                 type="text"
                 value={newNickname}
-                onChange={(e) => setNewNickname(e.target.value)}
+                onChange={(e) => handleInputChange(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !isButtonDisabled) {
                     handleChange();
@@ -88,6 +103,7 @@ export default function NicknameChangeModal({
                 placeholder=""
                 className="text-body-02-regular border-blue-1 h-[48px] rounded-[8px] border bg-[#f1f1f5] px-2 text-black outline-none"
               />
+              {error && <p className="text-body-02-regular mt-1 text-red-500">{error}</p>}
             </div>
           </div>
         </div>
@@ -107,7 +123,7 @@ export default function NicknameChangeModal({
               isButtonDisabled ? 'bg-gray-40' : 'bg-blue-1 cursor-pointer'
             }`}
           >
-            변경하기
+            {updateNicknameMutation.isPending ? '변경 중...' : '변경하기'}
           </button>
         </div>
       </div>

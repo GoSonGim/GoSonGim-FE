@@ -45,7 +45,7 @@ const BreathingExercise = () => {
         <Step1Layout
           headerTitle={`${kit.highlightedText} 소리내기`}
           title={stage1Name}
-          onBackClick={() => navigate('/talkingkit')}
+          onBackClick={() => navigate(-1)}
         >
           <div className="flex h-[352px] w-full items-center justify-center">
             <h1 className="text-[48px] leading-normal font-medium text-[#ff1f1f]">GREAT!</h1>
@@ -77,7 +77,7 @@ const BreathingExercise = () => {
         guideText="공의 움직임에 따라 호흡을 진행하세요"
         buttonText="시작하기"
         onButtonClick={handleStart}
-        onBackClick={() => navigate('/talkingkit')}
+        onBackClick={() => navigate(-1)}
       >
         <div className="flex h-[352px] items-center justify-center">
           <BreathingGraph
@@ -97,7 +97,7 @@ const BreathingExercise = () => {
       <Step1Layout
         headerTitle={`${kit.highlightedText} 소리내기`}
         title={stage1Name}
-        onBackClick={() => navigate('/talkingkit')}
+        onBackClick={() => navigate(-1)}
         disableAnimation={true}
       >
         <div className="flex h-[352px] items-center justify-center">

@@ -1,15 +1,22 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import type { Situation } from '@/types/search';
-import BookmarkIcon from '@/assets/svgs/talkingkit/common/bookmarkempty.svg';
+import { useAddSituationBookmarkMutation } from '@/hooks/bookmark/mutations/useAddSituationBookmarkMutation';
+import { useRemoveBookmarkMutation } from '@/hooks/bookmark/mutations/useRemoveBookmarkMutation';
+import BookmarkEmptyIcon from '@/assets/svgs/talkingkit/common/bookmarkempty.svg';
+import BookmarkCheckedIcon from '@/assets/svgs/home/bookmarkchecked.svg';
 
 interface SituationCardProps {
   situation: Situation;
   onClick?: () => void;
+  isBookmarked?: boolean;
+  bookmarkId?: number;
 }
 
-const SituationCard = ({ situation, onClick }: SituationCardProps) => {
+const SituationCard = ({ situation, onClick, isBookmarked = false, bookmarkId }: SituationCardProps) => {
   const navigate = useNavigate();
   const { category } = useParams<{ category: string }>();
+  const addSituationBookmarkMutation = useAddSituationBookmarkMutation();
+  const removeBookmarkMutation = useRemoveBookmarkMutation();
 
   const handleClick = () => {
     if (onClick) {
@@ -21,17 +28,37 @@ const SituationCard = ({ situation, onClick }: SituationCardProps) => {
     }
   };
 
+  const handleBookmarkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (isBookmarked && bookmarkId) {
+      // 북마크 삭제
+      removeBookmarkMutation.mutate(bookmarkId);
+    } else {
+      // 북마크 추가
+      addSituationBookmarkMutation.mutate({ situationList: [situation.situationId] });
+    }
+  };
+
   return (
     <div
       className="relative h-[138px] w-[173px] cursor-pointer rounded-[16px] border border-[#f1f1f5] bg-white transition-shadow hover:shadow-md"
       onClick={handleClick}
     >
-      <div className="flex h-[138px] w-[173px] flex-col items-end gap-[4px] overflow-hidden rounded-[inherit] py-2 pr-0 pl-2">
-        <div className="relative size-12 shrink-0 overflow-hidden">
+      <div className="flex h-[138px] w-[173px] flex-col items-end gap-[4px] overflow-hidden rounded-[inherit] py-2 pr-0 pl-2 shadow-lg">
+        <button
+          onClick={handleBookmarkClick}
+          className="relative size-12 shrink-0 overflow-hidden"
+          aria-label={isBookmarked ? '북마크 제거' : '북마크 추가'}
+        >
           <div className="absolute inset-[24.81%_33.33%_29.75%_33.33%]">
-            <BookmarkIcon className="h-full w-full" />
+            {isBookmarked ? (
+              <BookmarkCheckedIcon className="h-full w-full" />
+            ) : (
+              <BookmarkEmptyIcon className="h-full w-full" />
+            )}
           </div>
-        </div>
+        </button>
 
         <div className="flex w-full shrink-0 flex-col items-start px-1 py-0">
           <div className="text-heading-02-semibold-tight text-gray-100">

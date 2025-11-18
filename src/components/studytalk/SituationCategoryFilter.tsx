@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
 
-export type SituationCategoryOption = '전체' | '일상' | '구매' | '의료' | '교통' | '직업' | '사회';
+export type SituationCategoryOption = '전체' | '일상' | '구매' | '의료' | '교통' | '직업' | '사교' | '비상';
 
 interface SituationCategoryFilterProps {
   selectedCategory: SituationCategoryOption;
@@ -10,7 +10,7 @@ interface SituationCategoryFilterProps {
 
 export default function SituationCategoryFilter({ selectedCategory, onCategoryChange }: SituationCategoryFilterProps) {
   const [emblaRef] = useEmblaCarousel({ loop: false, align: 'start' });
-  const categories: SituationCategoryOption[] = ['전체', '일상', '구매', '의료', '교통', '직업', '사회'];
+  const categories: SituationCategoryOption[] = ['전체', '일상', '구매', '의료', '교통', '직업', '사교', '비상'];
 
   return (
     <div className="w-full border-b border-[#f1f1f5] bg-white px-[20px] py-[16px]">
