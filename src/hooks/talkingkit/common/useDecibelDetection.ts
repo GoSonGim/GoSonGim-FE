@@ -6,7 +6,7 @@ import { AUDIO_FFT_SIZE, AUDIO_SMOOTHING_TIME_CONSTANT, AUDIO_CONFIG } from '@/c
 
 interface DecibelDetectionOptions {
   maxDuration?: number; // 최대 녹음 시간 (ms)
-  updateInterval?: number; // 업데이트 간격 (ms)
+  // updateInterval?: number; // 업데이트 간격 (ms) - 향후 사용 예정
 }
 
 export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
@@ -98,7 +98,7 @@ export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
         source,
         bufferSize: AUDIO_FFT_SIZE,
         featureExtractors: ['rms'],
-        callback: (features: { rms?: number }) => {
+        callback: (features: Record<string, number | undefined>) => {
           if (features.rms !== undefined && features.rms > 0) {
             // RMS를 데시벨로 변환
             // dB = 20 * log10(RMS) + offset

@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authAPI } from '@/apis/auth';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { getErrorMessage } from '@/utils/common/errorHandlerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 
 const GoogleCallback = () => {
   const [searchParams] = useSearchParams();
@@ -30,7 +31,7 @@ const GoogleCallback = () => {
 
       const redirectUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI || `${window.location.origin}/callback`;
 
-      console.log('Google OAuth - Sending to backend:', { code, redirectUri }); // 디버깅용
+      logger.log('Google OAuth - Sending to backend:', { code, redirectUri }); // 디버깅용
 
       authAPI
         .googleLogin({
@@ -49,8 +50,8 @@ const GoogleCallback = () => {
           }
         })
         .catch((error) => {
-          console.error('Google login failed:', error);
-          console.error('Error response:', error.response?.data); // 백엔드 에러 상세
+          logger.error('Google login failed:', error);
+          logger.error('Error response:', error.response?.data); // 백엔드 에러 상세
           const errorMessage = getErrorMessage(error);
           alert(`구글 로그인에 실패했습니다: ${errorMessage}`);
           navigate('/login');

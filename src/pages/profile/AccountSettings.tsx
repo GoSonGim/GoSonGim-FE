@@ -2,26 +2,24 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LeftIcon from '@/assets/svgs/profile/profilehome/review-leftarrow.svg';
 import AccountConfirmModal from '@/components/profile/AccountConfirmModal';
+import { useDeleteAccountMutation } from '@/hooks/profile/mutations/useDeleteAccountMutation';
+import { useLogoutMutation } from '@/hooks/auth/mutations/useLogoutMutation';
 
 const AccountSettings = () => {
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const deleteAccountMutation = useDeleteAccountMutation();
+  const logoutMutation = useLogoutMutation();
 
   const handleLogout = () => {
-    // TODO: 실제 로그아웃 API 연동
-    console.log('로그아웃 처리');
+    logoutMutation.mutate();
     setIsLogoutModalOpen(false);
-    // 로그아웃 후 로그인 페이지로 이동
-    // navigate('/login');
   };
 
   const handleWithdraw = () => {
-    // TODO: 실제 계정 탈퇴 API 연동
-    console.log('계정 탈퇴 처리');
+    deleteAccountMutation.mutate();
     setIsWithdrawModalOpen(false);
-    // 탈퇴 후 로그인 페이지로 이동
-    // navigate('/login');
   };
 
   return (

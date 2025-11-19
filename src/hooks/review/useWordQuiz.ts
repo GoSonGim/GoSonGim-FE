@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { MOCK_QUIZ_WORDS } from '@/mock/review/wordQuiz.mock';
+import { logger } from '@/utils/common/loggerUtils';
 import type { QuizWord } from '@/mock/review/wordQuiz.mock';
 
 export type WordStatus = 'pending' | 'active' | 'completed';
@@ -36,7 +37,7 @@ export const useWordQuiz = () => {
 
     audioRef.current = new Audio(audioPath);
     audioRef.current.play().catch(() => {
-      console.warn(`음성 파일을 찾을 수 없습니다: ${word.text}.mp3`);
+      logger.warn(`음성 파일을 찾을 수 없습니다: ${word.text}.mp3`);
     });
   };
 

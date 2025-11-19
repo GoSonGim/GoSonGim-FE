@@ -2,30 +2,35 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { authAPI } from '@/apis/auth';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { getErrorMessage } from '@/utils/common/errorHandlerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 
 export const useLogoutMutation = () => {
   const navigate = useNavigate();
-  const { refreshToken, logout } = useAuthStore();
 
   return useMutation({
     mutationFn: () => {
+      const refreshToken = useAuthStore.getState().refreshToken;
+      logger.log('🔑 Attempting logout with refreshToken:', refreshToken ? 'exists' : 'null');
       if (!refreshToken) {
-        throw new Error('Refresh token이 없습니다.');
+        throw new Error('No refresh token');
       }
       return authAPI.logout({ refreshToken });
     },
-    onSuccess: () => {
-      logout();
-      navigate('/login');
+    onSuccess: (response) => {
+      logger.log('✅ Logout success:', response.result);
+
+      // 로컬 스토어 정리
+      useAuthStore.getState().logout();
+
+      // 로그인 페이지로 리다이렉트
+      navigate('/login', { replace: true });
     },
     onError: (error) => {
-      const errorMessage = getErrorMessage(error);
-      console.error('로그아웃 실패:', errorMessage);
-      // 실패해도 로컬 로그아웃 처리
-      logout();
-      navigate('/login');
+      logger.error('❌ Logout failed:', error);
+
+      // 에러가 발생해도 로컬 로그아웃은 수행
+      useAuthStore.getState().logout();
+      navigate('/login', { replace: true });
     },
   });
 };
-

@@ -31,7 +31,7 @@ const LoginForm = () => {
       {/* 타이틀 및 서브타이틀 */}
       <div className="absolute top-[128px] left-4 flex flex-col gap-2">
         <div className="text-heading-01-semibold text-[24px] font-bold text-gray-100">이메일로 로그인하기</div>
-        <p className="text-body-14-regular text-gray-60">아끼미 가입에 사용했던 이메일을 입력해주세요.</p>
+        <p className="text-body-14-regular text-gray-60">또박이 가입에 사용했던 이메일을 입력해주세요.</p>
       </div>
 
       {/* Input 폼 */}
