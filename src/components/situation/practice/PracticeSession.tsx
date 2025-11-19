@@ -8,6 +8,7 @@ interface PracticeSessionProps {
   maxPracticeCount: number;
   isRecording: boolean;
   isSpeaking: boolean;
+  onSpeak: () => void;
   onStartRecording: () => void;
   onStopRecording: () => void;
 }
@@ -21,6 +22,7 @@ export const PracticeSession = ({
   maxPracticeCount,
   isRecording,
   isSpeaking,
+  onSpeak,
   onStartRecording,
   onStopRecording,
 }: PracticeSessionProps) => {
@@ -74,8 +76,19 @@ export const PracticeSession = ({
         </p>
       </div>
 
+      {/* 듣기 버튼 */}
+      <div className="flex justify-center">
+        <button
+          onClick={onSpeak}
+          disabled={isSpeaking || isCompleted}
+          className="bg-blue-1 hover:bg-blue-1-hover text-body-01-semibold h-[48px] w-full max-w-[200px] cursor-pointer rounded-[8px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isSpeaking ? '말하는 중...' : '듣기'}
+        </button>
+      </div>
+
       {/* 마이크 버튼 */}
-      <div className="flex justify-center pt-4">
+      <div className="flex justify-center">
         <button
           onClick={isRecording ? onStopRecording : onStartRecording}
           disabled={isSpeaking || isCompleted}

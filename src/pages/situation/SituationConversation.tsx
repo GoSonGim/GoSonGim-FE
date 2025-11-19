@@ -34,9 +34,9 @@ export default function SituationConversation() {
     situationId: situationIdNum,
     onSessionEnd: (finalSummary: FinalSummary) => {
       logger.log('[PAGE] 세션 종료, 피드백 페이지로 이동', finalSummary);
-      // 피드백 페이지로 이동하면서 데이터 전달
+      // 피드백 페이지로 이동하면서 데이터 전달 (대화 히스토리 포함)
       navigate(`/situation/${situationIdNum}/feedback`, {
-        state: { finalSummary },
+        state: { finalSummary, turns: conversation.turns },
       });
     },
     onEvaluationFailed: (turn: Turn) => {

@@ -38,7 +38,7 @@ export const FeedbackCard = ({ finalSummary, onComplete }: FeedbackCardProps) =>
       </div>
 
       {/* 피드백 메시지 */}
-      <div className="mb-8 w-full max-w-[400px] rounded-[12px] bg-white p-6 shadow-sm">
+      <div className="mb-8 w-full max-w-[400px] rounded-[12px] bg-white p-6 shadow-lg">
         <p className="text-body-01-regular text-gray-80 text-center leading-relaxed whitespace-pre-wrap">
           {finalFeedback}
         </p>

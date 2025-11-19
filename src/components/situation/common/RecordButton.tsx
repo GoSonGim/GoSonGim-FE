@@ -43,6 +43,7 @@ export const RecordButton = ({
     <motion.button
       onClick={handleClick}
       disabled={isDisabled && !isRecording}
+      whileHover={!isDisabled || isRecording ? { scale: 1.1 } : {}}
       whileTap={{ scale: 0.95 }}
       animate={isRecording ? { scale: [1, 1.05, 1] } : {}}
       transition={{ repeat: isRecording ? Infinity : 0, duration: 1.5, ease: 'easeInOut' }}

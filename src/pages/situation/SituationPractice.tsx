@@ -170,6 +170,7 @@ export default function SituationPractice() {
               maxPracticeCount={practice.maxPracticeCount}
               isRecording={practice.isRecording}
               isSpeaking={practice.isSpeaking}
+              onSpeak={practice.speakSentence}
               onStartRecording={practice.startRecording}
               onStopRecording={practice.stopRecording}
             />
