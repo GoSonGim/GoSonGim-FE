@@ -158,7 +158,7 @@ export const useHeygenAvatar = ({
       }
 
       logger.log('Creating avatar session with config:', sessionConfig);
-      
+
       // STREAM_READY 이벤트를 기다리는 Promise 생성
       const streamReadyPromise = new Promise<void>((resolve) => {
         const handler = () => {
@@ -176,9 +176,7 @@ export const useHeygenAvatar = ({
       // STREAM_READY 이벤트 대기 (최대 5초)
       await Promise.race([
         streamReadyPromise,
-        new Promise<void>((_, reject) =>
-          setTimeout(() => reject(new Error('STREAM_READY timeout')), 5000),
-        ),
+        new Promise<void>((_, reject) => setTimeout(() => reject(new Error('STREAM_READY timeout')), 5000)),
       ]);
 
       logger.log('[SESSION START] Stream is ready, session fully initialized');
@@ -255,7 +253,7 @@ export const useHeygenAvatar = ({
   // 아바타가 말하기
   const speak = async (options: { text: string; taskType?: TaskType }) => {
     try {
-      if (!avatarInstanceRef.current || !isSessionReady) {
+      if (!avatarInstanceRef.current) {
         throw new Error('아바타 세션이 준비되지 않았습니다.');
       }
 

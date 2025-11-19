@@ -8,7 +8,6 @@ interface PracticeSessionProps {
   maxPracticeCount: number;
   isRecording: boolean;
   isSpeaking: boolean;
-  onSpeak: () => void;
   onStartRecording: () => void;
   onStopRecording: () => void;
 }
@@ -23,7 +22,6 @@ export const PracticeSession = ({
   maxPracticeCount,
   isRecording,
   isSpeaking,
-  onSpeak,
   onStartRecording,
   onStopRecording,
 }: PracticeSessionProps) => {
