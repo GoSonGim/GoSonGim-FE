@@ -35,8 +35,11 @@ const SituationDetail = () => {
   };
 
   const handleStartClick = () => {
-    // 시작하기 버튼 클릭 시 동작 (추후 구현)
-    logger.log('시작하기 클릭');
+    // 상황극 대화 페이지로 이동
+    logger.log('시작하기 클릭', { situationId: situationIdNum });
+    navigate(`/situation/${situationIdNum}/conversation`, {
+      state: { situationName: situationDetail?.situationName },
+    });
   };
 
   return (
@@ -47,7 +50,7 @@ const SituationDetail = () => {
           {/* 뒤로가기 버튼 */}
           <button
             onClick={handleBackClick}
-            className="absolute left-4 flex size-12 items-center justify-center overflow-hidden p-2 cursor-pointer"
+            className="absolute left-4 flex size-12 cursor-pointer items-center justify-center overflow-hidden p-2"
             aria-label="뒤로가기"
           >
             <div className="h-[18px] w-[10px]">
@@ -77,34 +80,46 @@ const SituationDetail = () => {
         ) : (
           <>
             {/* 설명 텍스트 박스 */}
-            <div className="flex h-[104px] w-full items-center justify-center rounded-[9px] bg-white px-4 py-4">
+            <div className="flex h-[104px] w-full items-center justify-center rounded-[9px] bg-white px-4 py-4 shadow-lg">
               <p className="text-body-01-medium text-center leading-normal whitespace-pre-line text-gray-100">
                 {situationDetail.description}
               </p>
             </div>
 
             {/* 이미지 영역 */}
-            <div className="relative h-[264px] w-full overflow-hidden rounded-[9px] bg-[#d9d9d9]">
+            <div className="bg-gray-20 relative h-[264px] w-full overflow-hidden rounded-[9px] shadow-lg">
               {situationDetail.image && situationDetail.image.trim() !== '' && !imageError ? (
                 <img
                   src={situationDetail.image}
                   alt={situationDetail.situationName}
                   className="h-full w-full rounded-[9px] object-cover"
+                  loading="lazy"
                   onError={(e) => {
-                    logger.error('이미지 로드 실패:', situationDetail.image);
-                    logger.error('이미지 에러 이벤트:', e);
+                    logger.error('이미지 로드 실패:', {
+                      url: situationDetail.image,
+                      error: e,
+                      type: e.type,
+                    });
                     setImageError(true);
                   }}
                   onLoad={() => {
                     logger.log('이미지 로드 성공:', situationDetail.image);
-                    setImageError(false);
                   }}
                 />
               ) : (
-                <div className="absolute inset-0 flex h-full items-center justify-center">
-                  <p className="text-body-01-regular text-gray-60">
-                    {!situationDetail.image || situationDetail.image.trim() === '' ? '이미지 없음' : '이미지 로드 실패'}
-                  </p>
+                <div className="bg-gray-20 flex h-full items-center justify-center">
+                  <div className="text-center">
+                    <p className="text-body-01-regular text-gray-60">
+                      {!situationDetail.image || situationDetail.image.trim() === ''
+                        ? '이미지가 없습니다'
+                        : '이미지를 불러올 수 없습니다'}
+                    </p>
+                    {imageError && situationDetail.image && (
+                      <p className="text-caption-01-regular mt-1 text-gray-50">
+                        URL: {situationDetail.image.substring(0, 50)}...
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -116,7 +131,7 @@ const SituationDetail = () => {
       <div className="absolute bottom-[149px] left-0 flex w-full justify-center px-[53px]">
         <button
           onClick={handleStartClick}
-          className="bg-blue-1 hover:bg-blue-1-hover h-12 w-full rounded-[100px] transition-colors"
+          className="bg-blue-1 hover:bg-blue-1-hover h-12 w-full cursor-pointer rounded-[100px] transition-colors"
           disabled={isLoading || !situationDetail}
         >
           <p className="text-heading-02-semibold text-white">시작하기</p>

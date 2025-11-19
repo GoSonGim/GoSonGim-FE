@@ -341,10 +341,10 @@ export const useFreeTalkConversation = (): UseFreeTalkConversationReturn => {
           setShowLoadingDots(true);
           avatarMessageBufferRef.current = '';
 
-          await avatar.speak(
-            '안녕하세요! 저는 당신의 한국어 회화 연습을 도와줄 AI 선생님이에요. ' +
+          await avatar.speak({
+            text: '안녕하세요! 저는 당신의 한국어 회화 연습을 도와줄 AI 선생님이에요. ' +
               '오늘은 일상 대화를 연습해볼까요? 예를 들어, 좋아하는 음식이나 취미, 최근에 본 영화에 대해 이야기해주세요!',
-          );
+          });
           logger.log('아바타 첫 인사 완료.');
         } catch (error) {
           logger.error('Failed to auto-start conversation:', error);

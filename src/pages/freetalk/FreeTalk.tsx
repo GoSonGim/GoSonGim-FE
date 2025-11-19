@@ -143,7 +143,7 @@ export default function FreeTalk() {
               <div
                 key={num}
                 className={clsx(
-                  'flex h-[30px] items-center justify-center rounded-[8px] text-[16px] leading-normal font-normal',
+                  'flex h-[30px] items-center justify-center rounded-[8px] text-[16px] leading-normal font-normal shadow-lg',
                   status === 'completed' && 'text-gray-40 w-[70px] bg-[#757a9e]',
                   isActive && 'w-[70px] border border-solid border-[#757a9e] bg-white text-[#757a9e]',
                   status === 'pending' && 'bg-gray-20 w-[70px] text-[#232323]',
@@ -156,7 +156,7 @@ export default function FreeTalk() {
         </div>
 
         <div className="shrink-0 px-4 pb-6">
-          <div className="relative box-border flex h-[280px] w-full items-center justify-center overflow-hidden rounded-[16px] bg-black">
+          <div className="relative box-border flex h-[280px] w-full items-center justify-center overflow-hidden rounded-[16px] bg-black shadow-lg">
             {/* 원본 비디오 (숨김 - 크로마키 처리용) */}
             <video ref={conversation.videoRef} autoPlay playsInline className="hidden" />
 
@@ -178,7 +178,7 @@ export default function FreeTalk() {
                 </p>
                 <button
                   onClick={() => conversation.startSession()}
-                  className="rounded-lg bg-[#757a9e] px-4 py-2 text-[14px] text-white"
+                  className="cursor-pointer rounded-lg bg-[#757a9e] px-4 py-2 text-[14px] text-white"
                 >
                   재시도
                 </button>
@@ -190,7 +190,7 @@ export default function FreeTalk() {
               <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/90">
                 <button
                   onClick={() => conversation.startSession()}
-                  className="rounded-lg bg-[#757a9e] px-4 py-2 text-[16px] text-white"
+                  className="cursor-pointer rounded-lg bg-[#757a9e] px-4 py-2 text-[16px] text-white"
                 >
                   아바타 시작하기
                 </button>
@@ -207,7 +207,7 @@ export default function FreeTalk() {
               <div key={conv.id} className="mb-6 flex flex-col gap-4">
                 {/* 질문 박스 */}
                 <div className="flex justify-start">
-                  <div className="flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[2px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[16px] bg-[#757a9e] px-[16px] py-[16px]">
+                  <div className="bg-blue-4 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[2px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[16px] px-[16px] py-[16px] shadow-lg">
                     <p className="text-center text-[20px] leading-normal font-normal wrap-break-word whitespace-pre-wrap text-white">
                       {conv.question}
                     </p>
@@ -217,7 +217,7 @@ export default function FreeTalk() {
                 {/* 답변 박스 (완료된 답변만) */}
                 {conv.answer && (
                   <div className="flex justify-end">
-                    <div className="border-gray-20 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px]">
+                    <div className="border-gray-20 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px] shadow-lg">
                       <p className="text-gray-80 text-center text-[20px] leading-normal font-normal wrap-break-word whitespace-pre-wrap">
                         {conv.answer}
                       </p>
@@ -232,7 +232,7 @@ export default function FreeTalk() {
             <div className="mb-6 flex flex-col gap-4">
               {/* 아바타 질문 (타이핑 효과) */}
               <div className="flex justify-start">
-                <div className="flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[2px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[16px] bg-[#757a9e] px-[16px] py-[16px]">
+                <div className="flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[2px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[16px] bg-[#757a9e] px-[16px] py-[16px] shadow-lg">
                   <p className="text-center text-[20px] leading-normal font-normal wrap-break-word whitespace-pre-wrap text-white">
                     {displayedText}
                   </p>
@@ -244,12 +244,12 @@ export default function FreeTalk() {
                 <div className="flex justify-end">
                   {conversation.showLoadingDots ? (
                     // 아바타 응답 대기 중
-                    <div className="border-gray-20 flex h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px]">
+                    <div className="border-gray-20 flex h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px] shadow-lg">
                       <LoadingDot className="h-[30px] w-[68px] animate-pulse" />
                     </div>
                   ) : (
                     // 답변 박스 (실시간 텍스트 표시)
-                    <div className="border-gray-20 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px]">
+                    <div className="border-gray-20 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[16px] rounded-tr-[2px] rounded-br-[16px] rounded-bl-[16px] border border-solid bg-white px-[16px] py-[16px] shadow-lg">
                       <p className="text-gray-80 text-center text-[20px] leading-normal font-normal wrap-break-word whitespace-pre-wrap">
                         {conversation.activeConversation.answer}
                         {conversation.isWaitingUserAnswer && <span className="text-gray-60 ml-1 animate-pulse">|</span>}
