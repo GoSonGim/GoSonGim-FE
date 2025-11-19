@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import MicReady from '@/assets/svgs/situation/mike.svg';
-import MicDisable from '@/assets/svgs/situation/mikeDisabled.svg';
+import { RecordButton } from '@/components/situation/common';
 
 interface PracticeSessionProps {
   sentence: string;
@@ -98,14 +97,13 @@ export const PracticeSession = ({
 
       {/* 마이크 버튼 */}
       <div className="flex justify-center">
-        <button
-          onClick={isRecording ? onStopRecording : onStartRecording}
-          disabled={isSpeaking || isCompleted}
-          className="flex size-[88px] cursor-pointer items-center justify-center disabled:cursor-not-allowed disabled:opacity-50"
-          aria-label={isRecording ? '녹음 중지' : '녹음하기'}
-        >
-          {isSpeaking || isCompleted ? <MicDisable className="size-[88px]" /> : <MicReady className="size-[88px]" />}
-        </button>
+        <RecordButton
+          isRecording={isRecording}
+          isDisabled={isSpeaking || isCompleted}
+          onStartRecording={onStartRecording}
+          onStopRecording={onStopRecording}
+          size="large"
+        />
       </div>
 
       {/* 완료 메시지 */}

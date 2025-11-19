@@ -3,6 +3,8 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useSituationPractice } from '@/hooks/situation/useSituationPractice';
 import { PracticeSession } from '@/components/situation/practice';
 import { AvatarVideo } from '@/components/situation/common';
+import { Toast } from '@/components/common/Toast';
+import { useToast } from '@/hooks/common/useToast';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import type { Turn } from '@/types/situation';
 import { logger } from '@/utils/common/loggerUtils';
@@ -24,6 +26,9 @@ export default function SituationPractice() {
   const [step, setStep] = useState<'input' | 'practice' | 'complete'>('input');
   const [showCompleteMessage, setShowCompleteMessage] = useState(false);
   const [showPlaceholder, setShowPlaceholder] = useState(true);
+
+  // 토스트
+  const toast = useToast();
 
   const practice = useSituationPractice({
     onPracticeComplete: () => {
@@ -49,6 +54,18 @@ export default function SituationPractice() {
       if (!confirmLeave) return;
     }
     navigate(-1);
+  };
+
+  // 녹음 시작 핸들러
+  const handleStartRecording = async () => {
+    toast.showToast('녹음을 시작합니다');
+    await practice.startRecording();
+  };
+
+  // 녹음 종료 핸들러
+  const handleStopRecording = async () => {
+    toast.showToast('녹음이 완료되었습니다');
+    await practice.stopRecording();
   };
 
   // 연습 시작
@@ -172,13 +189,16 @@ export default function SituationPractice() {
               isRecording={practice.isRecording}
               isSpeaking={practice.isSpeaking}
               onSpeak={practice.speakSentence}
-              onStartRecording={practice.startRecording}
-              onStopRecording={practice.stopRecording}
+              onStartRecording={handleStartRecording}
+              onStopRecording={handleStopRecording}
               onSentenceChange={practice.setSentence}
             />
           </div>
         </div>
       )}
+
+      {/* 토스트 */}
+      <Toast message={toast.message} isVisible={toast.isVisible} onClose={toast.hideToast} />
 
       {step === 'complete' && (
         // 3단계: 완료
