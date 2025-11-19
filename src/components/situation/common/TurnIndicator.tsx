@@ -12,7 +12,7 @@ interface TurnIndicatorProps {
  */
 export const TurnIndicator = ({ currentTurn, totalTurns, completedTurns = [] }: TurnIndicatorProps) => {
   return (
-    <div className="flex shrink-0 gap-2 px-4 pb-4 pt-6">
+    <div className="flex shrink-0 gap-2 px-4 pt-6 pb-4">
       {[...Array(totalTurns)].map((_, index) => {
         const turnNum = index + 1;
         const isCompleted = completedTurns.includes(turnNum);
@@ -23,9 +23,9 @@ export const TurnIndicator = ({ currentTurn, totalTurns, completedTurns = [] }: 
           <div
             key={turnNum}
             className={clsx(
-              'flex h-[30px] w-[70px] items-center justify-center rounded-[8px] text-[16px] font-normal leading-normal',
-              isCompleted && 'bg-[#757a9e] text-gray-40',
-              isActive && 'border border-solid border-[#757a9e] bg-white text-[#757a9e]',
+              'flex h-[30px] w-[70px] items-center justify-center rounded-[8px] text-[16px] leading-normal font-normal shadow-lg',
+              isCompleted && 'bg-blue-4 text-gray-40',
+              isActive && 'border-blue-4 text-blue-4 border border-solid bg-white',
               isPending && 'bg-gray-20 text-[#232323]',
             )}
           >
@@ -36,4 +36,3 @@ export const TurnIndicator = ({ currentTurn, totalTurns, completedTurns = [] }: 
     </div>
   );
 };
-

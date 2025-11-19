@@ -80,14 +80,14 @@ const SituationDetail = () => {
         ) : (
           <>
             {/* 설명 텍스트 박스 */}
-            <div className="flex h-[104px] w-full items-center justify-center rounded-[9px] bg-white px-4 py-4">
+            <div className="flex h-[104px] w-full items-center justify-center rounded-[9px] bg-white px-4 py-4 shadow-lg">
               <p className="text-body-01-medium text-center leading-normal whitespace-pre-line text-gray-100">
                 {situationDetail.description}
               </p>
             </div>
 
             {/* 이미지 영역 */}
-            <div className="bg-gray-20 relative h-[264px] w-full overflow-hidden rounded-[9px]">
+            <div className="bg-gray-20 relative h-[264px] w-full overflow-hidden rounded-[9px] shadow-lg">
               {situationDetail.image && situationDetail.image.trim() !== '' && !imageError ? (
                 <img
                   src={situationDetail.image}

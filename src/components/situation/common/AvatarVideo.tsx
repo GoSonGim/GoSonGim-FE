@@ -44,7 +44,7 @@ export const AvatarVideo = ({
   };
 
   return (
-    <div className="relative box-border flex h-[280px] w-full items-center justify-center overflow-hidden rounded-[16px] bg-black">
+    <div className="relative box-border flex h-[280px] w-full items-center justify-center overflow-hidden rounded-[16px] bg-black shadow-lg">
       {/* 원본 비디오 (숨김 - 크로마키 처리용) */}
       <video ref={videoRef} autoPlay playsInline muted={false} className="hidden" />
 
