@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useChromaKey } from '@/hooks/freetalk/useChromaKey';
 
 interface AvatarVideoProps {
@@ -22,6 +22,7 @@ export const AvatarVideo = ({
   backgroundImageUrl = '/images/avatarBackground.svg',
 }: AvatarVideoProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isStarting, setIsStarting] = useState(false);
 
   // 크로마키 처리
   useChromaKey({
@@ -30,6 +31,17 @@ export const AvatarVideo = ({
     isSessionReady,
     backgroundImageUrl,
   });
+
+  // 아바타 시작 핸들러
+  const handleStart = async () => {
+    if (!onStartSession) return;
+    setIsStarting(true);
+    try {
+      await onStartSession();
+    } finally {
+      setIsStarting(false);
+    }
+  };
 
   return (
     <div className="relative box-border flex h-[280px] w-full items-center justify-center overflow-hidden rounded-[16px] bg-black">
@@ -41,7 +53,8 @@ export const AvatarVideo = ({
 
       {/* 로딩 오버레이 */}
       {!isSessionReady && avatarState === 'loading' && (
-        <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/90">
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 bg-white/90">
+          <div className="border-blue-1 h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" />
           <p className="text-body-01-medium text-center text-gray-100">아바타 준비 중...</p>
         </div>
       )}
@@ -52,10 +65,18 @@ export const AvatarVideo = ({
           <p className="text-body-01-medium text-center text-red-500">{avatarError || '아바타 연결 실패'}</p>
           {onStartSession && (
             <button
-              onClick={onStartSession}
-              className="bg-blue-1 text-body-01-semibold rounded-lg px-4 py-2 text-white"
+              onClick={handleStart}
+              disabled={isStarting}
+              className="bg-blue-1 text-body-01-semibold flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-70"
             >
-              재시도
+              {isStarting ? (
+                <>
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-white border-t-transparent" />
+                  <span>연결 중...</span>
+                </>
+              ) : (
+                '재시도'
+              )}
             </button>
           )}
         </div>
@@ -65,10 +86,18 @@ export const AvatarVideo = ({
       {!isSessionReady && avatarState === 'idle' && onStartSession && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/90">
           <button
-            onClick={onStartSession}
-            className="bg-blue-1 text-body-01-semibold cursor-pointer rounded-lg px-4 py-2 text-white"
+            onClick={handleStart}
+            disabled={isStarting}
+            className="bg-blue-1 text-body-01-semibold flex cursor-pointer items-center gap-2 rounded-lg px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-70"
           >
-            아바타 시작하기
+            {isStarting ? (
+              <>
+                <div className="h-6 w-6 animate-spin rounded-full border-4 border-white border-t-transparent" />
+                <span>연결 중...</span>
+              </>
+            ) : (
+              '아바타 시작하기'
+            )}
           </button>
         </div>
       )}

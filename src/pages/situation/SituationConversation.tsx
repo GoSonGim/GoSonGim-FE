@@ -4,6 +4,8 @@ import { useSituationConversation } from '@/hooks/situation/useSituationConversa
 import { TurnIndicator, AvatarVideo, RecordButton } from '@/components/situation/common';
 import { ConversationList } from '@/components/situation/conversation';
 import { FailureModal } from '@/components/situation/feedback';
+import { Toast } from '@/components/common/Toast';
+import { useToast } from '@/hooks/common/useToast';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import type { Turn, FinalSummary } from '@/types/situation';
 import { logger } from '@/utils/common/loggerUtils';
@@ -23,6 +25,9 @@ export default function SituationConversation() {
   // 실패 모달 상태
   const [isFailureModalOpen, setIsFailureModalOpen] = useState(false);
   const [failedTurn, setFailedTurn] = useState<Turn | null>(null);
+
+  // 토스트
+  const toast = useToast();
 
   // 대화 관리
   const conversation = useSituationConversation({
@@ -83,6 +88,18 @@ export default function SituationConversation() {
     conversation.avatarState === 'speaking' ||
     conversation.currentTurnIndex === 0;
 
+  // 녹음 시작 핸들러 (토스트 추가)
+  const handleStartRecording = async () => {
+    toast.showToast('녹음을 시작합니다');
+    await conversation.startRecording();
+  };
+
+  // 녹음 종료 핸들러 (토스트 추가)
+  const handleStopRecording = async () => {
+    toast.showToast('녹음이 완료되었습니다');
+    await conversation.stopRecording();
+  };
+
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
       {/* 상단 헤더 */}
@@ -136,14 +153,17 @@ export default function SituationConversation() {
         <RecordButton
           isRecording={conversation.isRecording}
           isDisabled={isRecordButtonDisabled}
-          onStartRecording={conversation.startRecording}
-          onStopRecording={conversation.stopRecording}
+          onStartRecording={handleStartRecording}
+          onStopRecording={handleStopRecording}
           size="large"
         />
       </div>
 
       {/* 학습 감지 모달 */}
       <FailureModal isOpen={isFailureModalOpen} onRetry={handleRetry} onLearn={handleLearn} />
+
+      {/* 토스트 */}
+      <Toast message={toast.message} isVisible={toast.isVisible} onClose={toast.hideToast} />
     </div>
   );
 }

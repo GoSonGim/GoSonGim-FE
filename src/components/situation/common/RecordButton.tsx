@@ -2,6 +2,7 @@ import Mike1 from '@/assets/svgs/home/mike1.svg';
 import Mike2 from '@/assets/svgs/home/mike2.svg';
 import GrayCircle from '@/assets/svgs/home/talkbanned.svg';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 
 interface RecordButtonProps {
   isRecording: boolean;
@@ -15,7 +16,7 @@ interface RecordButtonProps {
  * 녹음 버튼 컴포넌트 (FreeTalk 스타일)
  * - 비활성: Mike1 (회색 마이크)
  * - 활성: Mike2 (파란색 마이크)
- * - 녹음 중: GrayCircle (회색 원)
+ * - 녹음 중: GrayCircle (회색 원) + 펄스 애니메이션
  */
 export const RecordButton = ({
   isRecording,
@@ -39,15 +40,18 @@ export const RecordButton = ({
   };
 
   return (
-    <button
+    <motion.button
       onClick={handleClick}
       disabled={isDisabled && !isRecording}
+      whileTap={{ scale: 0.95 }}
+      animate={isRecording ? { scale: [1, 1.05, 1] } : {}}
+      transition={{ repeat: isRecording ? Infinity : 0, duration: 1.5, ease: 'easeInOut' }}
       className={clsx(
         'flex items-center justify-center',
         sizeClasses[size],
-        isRecording ? 'cursor-default' : isDisabled ? 'cursor-not-allowed opacity-100' : 'cursor-pointer',
+        isRecording ? 'animate-pulse cursor-pointer' : isDisabled ? 'cursor-not-allowed opacity-100' : 'cursor-pointer',
       )}
-      aria-label={isRecording ? '녹음 중 (자동 종료 대기)' : '녹음하기'}
+      aria-label={isRecording ? '녹음 중지 (클릭하여 종료)' : '녹음하기'}
     >
       {isRecording ? (
         // 녹음 중: 회색 원
@@ -59,7 +63,6 @@ export const RecordButton = ({
         // 활성: Mike2
         <Mike2 className={sizeClasses[size]} />
       )}
-    </button>
+    </motion.button>
   );
 };
-

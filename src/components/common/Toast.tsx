@@ -27,10 +27,10 @@ export const Toast = ({ message, isVisible, onClose }: ToastProps) => {
       {isVisible && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 0.9, y: 0 }}
+          animate={{ opacity: 0.75, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2"
+          className="fixed bottom-[110px] left-1/2 z-50 -translate-x-1/2"
         >
           <div className="text-body-02-regular rounded-[8px] bg-gray-100 px-6 py-3 text-white shadow-lg">{message}</div>
         </motion.div>
