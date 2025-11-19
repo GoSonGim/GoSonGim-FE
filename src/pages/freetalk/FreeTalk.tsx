@@ -178,7 +178,7 @@ export default function FreeTalk() {
                 </p>
                 <button
                   onClick={() => conversation.startSession()}
-                  className="rounded-lg bg-[#757a9e] px-4 py-2 text-[14px] text-white"
+                  className="cursor-pointer rounded-lg bg-[#757a9e] px-4 py-2 text-[14px] text-white"
                 >
                   재시도
                 </button>
@@ -190,7 +190,7 @@ export default function FreeTalk() {
               <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/90">
                 <button
                   onClick={() => conversation.startSession()}
-                  className="rounded-lg bg-[#757a9e] px-4 py-2 text-[16px] text-white"
+                  className="cursor-pointer rounded-lg bg-[#757a9e] px-4 py-2 text-[16px] text-white"
                 >
                   아바타 시작하기
                 </button>

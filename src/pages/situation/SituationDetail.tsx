@@ -131,7 +131,7 @@ const SituationDetail = () => {
       <div className="absolute bottom-[149px] left-0 flex w-full justify-center px-[53px]">
         <button
           onClick={handleStartClick}
-          className="bg-blue-1 hover:bg-blue-1-hover h-12 w-full rounded-[100px] transition-colors"
+          className="bg-blue-1 hover:bg-blue-1-hover h-12 w-full cursor-pointer rounded-[100px] transition-colors"
           disabled={isLoading || !situationDetail}
         >
           <p className="text-heading-02-semibold text-white">시작하기</p>

@@ -95,7 +95,7 @@ export default function SituationPractice() {
       </div>
 
       {step === 'input' && (
-        // 1단계: 문장 작성 (Figma: 394-2654)
+        // 1단계: 문장 작성
         <div className="flex flex-1 flex-col">
           {/* 아바타 영상 플레이스홀더 */}
           <div className="mx-[14px] mt-6 flex h-[224px] items-center justify-center overflow-hidden rounded-[16px] bg-white px-[56px] py-[56px]">
@@ -140,7 +140,7 @@ export default function SituationPractice() {
             <button
               onClick={handleStartPractice}
               disabled={!practice.sentence || practice.sentence.trim() === ''}
-              className="bg-blue-1 hover:bg-blue-1-hover text-heading-02-semibold disabled:bg-gray-20 disabled:text-gray-60 h-[48px] w-full rounded-[100px] text-white transition-colors disabled:cursor-not-allowed"
+              className="bg-blue-1 hover:bg-blue-1-hover text-heading-02-semibold cusror-pointer disabled:bg-gray-20 disabled:text-gray-60 h-[48px] w-full cursor-pointer rounded-[100px] text-white transition-colors disabled:cursor-not-allowed"
             >
               시작하기
             </button>
@@ -149,7 +149,7 @@ export default function SituationPractice() {
       )}
 
       {step === 'practice' && (
-        // 2단계: 3회 연습 (Figma: 601-4227)
+        // 2단계: 3회 연습
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* 아바타 비디오 */}
           <div className="shrink-0 px-4 pb-6">
@@ -200,7 +200,7 @@ export default function SituationPractice() {
           <div className="flex w-full flex-col gap-3">
             <button
               onClick={handleRestart}
-              className="bg-blue-1 hover:bg-blue-1-hover text-body-01-semibold h-[56px] rounded-[8px] text-white transition-colors"
+              className="bg-blue-1 hover:bg-blue-1-hover text-body-01-semibold h-[56px] cursor-pointer rounded-[8px] text-white transition-colors"
             >
               다시 시작하기
             </button>

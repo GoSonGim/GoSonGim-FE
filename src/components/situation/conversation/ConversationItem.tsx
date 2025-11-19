@@ -47,7 +47,7 @@ export const ConversationItem = ({ turn, showAnswer = true }: ConversationItemPr
               <span
                 className={clsx('text-caption-01-semibold', turn.evaluation.isSuccess ? 'text-blue-1' : 'text-red-500')}
               >
-                {turn.evaluation.isSuccess ? '✓ 정답' : '✗ 오답'}
+                {turn.evaluation.isSuccess ? '✓ 잘하셨어요!' : '✗ 연습이 필요해요!'}
               </span>
               <span className="text-caption-01-medium text-gray-60">점수: {turn.evaluation.score}점</span>
             </div>

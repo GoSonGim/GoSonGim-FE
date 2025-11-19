@@ -8,7 +8,6 @@ interface FeedbackCardProps {
 
 /**
  * 최종 피드백 카드 컴포넌트
- * Figma: 394-2381
  */
 export const FeedbackCard = ({ finalSummary, onComplete }: FeedbackCardProps) => {
   const { averageScore, finalFeedback } = finalSummary;
@@ -40,7 +39,7 @@ export const FeedbackCard = ({ finalSummary, onComplete }: FeedbackCardProps) =>
 
       {/* 피드백 메시지 */}
       <div className="mb-8 w-full max-w-[400px] rounded-[12px] bg-white p-6 shadow-sm">
-        <p className="text-body-01-regular whitespace-pre-wrap text-center leading-relaxed text-gray-80">
+        <p className="text-body-01-regular text-gray-80 text-center leading-relaxed whitespace-pre-wrap">
           {finalFeedback}
         </p>
       </div>
@@ -48,11 +47,10 @@ export const FeedbackCard = ({ finalSummary, onComplete }: FeedbackCardProps) =>
       {/* 완료 버튼 */}
       <button
         onClick={onComplete}
-        className="bg-blue-1 hover:bg-blue-1-hover text-body-01-semibold h-12 w-full max-w-[200px] rounded-[8px] text-white transition-colors"
+        className="bg-blue-1 hover:bg-blue-1-hover text-body-01-semibold h-12 w-full max-w-[200px] cursor-pointer rounded-[8px] text-white transition-colors"
       >
         완료
       </button>
     </div>
   );
 };
-

@@ -110,7 +110,7 @@ const BreathingExercise = () => {
         </div>
       </Step1Layout>
 
-      {/* 진행 중 안내 텍스트 - Figma 기준 위치 */}
+      {/* 진행 중 안내 텍스트 */}
       <div className="absolute top-[444px] left-1/2 -translate-x-1/2">
         <div className="text-center">
           {phase === 'inhale' && <p className="text-heading-02-semibold text-blue-1">숨 들이마시기</p>}

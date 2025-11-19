@@ -64,7 +64,10 @@ export const AvatarVideo = ({
       {/* 시작 버튼 오버레이 */}
       {!isSessionReady && avatarState === 'idle' && onStartSession && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/90">
-          <button onClick={onStartSession} className="bg-blue-1 text-body-01-semibold rounded-lg px-4 py-2 text-white">
+          <button
+            onClick={onStartSession}
+            className="bg-blue-1 text-body-01-semibold cursor-pointer rounded-lg px-4 py-2 text-white"
+          >
             아바타 시작하기
           </button>
         </div>

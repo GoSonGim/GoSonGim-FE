@@ -46,22 +46,22 @@ export default function SituationConversation() {
     if (conversation.sessionId) {
       const confirmLeave = window.confirm('대화를 종료하시겠습니까? 진행 중인 내용은 저장되지 않습니다.');
       if (!confirmLeave) return;
-      
+
       conversation.endConversation().catch(logger.error);
     }
     navigate(-1);
   };
 
-  // 연습하기 버튼 클릭
-  const handlePractice = () => {
+  // 학습하기 버튼 클릭
+  const handleLearn = () => {
     setIsFailureModalOpen(false);
     navigate(`/situation/${situationIdNum}/practice`, {
       state: { failedTurn, situationName },
     });
   };
 
-  // 모달 닫기
-  const handleCloseModal = () => {
+  // 다시하기 버튼 클릭
+  const handleRetry = () => {
     setIsFailureModalOpen(false);
     setFailedTurn(null);
   };
@@ -132,17 +132,8 @@ export default function SituationConversation() {
         />
       </div>
 
-      {/* 평가 실패 모달 */}
-      {failedTurn && (
-        <FailureModal
-          isOpen={isFailureModalOpen}
-          feedback={failedTurn.evaluation?.feedback || ''}
-          score={failedTurn.evaluation?.score || 0}
-          onClose={handleCloseModal}
-          onPractice={handlePractice}
-        />
-      )}
+      {/* 학습 감지 모달 */}
+      <FailureModal isOpen={isFailureModalOpen} onRetry={handleRetry} onLearn={handleLearn} />
     </div>
   );
 }
-

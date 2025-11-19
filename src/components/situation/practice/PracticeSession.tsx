@@ -14,7 +14,6 @@ interface PracticeSessionProps {
 
 /**
  * 연습 세션 컴포넌트
- * Figma: 601-4227
  */
 export const PracticeSession = ({
   sentence,
