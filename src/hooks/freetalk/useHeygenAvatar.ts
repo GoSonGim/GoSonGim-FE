@@ -37,6 +37,8 @@ export const useHeygenAvatar = ({
 
         if (videoRef.current && event.detail) {
           videoRef.current.srcObject = event.detail;
+          videoRef.current.muted = false; // 오디오 활성화 강제 설정
+          videoRef.current.volume = 1.0; // 볼륨 최대로 설정
           videoRef.current.play().catch((err) => {
             logger.error('Video play failed:', err);
           });

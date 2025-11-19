@@ -39,7 +39,8 @@ export default function SituationPractice() {
       practice.setSentence(failedTurn.answer);
       setShowPlaceholder(false); // 값이 있으면 placeholder 숨김
     }
-  }, [failedTurn, practice]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [failedTurn]); // practice를 제거하여 무한 루프 방지
 
   // 뒤로가기
   const handleBack = () => {
@@ -173,6 +174,7 @@ export default function SituationPractice() {
               onSpeak={practice.speakSentence}
               onStartRecording={practice.startRecording}
               onStopRecording={practice.stopRecording}
+              onSentenceChange={practice.setSentence}
             />
           </div>
         </div>

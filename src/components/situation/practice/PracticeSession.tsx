@@ -11,6 +11,7 @@ interface PracticeSessionProps {
   onSpeak: () => void;
   onStartRecording: () => void;
   onStopRecording: () => void;
+  onSentenceChange: (newSentence: string) => void;
 }
 
 /**
@@ -25,14 +26,22 @@ export const PracticeSession = ({
   onSpeak,
   onStartRecording,
   onStopRecording,
+  onSentenceChange,
 }: PracticeSessionProps) => {
   const isCompleted = practiceCount >= maxPracticeCount;
 
   return (
     <div className="flex w-full flex-col gap-6">
       {/* 문장 표시 */}
-      <div className="border-blue-1 rounded-[16px] border border-solid bg-white px-4 py-5">
-        <p className="text-body-01-regular text-gray-80 text-center">{sentence}</p>
+      <div className="border-blue-1 rounded-[16px] border border-solid bg-white p-2">
+        <textarea
+          value={sentence}
+          onChange={(e) => onSentenceChange(e.target.value)}
+          disabled={isCompleted}
+          maxLength={100}
+          className="text-body-01-regular text-gray-80 w-full resize-none border-0 bg-transparent px-2 py-3 text-center focus:outline-none disabled:opacity-50"
+          rows={2}
+        />
       </div>
 
       {/* 차수 표시 */}
@@ -83,7 +92,7 @@ export const PracticeSession = ({
           disabled={isSpeaking || isCompleted}
           className="bg-blue-1 hover:bg-blue-1-hover text-body-01-semibold h-[48px] w-full max-w-[200px] cursor-pointer rounded-[8px] text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isSpeaking ? '말하는 중...' : '듣기'}
+          {isSpeaking ? '말하는 중...' : '아바타 발음 듣기'}
         </button>
       </div>
 
