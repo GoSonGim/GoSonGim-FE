@@ -51,13 +51,13 @@ export const FailureModal = ({ isOpen, onRetry, onLearn }: FailureModalProps) =>
         <div className="flex w-full gap-2">
           <button
             onClick={onRetry}
-            className="text-body-01-regular hover:bg-gray-30 bg-gray-20 text-gray-80 flex h-12 w-[152px] items-center justify-center rounded-[8px] transition-colors"
+            className="text-body-01-regular hover:bg-gray-30 bg-gray-20 text-gray-80 flex h-12 w-[152px] cursor-pointer items-center justify-center rounded-[8px] transition-colors"
           >
             다시하기
           </button>
           <button
             onClick={onLearn}
-            className="text-body-01-regular hover:bg-blue-1-hover bg-blue-1 flex h-12 w-[152px] items-center justify-center rounded-[8px] text-white transition-colors"
+            className="text-body-01-regular hover:bg-blue-1-hover bg-blue-1 flex h-12 w-[152px] cursor-pointer items-center justify-center rounded-[8px] text-white transition-colors"
           >
             학습하기
           </button>

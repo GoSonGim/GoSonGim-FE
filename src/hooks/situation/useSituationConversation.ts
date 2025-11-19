@@ -37,6 +37,8 @@ interface UseSituationConversationReturn {
   stopRecording: () => Promise<void>;
   endConversation: () => Promise<void>;
   resetConversation: () => void;
+  retryCurrentTurn: () => Promise<void>;
+  stopAvatarSession: () => Promise<void>;
 }
 
 /**
@@ -314,6 +316,42 @@ export const useSituationConversation = ({
     currentQuestionRef.current = '';
   }, []);
 
+  /**
+   * 현재 턴 다시하기 (답변과 평가 초기화 후 격려 메시지)
+   */
+  const retryCurrentTurn = useCallback(async () => {
+    logger.log('[CONVERSATION] 현재 턴 다시하기', { currentTurnIndex });
+
+    // 현재 턴의 답변과 평가 초기화
+    setTurns((prev) =>
+      prev.map((turn) =>
+        turn.turnIndex === currentTurnIndex ? { ...turn, answer: undefined, evaluation: undefined } : turn,
+      ),
+    );
+
+    // 아바타 격려 메시지
+    try {
+      await avatar.speak({ text: '다시 한번 말해보실래요?', taskType: TaskType.REPEAT });
+      logger.log('[CONVERSATION] 격려 메시지 완료');
+    } catch (error) {
+      logger.error('[CONVERSATION] 격려 메시지 실패:', error);
+    }
+  }, [currentTurnIndex, avatar]);
+
+  /**
+   * 아바타 세션만 종료 (백엔드 세션은 유지)
+   */
+  const stopAvatarSession = useCallback(async () => {
+    try {
+      logger.log('[CONVERSATION] 아바타 세션 종료 (백엔드 세션 유지)');
+      await avatar.endSession();
+      logger.log('[CONVERSATION] 아바타 세션 종료 완료');
+    } catch (error) {
+      logger.error('[CONVERSATION] 아바타 세션 종료 실패:', error);
+      throw error;
+    }
+  }, [avatar]);
+
   return {
     // 상태
     sessionId,
@@ -335,5 +373,7 @@ export const useSituationConversation = ({
     stopRecording,
     endConversation,
     resetConversation,
+    retryCurrentTurn,
+    stopAvatarSession,
   };
 };

@@ -53,17 +53,27 @@ export default function SituationConversation() {
   };
 
   // 학습하기 버튼 클릭
-  const handleLearn = () => {
+  const handleLearn = async () => {
     setIsFailureModalOpen(false);
+
+    // 아바타 세션만 종료 (백엔드 세션은 유지)
+    try {
+      await conversation.stopAvatarSession();
+    } catch (error) {
+      logger.error('아바타 세션 종료 실패:', error);
+    }
+
     navigate(`/situation/${situationIdNum}/practice`, {
       state: { failedTurn, situationName },
     });
   };
 
   // 다시하기 버튼 클릭
-  const handleRetry = () => {
+  const handleRetry = async () => {
     setIsFailureModalOpen(false);
     setFailedTurn(null);
+    // 현재 턴 다시하기 (아바타 격려 메시지)
+    await conversation.retryCurrentTurn();
   };
 
   // 녹음 버튼 활성화 조건
