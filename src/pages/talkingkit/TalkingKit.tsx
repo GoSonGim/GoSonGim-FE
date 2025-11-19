@@ -6,6 +6,7 @@ import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory'
 import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '@/utils/common/loggerUtils';
 
 const TalkingKit = () => {
   const navigate = useNavigate();
@@ -16,32 +17,32 @@ const TalkingKit = () => {
   // API 응답 데이터 콘솔 출력 (카테고리별 키트 목록)
   useEffect(() => {
     if (kitsData_API) {
-      console.log('호흡 및 발성 기초 키트 API 응답:', kitsData_API);
-      console.log('키트 목록:', kitsData_API.result.kits);
+      logger.log('호흡 및 발성 기초 키트 API 응답:', kitsData_API);
+      logger.log('키트 목록:', kitsData_API.result.kits);
     }
   }, [kitsData_API]);
 
   useEffect(() => {
     if (error) {
-      console.error('호흡 및 발성 기초 키트 조회 실패:', error);
+      logger.error('호흡 및 발성 기초 키트 조회 실패:', error);
     }
   }, [error]);
 
   // 키트 상세 정보 API 응답 콘솔 출력
   useEffect(() => {
     if (kitDetail) {
-      console.log('키트 상세 정보 API 응답:', kitDetail);
-      console.log('키트 ID:', kitDetail.result.kitId);
-      console.log('키트 이름:', kitDetail.result.kitName);
-      console.log('키트 카테고리:', kitDetail.result.kitCategory);
-      console.log('총 단계 수:', kitDetail.result.totalStages);
-      console.log('단계 목록:', kitDetail.result.stages);
+      logger.log('키트 상세 정보 API 응답:', kitDetail);
+      logger.log('키트 ID:', kitDetail.result.kitId);
+      logger.log('키트 이름:', kitDetail.result.kitName);
+      logger.log('키트 카테고리:', kitDetail.result.kitCategory);
+      logger.log('총 단계 수:', kitDetail.result.totalStages);
+      logger.log('단계 목록:', kitDetail.result.stages);
     }
   }, [kitDetail]);
 
   useEffect(() => {
     if (detailError) {
-      console.error('키트 상세 정보 조회 실패:', detailError);
+      logger.error('키트 상세 정보 조회 실패:', detailError);
     }
   }, [detailError]);
   return (

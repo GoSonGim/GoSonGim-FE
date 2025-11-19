@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '@/utils/common/loggerUtils';
 
 // Mock 데이터 - 이미 사용 중인 닉네임
 const MOCK_USED_NICKNAMES = ['또박이', '아끼미', '절약왕'];
@@ -22,7 +23,7 @@ export const useNickname = () => {
     }
 
     // 닉네임 설정 완료 - 홈으로 이동
-    console.log('Nickname created:', nickname);
+    logger.log('Nickname created:', nickname);
     navigate('/');
   };
 

@@ -1,17 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { profileAPI } from '@/apis/profile';
+import { logger } from '@/utils/common/loggerUtils';
 
 export const useStatsQuery = () => {
   return useQuery({
     queryKey: ['profile', 'stats'],
     queryFn: async () => {
-      console.log('🔵 Calling GET /api/v1/users/me/stats');
+      logger.log('🔵 Calling GET /api/v1/users/me/stats');
       try {
         const response = await profileAPI.getStats();
-        console.log('✅ GET /api/v1/users/me/stats Success:', response);
+        logger.log('✅ GET /api/v1/users/me/stats Success:', response);
         return response;
       } catch (error) {
-        console.error('❌ GET /api/v1/users/me/stats Error:', error);
+        logger.error('❌ GET /api/v1/users/me/stats Error:', error);
         throw error;
       }
     },

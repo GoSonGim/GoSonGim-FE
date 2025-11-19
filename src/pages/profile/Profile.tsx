@@ -10,6 +10,7 @@ import NicknameChangeModal from '@/components/profile/NicknameChangeModal';
 import { useProfileQuery } from '@/hooks/profile/queries/useProfileQuery';
 import { useStatsQuery } from '@/hooks/profile/queries/useStatsQuery';
 import { transformGraphData } from '@/utils/profile/graphUtils';
+import { logger } from '@/utils/common/loggerUtils';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -24,31 +25,31 @@ const Profile = () => {
 
   // 디버깅: Profile API 응답 확인
   useEffect(() => {
-    console.log('=== Profile API Response ===');
-    console.log('isLoading:', isLoading);
-    console.log('error:', error);
-    console.log('profileData:', profileData);
-    console.log('Full response:', JSON.stringify(profileData, null, 2));
-    console.log('===========================');
+    logger.log('=== Profile API Response ===');
+    logger.log('isLoading:', isLoading);
+    logger.log('error:', error);
+    logger.log('profileData:', profileData);
+    logger.log('Full response:', JSON.stringify(profileData, null, 2));
+    logger.log('===========================');
   }, [profileData, isLoading, error]);
 
   // 디버깅: Stats API 응답 확인
   useEffect(() => {
-    console.log('=== Stats API Response ===');
-    console.log('isLoading:', isStatsLoading);
-    console.log('statsData:', statsData);
-    console.log('Stats:', statsData?.result.stats);
-    console.log('Graph Kit:', statsData?.result.graph.kit);
-    console.log('Graph Situation:', statsData?.result.graph.situation);
-    console.log('==========================');
+    logger.log('=== Stats API Response ===');
+    logger.log('isLoading:', isStatsLoading);
+    logger.log('statsData:', statsData);
+    logger.log('Stats:', statsData?.result.stats);
+    logger.log('Graph Kit:', statsData?.result.graph.kit);
+    logger.log('Graph Situation:', statsData?.result.graph.situation);
+    logger.log('==========================');
   }, [statsData, isStatsLoading]);
 
   useEffect(() => {
     if (profileData?.result.user.nickname) {
-      console.log('✅ Setting nickname to:', profileData.result.user.nickname);
+      logger.log('✅ Setting nickname to:', profileData.result.user.nickname);
       setCurrentUserName(profileData.result.user.nickname);
     } else {
-      console.log('⚠️ No nickname in profileData');
+      logger.log('⚠️ No nickname in profileData');
     }
   }, [profileData]);
 

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { authAPI } from '@/apis/auth';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { getErrorMessage } from '@/utils/common/errorHandlerUtils';
+import { logger } from '@/utils/common/loggerUtils';
 import type { SignupRequest } from '@/types/auth';
 
 export const useSignupMutation = () => {
@@ -18,7 +19,7 @@ export const useSignupMutation = () => {
     },
     onError: (error) => {
       const errorMessage = getErrorMessage(error);
-      console.error('회원가입 실패:', errorMessage);
+      logger.error('회원가입 실패:', errorMessage);
       // 에러는 컴포넌트에서 처리
     },
   });

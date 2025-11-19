@@ -5,6 +5,7 @@ import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressB
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import BreathAnimation from '@/assets/svgs/talkingkit/breathing/breathanimation.svg';
 import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import { logger } from '@/utils/common/loggerUtils';
 
 type Phase = 'ready' | 'playing' | 'complete';
 
@@ -16,18 +17,18 @@ const SteadySound = () => {
   // API 응답 데이터 콘솔 출력
   useEffect(() => {
     if (kitDetail) {
-      console.log('일정한 소리내기 키트 상세 정보 API 응답:', kitDetail);
-      console.log('키트 ID:', kitDetail.result.kitId);
-      console.log('키트 이름:', kitDetail.result.kitName);
-      console.log('키트 카테고리:', kitDetail.result.kitCategory);
-      console.log('총 단계 수:', kitDetail.result.totalStages);
-      console.log('단계 목록:', kitDetail.result.stages);
+      logger.log('일정한 소리내기 키트 상세 정보 API 응답:', kitDetail);
+      logger.log('키트 ID:', kitDetail.result.kitId);
+      logger.log('키트 이름:', kitDetail.result.kitName);
+      logger.log('키트 카테고리:', kitDetail.result.kitCategory);
+      logger.log('총 단계 수:', kitDetail.result.totalStages);
+      logger.log('단계 목록:', kitDetail.result.stages);
     }
   }, [kitDetail]);
 
   useEffect(() => {
     if (error) {
-      console.error('일정한 소리내기 키트 상세 정보 조회 실패:', error);
+      logger.error('일정한 소리내기 키트 상세 정보 조회 실패:', error);
     }
   }, [error]);
 

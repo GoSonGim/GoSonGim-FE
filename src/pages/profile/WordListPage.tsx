@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LeftIcon from '@/assets/svgs/profile/profilehome/review-leftarrow.svg';
 import { useDailyWordsQuery } from '@/hooks/profile/queries/useDailyWordsQuery';
+import { logger } from '@/utils/common/loggerUtils';
 
 const WordListPage = () => {
   const navigate = useNavigate();
@@ -13,11 +14,11 @@ const WordListPage = () => {
 
   // 디버깅 로그
   useEffect(() => {
-    console.log('=== Daily Words API Response ===');
-    console.log('isLoading:', isLoading);
-    console.log('totalWordCount:', dailyWordsData?.result.totalWordCount);
-    console.log('items:', dailyWordsData?.result.items);
-    console.log('================================');
+    logger.log('=== Daily Words API Response ===');
+    logger.log('isLoading:', isLoading);
+    logger.log('totalWordCount:', dailyWordsData?.result.totalWordCount);
+    logger.log('items:', dailyWordsData?.result.items);
+    logger.log('================================');
   }, [dailyWordsData, isLoading]);
 
   return (

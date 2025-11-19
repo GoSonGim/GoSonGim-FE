@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '@/utils/common/loggerUtils';
 
 // 구글 OAuth 설정
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -40,7 +41,7 @@ export const useLogin = () => {
   // 문의하기
   const handleInquiry = () => {
     // TODO: Navigate to inquiry page or open contact
-    console.log('Inquiry clicked');
+    logger.log('Inquiry clicked');
   };
 
   // 회원가입 바텀시트 열기

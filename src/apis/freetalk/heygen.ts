@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { logger } from '@/utils/common/loggerUtils';
 
 const HEYGEN_API_BASE = 'https://api.heygen.com';
 
@@ -13,7 +14,7 @@ export const createSessionToken = async (): Promise<string> => {
     throw new Error('VITE_HEYGEN_API_KEY가 설정되지 않았습니다. .env 파일을 확인해주세요.');
   }
 
-  console.log('Requesting session token from HeyGen...');
+  logger.log('Requesting session token from HeyGen...');
 
   try {
     const response = await axios.post(
@@ -26,13 +27,13 @@ export const createSessionToken = async (): Promise<string> => {
       }
     );
 
-    console.log('Session token created successfully');
+    logger.log('Session token created successfully');
     return response.data.data.token;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMsg = error.response?.data?.message || error.message;
       const status = error.response?.status;
-      console.error('Session token creation failed:', { status, error: errorMsg, data: error.response?.data });
+      logger.error('Session token creation failed:', { status, error: errorMsg, data: error.response?.data });
 
       if (status === 401 || status === 403) {
         throw new Error('API 키가 유효하지 않습니다. HeyGen 대시보드에서 API 키를 확인해주세요.');
