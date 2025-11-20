@@ -30,12 +30,20 @@ const ArticulationPositionKit = () => {
   };
 
   const handleKitClick = (kitId: number, kitName: string) => {
-    // 입술 소리 키트 (kitId가 특정 값일 때 특정 라우트로 이동)
-    if (kitId === 4) {
-      navigate('/search/articulation-position/lip-sound/step1');
+    // kitId에 따라 soundType 매핑
+    const soundTypeMap: Record<number, string> = {
+      4: 'lip-sound', // 입술 소리
+      5: 'tongue-tip', // 혀끝 소리
+      6: 'throat', // 목구멍 소리
+      7: 'gum', // 잇몸 소리
+    };
+
+    const soundType = soundTypeMap[kitId];
+    if (soundType) {
+      navigate(`/search/articulation-position/${soundType}/step1`);
     } else {
       logger.log(`조음 위치별 키트 클릭: ${kitId} - ${kitName}`);
-      // TODO: 키트 상세 페이지로 라우팅
+      // TODO: 매핑되지 않은 키트 처리
     }
   };
 

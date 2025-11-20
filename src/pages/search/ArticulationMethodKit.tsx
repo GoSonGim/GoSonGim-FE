@@ -30,8 +30,21 @@ const ArticulationMethodKit = () => {
   };
 
   const handleKitClick = (kitId: number, kitName: string) => {
-    logger.log(`조음 방식별 키트 클릭: ${kitId} - ${kitName}`);
-    // TODO: 키트 상세 페이지로 라우팅
+    // kitId에 따라 methodType 매핑
+    const methodTypeMap: Record<number, string> = {
+      8: 'plosive', // 파열음
+      9: 'fricative', // 마찰음
+      10: 'liquid-nasal', // 유음/비음
+      11: 'jaw-movement', // 턱 움직임
+    };
+
+    const methodType = methodTypeMap[kitId];
+    if (methodType) {
+      navigate(`/search/articulation-method/${methodType}/step1`);
+    } else {
+      logger.log(`조음 방식별 키트 클릭: ${kitId} - ${kitName}`);
+      // TODO: 매핑되지 않은 키트 처리
+    }
   };
 
   const kits = kitsData?.result.kits || [];

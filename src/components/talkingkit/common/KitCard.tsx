@@ -50,8 +50,8 @@ const KitCard = ({ kit, onClick, isBookmarked = false, bookmarkId }: KitCardProp
   const displayData = isApiKit(kit)
     ? {
         category: '조음 키트',
-        highlightedText: kit.kitName,
-        mainText: '',
+        highlightedText: kit.kitName.replace(/ 키트$/, ''), // "입술 소리"만 파란색
+        mainText: '키트',
         kitLabel: '학습하기',
       }
     : {

@@ -11,10 +11,10 @@ import Search from '@/pages/search/Search';
 import KitDiagnosis from '@/pages/search/KitDiagnosis';
 import ArticulationPositionKit from '@/pages/search/ArticulationPositionKit';
 import ArticulationMethodKit from '@/pages/search/ArticulationMethodKit';
-import LipSoundStep1 from '@/pages/search/lipSound/LipSoundStep1';
-import LipSoundStep2 from '@/pages/search/lipSound/LipSoundStep2';
-import LipSoundPractice from '@/pages/search/lipSound/LipSoundPractice';
-import LipSoundResult from '@/pages/search/lipSound/LipSoundResult';
+import ArticulationStep1 from '@/pages/search/articulation/ArticulationStep1';
+import ArticulationStep2 from '@/pages/search/articulation/ArticulationStep2';
+import ArticulationPractice from '@/pages/search/articulation/ArticulationPractice';
+import ArticulationResult from '@/pages/search/articulation/ArticulationResult';
 import SituationCategory from '@/pages/search/SituationCategory';
 import SituationDetail from '@/pages/situation/SituationDetail';
 import SituationConversation from '@/pages/situation/SituationConversation';
@@ -74,10 +74,14 @@ export const router = createBrowserRouter([
           { path: '/search/diagnosis', element: <KitDiagnosis /> },
           { path: '/search/articulation-position', element: <ArticulationPositionKit /> },
           { path: '/search/articulation-method', element: <ArticulationMethodKit /> },
-          { path: '/search/articulation-position/lip-sound/step1', element: <LipSoundStep1 /> },
-          { path: '/search/articulation-position/lip-sound/step2', element: <LipSoundStep2 /> },
-          { path: '/search/articulation-position/lip-sound/practice', element: <LipSoundPractice /> },
-          { path: '/search/articulation-position/lip-sound/result', element: <LipSoundResult /> },
+          { path: '/search/articulation-position/:type/step1', element: <ArticulationStep1 /> },
+          { path: '/search/articulation-position/:type/step2', element: <ArticulationStep2 /> },
+          { path: '/search/articulation-position/:type/practice', element: <ArticulationPractice /> },
+          { path: '/search/articulation-position/:type/result', element: <ArticulationResult /> },
+          { path: '/search/articulation-method/:type/step1', element: <ArticulationStep1 /> },
+          { path: '/search/articulation-method/:type/step2', element: <ArticulationStep2 /> },
+          { path: '/search/articulation-method/:type/practice', element: <ArticulationPractice /> },
+          { path: '/search/articulation-method/:type/result', element: <ArticulationResult /> },
           { path: '/search/situation/:category', element: <SituationCategory /> },
           { path: '/search/situation/:category/:situationId', element: <SituationDetail /> },
           { path: '/situation/:situationId/conversation', element: <SituationConversation /> },
