@@ -10,7 +10,7 @@ import {
   articulationPracticeWords,
   articulationTypeConfig,
   type ArticulationType,
-} from '@/mock/search/articulationPractice.mock';
+} from '@/constants/search/articulationPractice';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
 import { logger } from '@/utils/common/loggerUtils';
 import { lipSoundAPI } from '@/apis/search';

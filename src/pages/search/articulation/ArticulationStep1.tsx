@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressBar';
-import { articulationTypeConfig, type ArticulationType } from '@/mock/search/articulationPractice.mock';
+import { articulationTypeConfig, type ArticulationType } from '@/constants/search/articulationPractice';
 
 const ArticulationStep1 = () => {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
-import { articulationTypeConfig, type ArticulationType } from '@/mock/search/articulationPractice.mock';
+import { articulationTypeConfig, type ArticulationType } from '@/constants/search/articulationPractice';
 import type { LipSoundEvaluationResponse } from '@/types/search';
 
 const ArticulationResult = () => {
