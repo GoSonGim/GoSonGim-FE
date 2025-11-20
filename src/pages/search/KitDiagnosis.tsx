@@ -9,7 +9,7 @@ import MarkRight from '@/assets/svgs/search/studyfind-markright.svg';
 import LoadingDot from '@/assets/svgs/search/studyfind-loadingdot.svg';
 import CheckIcon from '@/assets/svgs/search/studyfind-check.svg';
 import CircularProgress from '@/components/freetalk/CircularProgress';
-import { diagnosisSentence } from '@/mock/search/kitDiagnosis.mock';
+import { diagnosisSentence } from '@/mock/talkingkit/soundPosition/kitDiagnosis.mock';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
 import { kitAPI } from '@/apis/talkingkit';
 import { logger } from '@/utils/common/loggerUtils';

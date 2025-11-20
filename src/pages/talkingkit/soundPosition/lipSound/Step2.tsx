@@ -1,27 +1,39 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
+import { articulationTypeConfig, type ArticulationType } from '@/constants/talkingkit/soundPosition/articulationPractice';
 
-const LipSoundStep2 = () => {
+const ArticulationStep2 = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { type } = useParams<{ type: ArticulationType }>();
+
+  // type이 유효하지 않으면 기본값 사용
+  const validType = type && articulationTypeConfig[type] ? type : 'lip-sound';
+  const config = articulationTypeConfig[validType];
+
+  // URL 패턴에서 기본 경로 추출
+  const basePath = location.pathname.includes('sound-position')
+    ? 'sound-position'
+    : 'sound-way';
 
   const handleButtonClick = () => {
-    navigate('/search/articulation-position/lip-sound/practice');
+    navigate(`/talkingkit/${basePath}/${validType}/practice`);
   };
 
   const handleBackClick = () => {
-    navigate('/search/articulation-position/lip-sound/step1');
+    navigate(`/talkingkit/${basePath}/${validType}/step1`);
   };
 
   // 3초 후 자동 이동
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/search/articulation-position/lip-sound/practice');
+      navigate(`/talkingkit/${basePath}/${validType}/practice`);
     }, 3000);
 
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, basePath, validType]);
 
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
@@ -36,7 +48,7 @@ const LipSoundStep2 = () => {
               <LeftArrowIcon className="h-full w-full" />
             </div>
           </div>
-          <p className="text-heading-02-regular text-gray-100">입술 소리</p>
+          <p className="text-heading-02-regular text-gray-100">{config.name}</p>
         </div>
       </div>
 
@@ -95,4 +107,4 @@ const LipSoundStep2 = () => {
   );
 };
 
-export default LipSoundStep2;
+export default ArticulationStep2;

@@ -7,6 +7,7 @@ import {
   getSituationCategoryParam,
   getKitCategoryParam,
 } from '@/utils/studytalk/categoryUtils';
+import { getKitRoute } from '@/utils/talkingkit/routingUtils';
 import BottomNav from '@/components/common/BottomNav';
 import StudyTalkTabs from '@/components/studytalk/StudyTalkTabs';
 import CategoryFilter from '@/components/studytalk/CategoryFilter';
@@ -77,13 +78,7 @@ export default function HomeStudyTalk() {
   };
 
   const handleKitCardClick = (kitId: number) => {
-    // 입술 소리 키트 (kitId: 4)인 경우 특별한 경로로 이동
-    if (kitId === 4) {
-      navigate('/search/articulation-position/lip-sound/step1');
-    } else {
-      // 다른 키트들은 기본 경로로 이동
-      navigate(`/talkingkit/${kitId}`);
-    }
+    navigate(getKitRoute(kitId));
   };
 
   return (

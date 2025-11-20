@@ -4,6 +4,7 @@ import KitListLayout from '@/components/talkingkit/layout/KitListLayout';
 import KitCard from '@/components/talkingkit/common/KitCard';
 import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory';
 import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
+import { SOUND_WAY_MAP } from '@/utils/talkingkit/routingUtils';
 import { logger } from '@/utils/common/loggerUtils';
 
 const ArticulationMethodKit = () => {
@@ -30,8 +31,13 @@ const ArticulationMethodKit = () => {
   };
 
   const handleKitClick = (kitId: number, kitName: string) => {
-    logger.log(`조음 방식별 키트 클릭: ${kitId} - ${kitName}`);
-    // TODO: 키트 상세 페이지로 라우팅
+    const methodType = SOUND_WAY_MAP[kitId];
+    if (methodType) {
+      navigate(`/talkingkit/sound-way/${methodType}/step1`);
+    } else {
+      logger.log(`조음 방식별 키트 클릭: ${kitId} - ${kitName}`);
+      // TODO: 매핑되지 않은 키트 처리
+    }
   };
 
   const kits = kitsData?.result.kits || [];

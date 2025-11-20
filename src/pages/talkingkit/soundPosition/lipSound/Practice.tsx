@@ -1,18 +1,24 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import Mike2 from '@/assets/svgs/home/mike2.svg';
 import WhiteSquare from '@/assets/svgs/home/whitesquare.svg';
 import BlueCircle from '@/assets/svgs/home/bluecircle.svg';
 import CircularProgress from '@/components/freetalk/CircularProgress';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
-import { lipSoundPracticeWords } from '@/mock/search/lipSoundKit.mock';
+import {
+  articulationPracticeWords,
+  articulationTypeConfig,
+  type ArticulationType,
+} from '@/constants/talkingkit/soundPosition/articulationPractice';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
 import { logger } from '@/utils/common/loggerUtils';
-import { lipSoundAPI } from '@/apis/search';
+import { soundPositionAPI } from '@/apis/talkingkit';
 
-const LipSoundPractice = () => {
+const ArticulationPractice = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { type } = useParams<{ type: ArticulationType }>();
   const [currentRound, setCurrentRound] = useState(1);
   const [completedRounds, setCompletedRounds] = useState<Set<number>>(new Set());
   const [isRecording, setIsRecording] = useState(false);
@@ -21,64 +27,78 @@ const LipSoundPractice = () => {
   const [isEvaluating, setIsEvaluating] = useState(false);
   const currentRoundRef = useRef(currentRound);
   const fileKeysRef = useRef<Map<number, string>>(new Map());
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const { startRecording, stopRecording, error: recorderError } = useAudioRecorder();
+
+  // type이 유효하지 않으면 기본값 사용
+  const validType = type && articulationTypeConfig[type] ? type : 'lip-sound';
+  const config = articulationTypeConfig[validType];
+  const practiceWords = articulationPracticeWords[validType];
+
+  // URL 패턴에서 기본 경로 추출
+  const basePath = location.pathname.includes('sound-position')
+    ? 'sound-position'
+    : 'sound-way';
 
   // currentRound가 변경될 때 ref도 업데이트
   useEffect(() => {
     currentRoundRef.current = currentRound;
   }, [currentRound]);
 
-  const currentWord = lipSoundPracticeWords.find((w) => w.round === currentRound);
-  const totalRounds = lipSoundPracticeWords.length;
+  const currentWord = practiceWords.find((w) => w.round === currentRound);
+  const totalRounds = practiceWords.length;
   const isProcessing = isUploading || isEvaluating;
   const overlayMessage = isUploading ? '녹음 업로드 중...' : '발음 평가 중...';
   const overlaySubMessage = isUploading ? '잠시만 기다려주세요' : '발음을 분석하고 있어요';
 
-  const uploadRecordingToS3 = useCallback(async (round: number, blob: Blob) => {
-    const wordData = lipSoundPracticeWords.find((w) => w.round === round);
-    if (!wordData) {
-      throw new Error(`라운드 ${round}에 해당하는 단어를 찾을 수 없습니다.`);
-    }
-
-    const uuid =
-      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-        ? crypto.randomUUID()
-        : `${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
-    // 한글 파일명 제거: 서버에서 인코딩 문제 발생 방지
-    const fileName = `round${round}_${uuid}.wav`;
-
-    setIsUploading(true);
-
-    try {
-      const uploadResponse = await lipSoundAPI.getUploadUrl({
-        folder: 'kit', // 조음키트 음성 파일
-        fileName,
-      });
-
-      const { fileKey, url } = uploadResponse.result;
-
-      // S3 presigned URL로 직접 업로드
-      // CORS 에러 방지를 위해 커스텀 헤더 제거 (preflight 요청 회피)
-      const uploadResult = await fetch(url, {
-        method: 'PUT',
-        body: blob,
-        // Content-Type을 명시하지 않으면 simple request가 되어 preflight 요청 생략 가능
-      });
-
-      if (!uploadResult.ok) {
-        throw new Error(`S3 업로드 실패 (status: ${uploadResult.status})`);
+  const uploadRecordingToS3 = useCallback(
+    async (round: number, blob: Blob) => {
+      const wordData = practiceWords.find((w) => w.round === round);
+      if (!wordData) {
+        throw new Error(`라운드 ${round}에 해당하는 단어를 찾을 수 없습니다.`);
       }
 
-      logger.log(`${round}차 녹음 업로드 완료`, fileKey);
-      return fileKey;
-    } catch (error) {
-      logger.error(`${round}차 녹음 업로드 실패:`, error);
-      throw error;
-    } finally {
-      setIsUploading(false);
-    }
-  }, []);
+      const uuid =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
+      // 한글 파일명 제거: 서버에서 인코딩 문제 발생 방지
+      const fileName = `round${round}_${uuid}.wav`;
+
+      setIsUploading(true);
+
+      try {
+        const uploadResponse = await soundPositionAPI.getUploadUrl({
+          folder: 'kit', // 조음키트 음성 파일
+          fileName,
+        });
+
+        const { fileKey, url } = uploadResponse.result;
+
+        // S3 presigned URL로 직접 업로드
+        // CORS 에러 방지를 위해 커스텀 헤더 제거 (preflight 요청 회피)
+        const uploadResult = await fetch(url, {
+          method: 'PUT',
+          body: blob,
+          // Content-Type을 명시하지 않으면 simple request가 되어 preflight 요청 생략 가능
+        });
+
+        if (!uploadResult.ok) {
+          throw new Error(`S3 업로드 실패 (status: ${uploadResult.status})`);
+        }
+
+        logger.log(`${round}차 녹음 업로드 완료`, fileKey);
+        return fileKey;
+      } catch (error) {
+        logger.error(`${round}차 녹음 업로드 실패:`, error);
+        throw error;
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [practiceWords],
+  );
 
   // 발음 평가 요청
   const handleEvaluatePronunciation = useCallback(
@@ -91,11 +111,11 @@ const LipSoundPractice = () => {
         const payload = Array.from(allFileKeys.entries())
           .sort(([a], [b]) => a - b) // round 순서대로 정렬 (1, 2, 3)
           .map(([round, fileKey]) => {
-            const wordData = lipSoundPracticeWords.find((w) => w.round === round);
+            const wordData = practiceWords.find((w) => w.round === round);
             return {
-              kitStageId: round, // 1, 2, 3
-              fileKey, // S3 파일 경로 (예: "kit/2025-11-13/...")
-              targetWord: wordData?.word || '', // 바보, 나비, 비밀
+              kitStageId: wordData?.kitStageId || round, // kitStageId 사용
+              fileKey, // S3 파일 경로
+              targetWord: wordData?.word || '', // 바보, 나비, 비밀 등
             };
           });
 
@@ -103,11 +123,11 @@ const LipSoundPractice = () => {
         logger.log('페이로드 길이:', payload.length);
 
         // API 호출: POST /api/v1/kits/stages/evaluate
-        const response = await lipSoundAPI.evaluatePronunciation(payload);
+        const response = await soundPositionAPI.evaluatePronunciation(payload);
         logger.log('평가 결과:', response);
 
         // 결과 페이지로 이동
-        navigate('/search/articulation-position/lip-sound/result', {
+        navigate(`/talkingkit/${basePath}/${validType}/result`, {
           state: { evaluationResult: response.result },
         });
       } catch (error) {
@@ -117,7 +137,7 @@ const LipSoundPractice = () => {
         setIsEvaluating(false);
       }
     },
-    [navigate],
+    [navigate, basePath, validType, practiceWords],
   );
 
   // 녹음 중지 및 저장 처리
@@ -195,6 +215,31 @@ const LipSoundPractice = () => {
     return () => clearInterval(timer);
   }, [isRecording, handleStopRecordingAndSave]);
 
+  // 단어가 변경될 때마다 오디오 재생
+  useEffect(() => {
+    if (currentWord && !isRecording && !isProcessing) {
+      // 기존 오디오 정리
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+
+      // 새 오디오 생성 및 재생
+      audioRef.current = new Audio(`/audio/review/${currentWord.word}.mp3`);
+      audioRef.current.play().catch((error) => {
+        logger.error('오디오 재생 실패:', error);
+      });
+    }
+
+    // 클린업
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, [currentWord, isRecording, isProcessing]);
+
   const handleStartRecording = async () => {
     if (isUploading || isEvaluating) {
       return;
@@ -211,7 +256,7 @@ const LipSoundPractice = () => {
   };
 
   const handleBackClick = () => {
-    navigate('/search/articulation-position/lip-sound/step2');
+    navigate(`/talkingkit/${basePath}/${validType}/step2`);
   };
 
   const handleRoundClick = (round: number) => {
@@ -244,7 +289,7 @@ const LipSoundPractice = () => {
               <LeftArrowIcon className="h-full w-full" />
             </div>
           </div>
-          <p className="text-heading-02-regular text-gray-100">입술 소리</p>
+          <p className="text-heading-02-regular text-gray-100">{config.name}</p>
         </div>
       </div>
 
@@ -271,7 +316,7 @@ const LipSoundPractice = () => {
             <div className="flex w-full flex-col gap-2">
               {/* 단어 칩 영역 */}
               <div className="flex gap-2">
-                {lipSoundPracticeWords.map((wordData) => {
+                {practiceWords.map((wordData) => {
                   const isCompleted = completedRounds.has(wordData.round);
                   const isCurrent = currentRound === wordData.round;
                   const isActive = isCompleted || isCurrent;
@@ -365,4 +410,4 @@ const LipSoundPractice = () => {
   );
 };
 
-export default LipSoundPractice;
+export default ArticulationPractice;

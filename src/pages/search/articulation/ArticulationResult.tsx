@@ -1,21 +1,32 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
+import { articulationTypeConfig, type ArticulationType } from '@/constants/search/articulationPractice';
 import type { LipSoundEvaluationResponse } from '@/types/search';
 
-const LipSoundResult = () => {
+const ArticulationResult = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { type } = useParams<{ type: ArticulationType }>();
   const evaluationResult = location.state?.evaluationResult as LipSoundEvaluationResponse['result'] | undefined;
   const individualResults = evaluationResult?.individualResults ?? [];
   const overallResult = evaluationResult?.overallResult;
+
+  // type이 유효하지 않으면 기본값 사용
+  const validType = type && articulationTypeConfig[type] ? type : 'lip-sound';
+  const config = articulationTypeConfig[validType];
+
+  // URL 패턴에서 기본 경로 추출
+  const basePath = location.pathname.includes('articulation-position')
+    ? 'articulation-position'
+    : 'articulation-method';
 
   const handleButtonClick = () => {
     navigate('/search'); // 학습탐색 메인 페이지로 이동
   };
 
   const handleBackClick = () => {
-    navigate('/search/articulation-position/lip-sound/practice');
+    navigate(`/search/${basePath}/${validType}/practice`);
   };
 
   return (
@@ -31,7 +42,7 @@ const LipSoundResult = () => {
               <LeftArrowIcon className="h-full w-full" />
             </div>
           </div>
-          <p className="text-heading-02-regular text-gray-100">입술 소리</p>
+          <p className="text-heading-02-regular text-gray-100">{config.name}</p>
         </div>
       </div>
 
@@ -54,7 +65,7 @@ const LipSoundResult = () => {
 
           {/* 흰색 박스: 400px 고정, 내부 스크롤 */}
           <AnimatedContainer variant="fadeInScale" delay={0.2} disabled={false}>
-            <div className="h-[400px] w-full overflow-y-auto rounded-2xl border border-gray-20 bg-white p-6">
+            <div className="border-gray-20 h-[400px] w-full overflow-y-auto rounded-2xl border bg-white p-6">
               {evaluationResult ? (
                 <div className="flex flex-col gap-6">
                   {/* 전체 점수 */}
@@ -80,10 +91,14 @@ const LipSoundResult = () => {
                             >
                               {result.isSuccess ? '성공' : '재도전'}
                             </span>
-                            <p className="text-heading-02-semibold text-blue-1">{result.evaluationScore.toFixed(1)}점</p>
+                            <p className="text-heading-02-semibold text-blue-1">
+                              {result.evaluationScore.toFixed(1)}점
+                            </p>
                           </div>
                         </div>
-                        <p className="text-body-02-regular text-gray-60">인식된 발음: {result.recognizedText.replace(/\.$/, '')}</p>
+                        <p className="text-body-02-regular text-gray-60">
+                          인식된 발음: {result.recognizedText.replace(/\.$/, '')}
+                        </p>
 
                         <div className="grid grid-cols-2 gap-3">
                           <div className="bg-gray-10 rounded-xl p-3">
@@ -127,7 +142,7 @@ const LipSoundResult = () => {
           <AnimatedContainer variant="fadeIn" delay={0.25} disabled={false}>
             <button
               onClick={handleButtonClick}
-              className="text-heading-02-semibold bg-blue-1 ml-8 top-150 h-12 w-72 self-center cursor-pointer rounded-full text-white transition-colors hover:bg-blue-600"
+              className="text-heading-02-semibold bg-blue-1 top-150 ml-8 h-12 w-72 cursor-pointer self-center rounded-full text-white transition-colors hover:bg-blue-600"
             >
               완료하기
             </button>
@@ -138,4 +153,4 @@ const LipSoundResult = () => {
   );
 };
 
-export default LipSoundResult;
+export default ArticulationResult;

@@ -4,6 +4,7 @@ import KitListLayout from '@/components/talkingkit/layout/KitListLayout';
 import KitCard from '@/components/talkingkit/common/KitCard';
 import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory';
 import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
+import { SOUND_POSITION_MAP } from '@/utils/talkingkit/routingUtils';
 import { logger } from '@/utils/common/loggerUtils';
 
 const ArticulationPositionKit = () => {
@@ -30,12 +31,12 @@ const ArticulationPositionKit = () => {
   };
 
   const handleKitClick = (kitId: number, kitName: string) => {
-    // 입술 소리 키트 (kitId가 특정 값일 때 특정 라우트로 이동)
-    if (kitId === 4) {
-      navigate('/search/articulation-position/lip-sound/step1');
+    const soundType = SOUND_POSITION_MAP[kitId];
+    if (soundType) {
+      navigate(`/talkingkit/sound-position/${soundType}/step1`);
     } else {
       logger.log(`조음 위치별 키트 클릭: ${kitId} - ${kitName}`);
-      // TODO: 키트 상세 페이지로 라우팅
+      // TODO: 매핑되지 않은 키트 처리
     }
   };
 
