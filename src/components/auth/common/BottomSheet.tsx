@@ -50,7 +50,7 @@ export const BottomSheet = ({ isOpen, onClose, children }: BottomSheetProps) => 
 
           {/* 바텀시트 */}
           <motion.div
-            className="relative w-full rounded-t-[24px] bg-white shadow-lg"
+            className="relative w-full rounded-t-[24px] bg-white shadow-lg pb-[env(safe-area-inset-bottom)]"
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.5 }}
