@@ -9,6 +9,7 @@ import SelectDayIcon from '@/assets/svgs/review/review-selectday.svg';
 import TodayIcon from '@/assets/svgs/review/review-todayicon.svg';
 import { useCalendar } from '@/hooks/review/useCalendar';
 import { getKitRoute } from '@/utils/review/kitRouteUtils';
+import { getSituationRoute } from '@/utils/review/situationRouteUtils';
 import type { DailyStudyItem } from '@/types/review';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
@@ -152,7 +153,7 @@ const ReviewCalendar = () => {
                 {getKitsForDate(selectedDate).map((item: DailyStudyItem, index: number) => {
                   const handleRestudy = () => {
                     if (item.type === 'situation') {
-                      navigate(`/situation/${item.id}`);
+                      navigate(getSituationRoute(item.id));
                     } else {
                       navigate(getKitRoute(item.name));
                     }

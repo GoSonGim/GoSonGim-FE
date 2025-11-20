@@ -9,6 +9,7 @@ import SortFilter from '@/components/studytalk/SortFilter';
 import { useSituationReviewList } from '@/hooks/review/useSituationReviewList';
 import { useKitReviewList } from '@/hooks/review/useKitReviewList';
 import { getKitRoute } from '@/utils/review/kitRouteUtils';
+import { getSituationRoute } from '@/utils/review/situationRouteUtils';
 
 const ReviewPractice = () => {
   const navigate = useNavigate();
@@ -144,7 +145,7 @@ const ReviewPractice = () => {
                         <div className="flex gap-4">
                           {/* 재학습 버튼 */}
                           <button
-                            onClick={() => navigate(`/situation/${situation.situationId}`)}
+                            onClick={() => navigate(getSituationRoute(situation.situationId))}
                             className="border-gray-20 bg-background-primary flex size-[52px] cursor-pointer items-center justify-center rounded-2xl border"
                           >
                             <RestudyIcon className="pointer-events-none h-[52px] w-[52px]" />
