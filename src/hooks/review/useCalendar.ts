@@ -1,9 +1,32 @@
 import { useState } from 'react';
-import { MOCK_STUDY_RECORDS } from '@/mock/review/reviewCalendar.mock';
+import { useMonthlyStudyQuery } from './queries/useMonthlyStudyQuery';
+import { useDailyStudyQuery } from './queries/useDailyStudyQuery';
+import type { DailyStudyItem } from '@/types/review';
 
 export const useCalendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date(2025, 9, 1));
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(2025, 9, 7));
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  // 날짜 형식 변환 유틸
+  const formatToYearMonth = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}`;
+  };
+
+  const formatToYearMonthDay = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // API 호출
+  const monthString = formatToYearMonth(currentDate);
+  const selectedDateString = selectedDate ? formatToYearMonthDay(selectedDate) : null;
+
+  const { data: monthlyData } = useMonthlyStudyQuery(monthString);
+  const { data: dailyData } = useDailyStudyQuery(selectedDateString);
 
   // 현재 월의 첫날과 마지막날
   const year = currentDate.getFullYear();
@@ -68,21 +91,24 @@ export const useCalendar = () => {
     return `${y}.${m}.${d}`;
   };
 
-  // 학습 기록 조회
-  const getStudyRecord = (date: Date) => {
-    const dateString = date.toISOString().split('T')[0];
-    return MOCK_STUDY_RECORDS.find((record) => record.date === dateString);
+  // 특정 날짜의 학습 항목 목록 조회
+  const getKitsForDate = (date: Date): DailyStudyItem[] => {
+    if (!selectedDate || !dailyData?.result?.items) return [];
+
+    // 선택된 날짜와 일치하는지 확인
+    const isSelectedDate =
+      date.getDate() === selectedDate.getDate() &&
+      date.getMonth() === selectedDate.getMonth() &&
+      date.getFullYear() === selectedDate.getFullYear();
+
+    return isSelectedDate ? dailyData.result.items : [];
   };
 
-  // 특정 날짜의 키트 목록 조회
-  const getKitsForDate = (date: Date) => {
-    const record = getStudyRecord(date);
-    return record?.kits || [];
-  };
-
-  // 키트가 있는지 확인
-  const hasKits = (date: Date) => {
-    return getKitsForDate(date).length > 0;
+  // 학습 기록이 있는지 확인 (월별 API의 days 배열 확인)
+  const hasKits = (date: Date): boolean => {
+    if (!monthlyData?.result?.days) return false;
+    const dateString = formatToYearMonthDay(date);
+    return monthlyData.result.days.includes(dateString);
   };
 
   // 오늘 날짜인지 확인
