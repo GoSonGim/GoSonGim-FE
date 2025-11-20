@@ -1,21 +1,35 @@
-import { useState, useEffect, useRef } from 'react';
-import { MOCK_QUIZ_WORDS } from '@/mock/review/wordQuiz.mock';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { logger } from '@/utils/common/loggerUtils';
-import type { QuizWord } from '@/mock/review/wordQuiz.mock';
+import { useRandomWordsQuery } from '@/hooks/review/queries/useRandomWordsQuery';
+import type { QuizWord } from '@/types/review';
 
 export type WordStatus = 'pending' | 'active' | 'completed';
 
 export const useWordQuiz = () => {
+  const { data, isLoading, error } = useRandomWordsQuery();
+
+  // API 응답에서 상위 5개 단어만 QuizWord 타입으로 변환
+  const words = useMemo<QuizWord[]>(() => {
+    if (!data?.result?.words) return [];
+    return data.result.words.slice(0, 5).map((word, index) => ({
+      id: index + 1,
+      text: word,
+      category: '명사',
+    }));
+  }, [data]);
+
   const [showIntro, setShowIntro] = useState(true);
-  const [words] = useState<QuizWord[]>(MOCK_QUIZ_WORDS);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [wordStatuses, setWordStatuses] = useState<WordStatus[]>([
-    'active',
-    'pending',
-    'pending',
-    'pending',
-    'pending',
-  ]);
+
+  // words 길이에 맞춰 동적으로 wordStatuses 초기화
+  const [wordStatuses, setWordStatuses] = useState<WordStatus[]>([]);
+
+  // words가 변경되면 wordStatuses 초기화
+  useEffect(() => {
+    if (words.length > 0 && wordStatuses.length === 0) {
+      setWordStatuses(words.map((_, index) => (index === 0 ? 'active' : 'pending')));
+    }
+  }, [words, wordStatuses.length]);
   const [isRecording, setIsRecording] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showScoreModal, setShowScoreModal] = useState(false);
@@ -35,21 +49,47 @@ export const useWordQuiz = () => {
       audioRef.current.currentTime = 0;
     }
 
-    audioRef.current = new Audio(audioPath);
-    audioRef.current.play().catch(() => {
-      logger.warn(`음성 파일을 찾을 수 없습니다: ${word.text}.mp3`);
-    });
+    const audio = new Audio(audioPath);
+
+    // 오디오 파일이 충분히 로드된 후 재생
+    audio.addEventListener(
+      'canplaythrough',
+      () => {
+        audio.play().catch(() => {
+          logger.warn(`음성 파일을 재생할 수 없습니다: ${word.text}.mp3`);
+        });
+      },
+      { once: true },
+    );
+
+    // 로드 에러 처리
+    audio.addEventListener(
+      'error',
+      () => {
+        logger.warn(`음성 파일을 찾을 수 없습니다: ${word.text}.mp3`);
+      },
+      { once: true },
+    );
+
+    // 프리로드 시작
+    audio.load();
+    audioRef.current = audio;
   };
 
   // 인트로 타이머 (1초)
   useEffect(() => {
+    // 단어가 없으면 인트로 타이머 실행하지 않음
+    if (words.length === 0) return;
+
     const timer = setTimeout(() => {
       setShowIntro(false);
-      // 인트로 종료 직후 첫 단어 음성 재생
-      playWordAudio(words[0]);
+      // 인트로 종료 후 약간의 딜레이를 두고 첫 단어 음성 재생
+      setTimeout(() => {
+        playWordAudio(words[0]);
+      }, 200);
     }, 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [words]);
 
   // 녹음 시작
   const handleStartRecording = () => {
@@ -103,9 +143,10 @@ export const useWordQuiz = () => {
 
   // 단어 변경 시 음성 재생
   useEffect(() => {
-    if (!showIntro && currentWordIndex > 0) {
+    if (!showIntro && currentWordIndex > 0 && words[currentWordIndex]) {
       playWordAudio(words[currentWordIndex]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentWordIndex]);
 
   // 컴포넌트 언마운트 시 타이머 정리
@@ -134,5 +175,7 @@ export const useWordQuiz = () => {
     score,
     handleStartRecording,
     setShowScoreModal,
+    isLoading,
+    error,
   };
 };

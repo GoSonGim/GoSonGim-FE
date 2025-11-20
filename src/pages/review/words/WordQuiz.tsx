@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { AxiosError } from 'axios';
 import clsx from 'clsx';
 import LeftIcon from '@/assets/svgs/review/review-leftarrow.svg';
 import GrayAudio from '@/assets/svgs/review/mike1.svg';
@@ -47,7 +48,12 @@ const WordQuiz = () => {
     score,
     handleStartRecording,
     setShowScoreModal,
+    isLoading,
+    error,
   } = useWordQuiz();
+
+  // 404 에러 체크 (학습 기록이 없는 경우)
+  const isNoDataError = error instanceof AxiosError && error.response?.status === 404;
 
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
@@ -62,7 +68,21 @@ const WordQuiz = () => {
       {/* 메인 컨텐츠 */}
       <main className="flex flex-1 flex-col items-center gap-4 overflow-y-auto pt-10 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* 중앙 박스 */}
-        {showIntro ? (
+        {isLoading ? (
+          // 로딩 상태
+          <div className="flex h-[186px] w-[361px] items-center justify-center rounded-2xl bg-white p-4">
+            <p className="text-body-01-regular text-gray-80 text-center">로딩 중...</p>
+          </div>
+        ) : isNoDataError ? (
+          // 404 에러 상태
+          <div className="flex h-[186px] w-[361px] items-center justify-center rounded-2xl bg-white p-4">
+            <p className="text-body-01-regular text-gray-80 text-center">
+              학습 기록이 없습니다
+              <br />
+              단어 학습을 먼저 진행해주세요
+            </p>
+          </div>
+        ) : showIntro ? (
           // 인트로 페이지
           <div className="flex h-[186px] w-[361px] items-center justify-center rounded-2xl bg-white p-4">
             <p className="text-body-01-regular text-gray-80 text-center">
@@ -77,21 +97,23 @@ const WordQuiz = () => {
           // 메인 퀴즈 페이지
           <div className="relative h-[186px] w-[361px] rounded-2xl bg-white p-4">
             {/* 명사 - 절대 위치로 정확하게 배치 */}
-            <p className="text-body-01-regular text-gray-40 absolute top-4 left-4">{currentWord.category}</p>
+            <p className="text-body-01-regular text-gray-40 absolute top-4 left-4">{currentWord?.category}</p>
 
             {/* 단어 - 박스 중앙 정렬 */}
             <div className="flex h-full w-full items-center justify-center">
-              <p className="text-[40px] leading-normal font-semibold text-gray-100">{currentWord.text}</p>
+              <p className="text-[40px] leading-normal font-semibold text-gray-100">{currentWord?.text}</p>
             </div>
           </div>
         )}
 
-        {/* 단어 상태 박스들 */}
-        <div className="flex w-[361px] justify-between gap-0">
-          {words.map((word, index) => (
-            <WordBox key={word.id} status={wordStatuses[index]} label={`단어 ${index + 1}`} />
-          ))}
-        </div>
+        {/* 단어 상태 박스들 - 실제 단어 개수만 표시 */}
+        {!isLoading && !isNoDataError && words.length > 0 && (
+          <div className="flex w-[361px] gap-[5px]">
+            {words.map((word, index) => (
+              <WordBox key={word.id} status={wordStatuses[index]} label={`단어 ${index + 1}`} />
+            ))}
+          </div>
+        )}
       </main>
 
       {/* 하단 아이콘 */}

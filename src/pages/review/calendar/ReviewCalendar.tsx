@@ -8,6 +8,9 @@ import StudyDayIcon from '@/assets/svgs/review/review-studyday.svg';
 import SelectDayIcon from '@/assets/svgs/review/review-selectday.svg';
 import TodayIcon from '@/assets/svgs/review/review-todayicon.svg';
 import { useCalendar } from '@/hooks/review/useCalendar';
+import { getKitRoute } from '@/utils/review/kitRouteUtils';
+import { getSituationRoute } from '@/utils/review/situationRouteUtils';
+import type { DailyStudyItem } from '@/types/review';
 
 const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
@@ -147,30 +150,44 @@ const ReviewCalendar = () => {
                 </div>
 
                 {/* 키트 리스트 */}
-                {getKitsForDate(selectedDate).map((kit) => (
-                  <div
-                    key={kit.id}
-                    className="border-gray-10 flex h-20 items-center justify-between border-b bg-white px-4"
-                  >
-                    <p className="text-heading-02-semibold text-gray-100">{kit.name}</p>
-                    <div className="flex gap-4">
-                      {/* 재학습 버튼 */}
-                      <button
-                        className="border-gray-20 bg-background-primary flex size-[52px] cursor-pointer items-center justify-center rounded-2xl border"
-                        disabled={!kit.canRestudy}
-                      >
-                        <RestudyIcon className="h-[52px] w-[52px]" />
-                      </button>
-                      {/* 녹음 듣기 버튼 */}
-                      <button
-                        className="border-blue-3 flex size-[52px] cursor-pointer items-center justify-center rounded-2xl border bg-white"
-                        disabled={!kit.hasRecording}
-                      >
-                        <AudioIcon className="h-[52px] w-[52px]" />
-                      </button>
+                {getKitsForDate(selectedDate).map((item: DailyStudyItem, index: number) => {
+                  const handleRestudy = () => {
+                    if (item.type === 'situation') {
+                      navigate(getSituationRoute(item.id));
+                    } else {
+                      navigate(getKitRoute(item.name));
+                    }
+                  };
+
+                  const handleListen = () => {
+                    navigate(`/review/practice/listen?recordingId=${item.recordingId}`);
+                  };
+
+                  return (
+                    <div
+                      key={`${item.type}-${item.id}-${index}`}
+                      className="border-gray-10 flex h-20 items-center justify-between border-b bg-white px-4"
+                    >
+                      <p className="text-heading-02-semibold text-gray-100">{item.name}</p>
+                      <div className="flex gap-4">
+                        {/* 재학습 버튼 */}
+                        <button
+                          onClick={handleRestudy}
+                          className="border-gray-20 bg-background-primary flex size-[52px] cursor-pointer items-center justify-center rounded-2xl border"
+                        >
+                          <RestudyIcon className="h-[52px] w-[52px]" />
+                        </button>
+                        {/* 녹음 듣기 버튼 */}
+                        <button
+                          onClick={handleListen}
+                          className="border-blue-3 flex size-[52px] cursor-pointer items-center justify-center rounded-2xl border bg-white"
+                        >
+                          <AudioIcon className="h-[52px] w-[52px]" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </>

@@ -21,12 +21,12 @@ import SituationConversation from '@/pages/situation/SituationConversation';
 import SituationPractice from '@/pages/situation/SituationPractice';
 import SituationFeedback from '@/pages/situation/SituationFeedback';
 import Review from '@/pages/review/Review';
-import ReviewCalendar from '@/pages/review/ReviewCalendar';
+import ReviewCalendar from '@/pages/review/calendar/ReviewCalendar';
 import ReviewPractice from '@/pages/review/practice/ReviewPractice';
-import ReviewPracticeListen from '@/pages/review/practice/ReviewPracticeListen';
-import ArticulationPracticeListen from '@/pages/review/practice/ArticulationPracticeListen';
+import SituationListen from '@/pages/review/practice/listen/SituationListen';
+import ArticulationListen from '@/pages/review/practice/listen/ArticulationListen';
 import WordQuiz from '@/pages/review/words/WordQuiz';
-import WordListPage from '@/pages/review/words/WordListPage';
+import WordList from '@/pages/review/words/WordList';
 import Profile from '@/pages/profile/Profile';
 import ProfileWordListPage from '@/pages/profile/WordListPage';
 import ProfileGuide from '@/pages/profile/ProfileGuide';
@@ -90,10 +90,10 @@ export const router = createBrowserRouter([
           { path: '/review', element: <Review /> },
           { path: '/review/calendar', element: <ReviewCalendar /> },
           { path: '/review/practice', element: <ReviewPractice /> },
-          { path: '/review/practice/listen', element: <ReviewPracticeListen /> },
-          { path: '/review/practice/articulation-listen', element: <ArticulationPracticeListen /> },
+          { path: '/review/practice/listen', element: <SituationListen /> },
+          { path: '/review/practice/articulation-listen', element: <ArticulationListen /> },
           { path: '/review/word-quiz', element: <WordQuiz /> },
-          { path: '/review/word-list', element: <WordListPage /> },
+          { path: '/review/word-list', element: <WordList /> },
           { path: '/profile', element: <Profile /> },
           { path: '/profile/words', element: <ProfileWordListPage /> },
           { path: '/profile/guide', element: <ProfileGuide /> },
