@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { PitchDetector } from 'pitchy';
-import type { PitchData, PitchDetectionState } from '@/types/talkingkit/pitch';
+import type { PitchData, PitchDetectionState } from '@/types/talkingkit/longSoundKit/vowelPitch';
 import { evaluatePitch, frequencyToNote, isSoundLoudEnough } from '@/utils/talkingkit/pitchEvaluation';
 import { logger } from '@/utils/common/loggerUtils';
 import { handleError } from '@/utils/talkingkit/audioErrorHandlerUtils';

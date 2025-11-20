@@ -5,6 +5,7 @@ import { useBookmarkPreview } from '@/hooks/bookmark/queries/useBookmarkPreview'
 import { useBookmarkList } from '@/hooks/bookmark/queries/useBookmarkList';
 import type { BookmarkPreviewItem, BookmarkItem } from '@/types/bookmark';
 import { getSituationCategoryName, getSituationCategoryQuery } from '@/utils/studytalk/categoryUtils';
+import { getKitRoute } from '@/utils/talkingkit/routingUtils';
 import ArrowButtonIcon from '@/assets/svgs/home/arrow-button.svg';
 
 interface HomeMyStudyProps {
@@ -50,12 +51,7 @@ export default function HomeMyStudy({ className }: HomeMyStudyProps) {
 
     if (kitId !== undefined) {
       if (item.type === 'KIT') {
-        // 입술 소리 키트 (kitId: 4)인 경우
-        if (kitId === 4) {
-          navigate('/search/articulation-position/lip-sound/step1');
-        } else {
-          navigate(`/talkingkit/${kitId}`);
-        }
+        navigate(getKitRoute(kitId));
       } else if (item.type === 'SITUATION') {
         const categoryQuery = getSituationCategoryQuery(getSituationCategoryName(item.category));
         navigate(`/search/situation/${categoryQuery}/${kitId}`);

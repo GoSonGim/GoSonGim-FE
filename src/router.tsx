@@ -11,10 +11,10 @@ import Search from '@/pages/search/Search';
 import KitDiagnosis from '@/pages/search/KitDiagnosis';
 import ArticulationPositionKit from '@/pages/search/ArticulationPositionKit';
 import ArticulationMethodKit from '@/pages/search/ArticulationMethodKit';
-import ArticulationStep1 from '@/pages/search/articulation/ArticulationStep1';
-import ArticulationStep2 from '@/pages/search/articulation/ArticulationStep2';
-import ArticulationPractice from '@/pages/search/articulation/ArticulationPractice';
-import ArticulationResult from '@/pages/search/articulation/ArticulationResult';
+import Step1 from '@/pages/talkingkit/soundPosition/lipSound/Step1';
+import Step2 from '@/pages/talkingkit/soundPosition/lipSound/Step2';
+import Practice from '@/pages/talkingkit/soundPosition/lipSound/Practice';
+import Result from '@/pages/talkingkit/soundPosition/lipSound/Result';
 import SituationCategory from '@/pages/search/SituationCategory';
 import SituationDetail from '@/pages/situation/SituationDetail';
 import SituationConversation from '@/pages/situation/SituationConversation';
@@ -36,14 +36,14 @@ import FreeTalk from '@/pages/freetalk/FreeTalk';
 import HomeStudyTalk from '@/pages/studytalk/HomeStudyTalk';
 import TalkingKit from '@/pages/talkingkit/TalkingKit';
 import KitDetail from '@/pages/talkingkit/KitDetail';
-import BreathingExercise from '@/pages/talkingkit/breathing/BreathingExercise';
-import VowelPitch from '@/pages/talkingkit/vowelPitch/VowelPitch';
-import VowelPitchResult from '@/pages/talkingkit/vowelPitch/VowelPitchResult';
-import SteadySound from '@/pages/talkingkit/steadySound/SteadySound';
-import ShortSound from '@/pages/talkingkit/shortSound/ShortSound';
-import LoudSound from '@/pages/talkingkit/loudSound/LoudSound';
-import LoudSoundVolume from '@/pages/talkingkit/loudSound/LoudSoundVolume';
-import LoudSoundVolumeResult from '@/pages/talkingkit/loudSound/LoudSoundVolumeResult';
+import BreathingExercise from '@/pages/talkingkit/longSoundKit/breathing/BreathingExercise';
+import VowelPitch from '@/pages/talkingkit/longSoundKit/vowelPitch/VowelPitch';
+import VowelPitchResult from '@/pages/talkingkit/longSoundKit/vowelPitch/VowelPitchResult';
+import SteadySound from '@/pages/talkingkit/steadySoundKit/steadySound/SteadySound';
+import ShortSound from '@/pages/talkingkit/steadySoundKit/shortSound/ShortSound';
+import LoudSound from '@/pages/talkingkit/loudSoundKit/loudSound/LoudSound';
+import LoudSoundVolume from '@/pages/talkingkit/loudSoundKit/loudSound/LoudSoundVolume';
+import LoudSoundVolumeResult from '@/pages/talkingkit/loudSoundKit/loudSound/LoudSoundVolumeResult';
 
 import Layout from '@/components/layout/Layout';
 import RequireAuth from '@/components/router/RequireAuth';
@@ -74,14 +74,14 @@ export const router = createBrowserRouter([
           { path: '/search/diagnosis', element: <KitDiagnosis /> },
           { path: '/search/articulation-position', element: <ArticulationPositionKit /> },
           { path: '/search/articulation-method', element: <ArticulationMethodKit /> },
-          { path: '/search/articulation-position/:type/step1', element: <ArticulationStep1 /> },
-          { path: '/search/articulation-position/:type/step2', element: <ArticulationStep2 /> },
-          { path: '/search/articulation-position/:type/practice', element: <ArticulationPractice /> },
-          { path: '/search/articulation-position/:type/result', element: <ArticulationResult /> },
-          { path: '/search/articulation-method/:type/step1', element: <ArticulationStep1 /> },
-          { path: '/search/articulation-method/:type/step2', element: <ArticulationStep2 /> },
-          { path: '/search/articulation-method/:type/practice', element: <ArticulationPractice /> },
-          { path: '/search/articulation-method/:type/result', element: <ArticulationResult /> },
+          { path: '/talkingkit/sound-position/:type/step1', element: <Step1 /> },
+          { path: '/talkingkit/sound-position/:type/step2', element: <Step2 /> },
+          { path: '/talkingkit/sound-position/:type/practice', element: <Practice /> },
+          { path: '/talkingkit/sound-position/:type/result', element: <Result /> },
+          { path: '/talkingkit/sound-way/:type/step1', element: <Step1 /> },
+          { path: '/talkingkit/sound-way/:type/step2', element: <Step2 /> },
+          { path: '/talkingkit/sound-way/:type/practice', element: <Practice /> },
+          { path: '/talkingkit/sound-way/:type/result', element: <Result /> },
           { path: '/search/situation/:category', element: <SituationCategory /> },
           { path: '/search/situation/:category/:situationId', element: <SituationDetail /> },
           { path: '/situation/:situationId/conversation', element: <SituationConversation /> },

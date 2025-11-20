@@ -4,6 +4,7 @@ import KitListLayout from '@/components/talkingkit/layout/KitListLayout';
 import KitCard from '@/components/talkingkit/common/KitCard';
 import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory';
 import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
+import { SOUND_POSITION_MAP } from '@/utils/talkingkit/routingUtils';
 import { logger } from '@/utils/common/loggerUtils';
 
 const ArticulationPositionKit = () => {
@@ -30,17 +31,9 @@ const ArticulationPositionKit = () => {
   };
 
   const handleKitClick = (kitId: number, kitName: string) => {
-    // kitId에 따라 soundType 매핑
-    const soundTypeMap: Record<number, string> = {
-      4: 'lip-sound', // 입술 소리
-      5: 'tongue-tip', // 혀끝 소리
-      6: 'throat', // 목구멍 소리
-      7: 'gum', // 잇몸 소리
-    };
-
-    const soundType = soundTypeMap[kitId];
+    const soundType = SOUND_POSITION_MAP[kitId];
     if (soundType) {
-      navigate(`/search/articulation-position/${soundType}/step1`);
+      navigate(`/talkingkit/sound-position/${soundType}/step1`);
     } else {
       logger.log(`조음 위치별 키트 클릭: ${kitId} - ${kitName}`);
       // TODO: 매핑되지 않은 키트 처리
