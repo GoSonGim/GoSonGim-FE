@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useSituationPractice } from '@/hooks/situation/useSituationPractice';
+import { useSituationSessionStore } from '@/stores/useSituationSessionStore';
 import { PracticeSession } from '@/components/situation/practice';
 import { AvatarVideo } from '@/components/situation/common';
 import { Toast } from '@/components/common/Toast';
@@ -29,6 +30,9 @@ export default function SituationPractice() {
 
   // 토스트
   const toast = useToast();
+
+  // Store에서 세션 복원 플래그 설정 함수 가져오기
+  const setShouldRestore = useSituationSessionStore((state) => state.setShouldRestore);
 
   const practice = useSituationPractice({
     onPracticeComplete: () => {
@@ -79,10 +83,17 @@ export default function SituationPractice() {
     setStep('practice');
   };
 
-  // 다시 시작하기 (대화 페이지로 복귀, 세션은 유지하고 대화만 리셋)
+  // 다시 시작하기 (대화 페이지로 복귀, 저장된 세션 복원)
   const handleRestart = () => {
     logger.log('[PRACTICE] 다시 시작하기 - 대화 페이지로 복귀');
-    navigate(`/situation/${situationIdNum}/conversation`);
+
+    // 세션 복원 플래그 설정
+    setShouldRestore(true);
+
+    // 대화 페이지로 이동하면서 fromPractice 플래그 전달
+    navigate(`/situation/${situationIdNum}/conversation`, {
+      state: { fromPractice: true, situationName },
+    });
   };
 
   return (

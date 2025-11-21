@@ -198,6 +198,7 @@ export const useSituationConversation = ({
       logger.log('[RECORDING] Step 3: 답변 평가');
       const replyResponse = await replyMutation.mutateAsync({
         sessionId,
+        turnIndex: currentTurnIndex,
         answer: recognizedText,
         audioFileKey: fileKey,
       });
@@ -206,11 +207,11 @@ export const useSituationConversation = ({
 
       logger.log('[RECORDING] 평가 결과', { evaluation, turnIndex, isSessionEnd });
 
-      // 5. 현재 턴 업데이트 (답변 + 평가 추가)
+      // 5. 현재 턴 업데이트 (답변 + 평가 + nextQuestion 추가)
       setTurns((prev) =>
         prev.map((turn) =>
           turn.turnIndex === currentTurnIndex
-            ? { ...turn, answer: recognizedText, audioFileKey: fileKey, evaluation }
+            ? { ...turn, answer: recognizedText, audioFileKey: fileKey, evaluation, nextQuestion: nextQuestion ?? undefined }
             : turn,
         ),
       );
@@ -218,7 +219,13 @@ export const useSituationConversation = ({
       // 6. 평가 결과 처리
       if (!evaluation.isSuccess) {
         // 평가 실패
-        logger.log('[RECORDING] 평가 실패 - 연습 모드로 전환');
+        logger.log('[RECORDING] 평가 실패 - 연습 모드로 전환', { nextQuestion });
+
+        // nextQuestion을 currentQuestionRef에 저장 (다시하기 시 사용)
+        if (nextQuestion) {
+          currentQuestionRef.current = nextQuestion;
+        }
+
         const failedTurn = turns.find((t) => t.turnIndex === currentTurnIndex);
         if (failedTurn && onEvaluationFailed) {
           onEvaluationFailed({
@@ -226,6 +233,7 @@ export const useSituationConversation = ({
             answer: recognizedText,
             audioFileKey: fileKey,
             evaluation,
+            nextQuestion: nextQuestion || undefined,
           });
         }
         setIsProcessing(false);
@@ -317,24 +325,36 @@ export const useSituationConversation = ({
   }, []);
 
   /**
-   * 현재 턴 다시하기 (답변과 평가 초기화 후 격려 메시지)
+   * 현재 턴 다시하기 (새로운 질문 턴 추가)
    */
   const retryCurrentTurn = useCallback(async () => {
-    logger.log('[CONVERSATION] 현재 턴 다시하기', { currentTurnIndex });
+    const nextQuestion = currentQuestionRef.current;
+    logger.log('[CONVERSATION] 현재 턴 다시하기', { currentTurnIndex, nextQuestion });
 
-    // 현재 턴의 답변과 평가 초기화
-    setTurns((prev) =>
-      prev.map((turn) =>
-        turn.turnIndex === currentTurnIndex ? { ...turn, answer: undefined, evaluation: undefined } : turn,
-      ),
-    );
+    if (!nextQuestion) {
+      logger.warn('[CONVERSATION] 다시 말할 질문이 없습니다');
+      return;
+    }
 
-    // 아바타 격려 메시지
+    // 1. 새로운 턴 추가 (nextQuestion을 질문으로)
+    const nextTurnIndex = currentTurnIndex + 1;
+    setTurns((prev) => [
+      ...prev,
+      {
+        turnIndex: nextTurnIndex,
+        question: nextQuestion,
+      },
+    ]);
+    setCurrentTurnIndex(nextTurnIndex);
+
+    logger.log('[CONVERSATION] 새 턴 추가 완료', { nextTurnIndex, question: nextQuestion });
+
+    // 2. 아바타가 새 질문 말하기
     try {
-      await avatar.speak({ text: '다시 한번 말해보실래요?', taskType: TaskType.REPEAT });
-      logger.log('[CONVERSATION] 격려 메시지 완료');
+      await avatar.speak({ text: nextQuestion, taskType: TaskType.REPEAT });
+      logger.log('[CONVERSATION] 질문 재생 완료', { question: nextQuestion });
     } catch (error) {
-      logger.error('[CONVERSATION] 격려 메시지 실패:', error);
+      logger.error('[CONVERSATION] 질문 재생 실패:', error);
     }
   }, [currentTurnIndex, avatar]);
 

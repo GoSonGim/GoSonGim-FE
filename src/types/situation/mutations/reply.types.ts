@@ -3,6 +3,7 @@ import type { Evaluation, FinalSummary } from '../models';
 // 답변 평가 요청
 export interface ReplyRequest {
   sessionId: string;
+  turnIndex: number;
   answer: string;
   audioFileKey: string;
 }
@@ -21,4 +22,3 @@ export interface ReplyResponse {
     finalSummary: FinalSummary | null;
   };
 }
-

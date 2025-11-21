@@ -18,6 +18,7 @@ export interface Turn {
   answer?: string;
   audioFileKey?: string;
   evaluation?: Evaluation;
+  nextQuestion?: string; // 평가 실패 시 다음에 재시도할 질문
 }
 
 // 최종 요약

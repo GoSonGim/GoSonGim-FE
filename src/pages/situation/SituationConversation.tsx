@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useSituationConversation } from '@/hooks/situation/useSituationConversation';
+import { useSituationSessionStore } from '@/stores/useSituationSessionStore';
 import { TurnIndicator, AvatarVideo, RecordButton } from '@/components/situation/common';
 import { ConversationList } from '@/components/situation/conversation';
 import { FailureModal } from '@/components/situation/feedback';
@@ -57,9 +58,28 @@ export default function SituationConversation() {
     navigate(-1);
   };
 
+  // Store에서 세션 관련 함수 및 상태 가져오기 (개별 구독으로 무한 루프 방지)
+  const savedCurrentQuestion = useSituationSessionStore((state) => state.currentQuestion);
+  const shouldRestoreSession = useSituationSessionStore((state) => state.shouldRestoreSession);
+  const saveSession = useSituationSessionStore((state) => state.saveSession);
+  const setShouldRestore = useSituationSessionStore((state) => state.setShouldRestore);
+
   // 학습하기 버튼 클릭
   const handleLearn = async () => {
     setIsFailureModalOpen(false);
+
+    // 세션 상태 저장 (학습 후 복귀를 위해)
+    if (conversation.sessionId && failedTurn) {
+      saveSession({
+        sessionId: conversation.sessionId,
+        situationId: situationIdNum,
+        situationName: situationName || '',
+        currentTurnIndex: conversation.currentTurnIndex,
+        turns: conversation.turns,
+        currentQuestion: failedTurn.nextQuestion || failedTurn.question,
+      });
+      logger.log('[PAGE] 세션 상태 저장 완료');
+    }
 
     // 아바타 세션만 종료 (백엔드 세션은 유지)
     try {
@@ -99,6 +119,39 @@ export default function SituationConversation() {
     toast.showToast('녹음이 완료되었습니다');
     await conversation.stopRecording();
   };
+
+  // 학습 페이지에서 복귀 시 세션 복원
+  useEffect(() => {
+    const fromPractice = location.state?.fromPractice;
+
+    if (fromPractice && shouldRestoreSession && savedCurrentQuestion) {
+      logger.log('[PAGE] 학습 페이지에서 복귀, 세션 복원 시작', {
+        currentQuestion: savedCurrentQuestion,
+      });
+
+      const restoreSession = async () => {
+        try {
+          // 1. 아바타 세션 재시작
+          logger.log('[PAGE] 아바타 세션 재시작');
+          await conversation.startConversation();
+
+          // 2. 저장된 질문 다시 말하기
+          logger.log('[PAGE] 저장된 질문 재생', { question: savedCurrentQuestion });
+          // 질문은 startConversation에서 자동으로 말해지므로, 여기서는 추가 작업 불필요
+
+          // 3. 복원 플래그 초기화
+          setShouldRestore(false);
+          logger.log('[PAGE] 세션 복원 완료');
+        } catch (error) {
+          logger.error('[PAGE] 세션 복원 실패:', error);
+          toast.showToast('세션 복원에 실패했습니다');
+        }
+      };
+
+      restoreSession();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shouldRestoreSession, savedCurrentQuestion]);
 
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
