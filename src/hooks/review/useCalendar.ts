@@ -107,8 +107,10 @@ export const useCalendar = () => {
   // 학습 기록이 있는지 확인 (월별 API의 days 배열 확인)
   const hasKits = (date: Date): boolean => {
     if (!monthlyData?.result?.days) return false;
-    const dateString = formatToYearMonthDay(date);
-    return monthlyData.result.days.includes(dateString);
+
+    // API가 숫자 배열(일자만)을 반환하므로 date.getDate()와 비교
+    const dayNumber = date.getDate();
+    return monthlyData.result.days.includes(dayNumber);
   };
 
   // 오늘 날짜인지 확인

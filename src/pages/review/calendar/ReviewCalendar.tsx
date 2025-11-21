@@ -4,8 +4,6 @@ import LeftIcon from '@/assets/svgs/review/review-leftarrow.svg';
 import RightIcon from '@/assets/svgs/review/review-rightarrow.svg';
 import RestudyIcon from '@/assets/svgs/review/review-restudy.svg';
 import AudioIcon from '@/assets/svgs/review/review-audio.svg';
-import StudyDayIcon from '@/assets/svgs/review/review-studyday.svg';
-import SelectDayIcon from '@/assets/svgs/review/review-selectday.svg';
 import TodayIcon from '@/assets/svgs/review/review-todayicon.svg';
 import { useCalendar } from '@/hooks/review/useCalendar';
 import { getKitRoute } from '@/utils/review/kitRouteUtils';
@@ -71,7 +69,7 @@ const ReviewCalendar = () => {
           </div>
 
           {/* 날짜 그리드 - 56x56 타일 */}
-          <div className="grid grid-cols-7">
+          <div className="grid grid-cols-7 px-2">
             {calendarDays.map((day, index) => {
               const today = isToday(day.fullDate);
               const selected = isSelected(day.fullDate);
@@ -119,9 +117,13 @@ const ReviewCalendar = () => {
                     </span>
                   )}
 
-                  {/* 학습한 날 점 */}
-                  {studied && selected && <SelectDayIcon className="h-2 w-2" />}
-                  {studied && !selected && !today && currentMonth && <StudyDayIcon className="h-2 w-2" />}
+                  {/* 학습한 날 점 - 현재 달의 날짜에만 표시 */}
+                  {studied && currentMonth && (
+                    <div
+                      className={clsx('h-2 w-2 shrink-0 rounded-full', selected ? 'bg-white' : 'bg-blue-1')}
+                      style={{ backgroundColor: !selected ? '#4C5EFF' : undefined }}
+                    />
+                  )}
                 </button>
               );
             })}
@@ -196,5 +198,4 @@ const ReviewCalendar = () => {
     </div>
   );
 };
-
 export default ReviewCalendar;

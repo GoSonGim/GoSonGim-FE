@@ -5,6 +5,7 @@ import type {
   GetStatsResponse,
   GetDailyWordsRequest,
   GetDailyWordsResponse,
+  GetStreakDaysResponse,
   UpdateNicknameRequest,
   UpdateNicknameResponse,
   DeleteAccountResponse,
@@ -36,6 +37,13 @@ export const getDailyWords = async (params?: GetDailyWordsRequest): Promise<GetD
   return response.data;
 };
 
+export const getStreakDays = async (): Promise<GetStreakDaysResponse> => {
+  logger.log('📡 API Call: GET /api/v1/users/me/streak-days');
+  const response = await apiClient.get<GetStreakDaysResponse>('/api/v1/users/me/streak-days');
+  logger.log('📡 API Response:', response.data);
+  return response.data;
+};
+
 export const updateNickname = async (data: UpdateNicknameRequest): Promise<UpdateNicknameResponse> => {
   logger.log('📡 API Call: PUT /api/v1/users/me/nickname', data);
   const response = await apiClient.put<UpdateNicknameResponse>('/api/v1/users/me/nickname', data);
@@ -50,4 +58,4 @@ export const deleteAccount = async (): Promise<DeleteAccountResponse> => {
   return response.data;
 };
 
-export const profileAPI = { getProfile, getStats, getDailyWords, updateNickname, deleteAccount };
+export const profileAPI = { getProfile, getStats, getDailyWords, getStreakDays, updateNickname, deleteAccount };

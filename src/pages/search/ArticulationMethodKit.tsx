@@ -94,5 +94,4 @@ const ArticulationMethodKit = () => {
     </KitListLayout>
   );
 };
-
 export default ArticulationMethodKit;
