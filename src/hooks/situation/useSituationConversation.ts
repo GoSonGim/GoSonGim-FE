@@ -12,7 +12,7 @@ import type { Turn, FinalSummary } from '@/types/situation';
 
 interface UseSituationConversationProps {
   situationId: number;
-  onSessionEnd?: (finalSummary: FinalSummary) => void;
+  onSessionEnd?: (finalSummary: FinalSummary, turns: Turn[]) => void;
   onEvaluationFailed?: (turn: Turn) => void;
 }
 
@@ -208,13 +208,12 @@ export const useSituationConversation = ({
       logger.log('[RECORDING] 평가 결과', { evaluation, turnIndex, isSessionEnd });
 
       // 5. 현재 턴 업데이트 (답변 + 평가 + nextQuestion 추가)
-      setTurns((prev) =>
-        prev.map((turn) =>
-          turn.turnIndex === currentTurnIndex
-            ? { ...turn, answer: recognizedText, audioFileKey: fileKey, evaluation, nextQuestion: nextQuestion ?? undefined }
-            : turn,
-        ),
+      const updatedTurns = turns.map((turn) =>
+        turn.turnIndex === currentTurnIndex
+          ? { ...turn, answer: recognizedText, audioFileKey: fileKey, evaluation, nextQuestion: nextQuestion ?? undefined }
+          : turn,
       );
+      setTurns(updatedTurns);
 
       // 6. 평가 결과 처리
       if (!evaluation.isSuccess) {
@@ -226,7 +225,7 @@ export const useSituationConversation = ({
           currentQuestionRef.current = nextQuestion;
         }
 
-        const failedTurn = turns.find((t) => t.turnIndex === currentTurnIndex);
+        const failedTurn = updatedTurns.find((t) => t.turnIndex === currentTurnIndex);
         if (failedTurn && onEvaluationFailed) {
           onEvaluationFailed({
             ...failedTurn,
@@ -245,7 +244,7 @@ export const useSituationConversation = ({
         logger.log('[RECORDING] 세션 종료', { finalSummary: summary });
         setFinalSummary(summary);
         if (onSessionEnd) {
-          onSessionEnd(summary);
+          onSessionEnd(summary, updatedTurns);
         }
         setIsProcessing(false);
         return;
