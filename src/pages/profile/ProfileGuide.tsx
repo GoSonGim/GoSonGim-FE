@@ -230,7 +230,7 @@ const ProfileGuide = () => {
             <div className="mt-12 flex justify-center">
               <button
                 onClick={() => navigate('/profile')}
-                className="flex h-[49px] w-[297px] cursor-pointer items-center justify-center rounded-[16px] bg-[#d9d9d9]"
+                className="flex h-[49px] cursor-pointer items-center justify-center rounded-[16px] bg-[#d9d9d9] px-10"
               >
                 <p className="text-[17px] leading-normal font-medium text-black">이용안내 나가기</p>
               </button>
