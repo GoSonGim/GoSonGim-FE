@@ -34,7 +34,7 @@ const WordListPage = () => {
       {/* 메인 컨텐츠 */}
       <main className="relative flex-1 overflow-y-auto pt-3 pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* 흰색 박스 */}
-        <div className="bg-white pt-16 pb-4">
+        <div className="min-h-full bg-white pt-16 pb-4">
           {/* 총 학습 횟수 */}
           <div className="absolute top-[29px] right-[16px]">
             <p className="text-body-01-semibold text-gray-100">

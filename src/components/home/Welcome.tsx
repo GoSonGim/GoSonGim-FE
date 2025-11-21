@@ -1,11 +1,12 @@
-import { homeWelcomeMockData } from '@/mock/home/homeWelcome.mock';
 import { useProfileQuery } from '@/hooks/profile/queries/useProfileQuery';
+import { useStreakDaysQuery } from '@/hooks/profile/queries/useStreakDaysQuery';
 
 export default function HomeWelcome() {
   const { data: profileData } = useProfileQuery();
-  const { streakDays } = homeWelcomeMockData;
+  const { data: streakData } = useStreakDaysQuery();
 
   const userName = profileData?.result.user.nickname || '사용자';
+  const streakDays = streakData?.result.streakDays || 0;
 
   return (
     <div className="flex items-center justify-between rounded-2xl bg-white px-3 py-2 shadow-lg">

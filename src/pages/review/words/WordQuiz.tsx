@@ -46,17 +46,36 @@ const WordQuiz = () => {
     progress,
     showScoreModal,
     score,
+    feedback,
     handleStartRecording,
     setShowScoreModal,
     isLoading,
     error,
+    isUploading,
+    isEvaluating,
   } = useWordQuiz();
 
   // 404 에러 체크 (학습 기록이 없는 경우)
   const isNoDataError = error instanceof AxiosError && error.response?.status === 404;
+  const isProcessing = isUploading || isEvaluating;
+  const overlayMessage = isUploading ? '녹음 업로드 중...' : '발음 평가 중...';
+  const overlaySubMessage = isUploading ? '잠시만 기다려주세요' : '발음을 분석하고 있어요';
 
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
+      {/* 로딩 오버레이 */}
+      {isProcessing && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/50">
+          <div className="flex flex-col items-center gap-4 rounded-2xl bg-white px-8 py-6">
+            <div className="border-t-blue-1 h-12 w-12 animate-spin rounded-full border-4 border-gray-200" />
+            <div className="flex flex-col items-center gap-1">
+              <p className="text-heading-02-semibold text-gray-100">{overlayMessage}</p>
+              <p className="text-body-02-regular text-gray-60">{overlaySubMessage}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 헤더 */}
       <header className="flex h-16 items-center justify-center bg-white px-4">
         <button onClick={() => navigate('/review')} className="absolute left-4 cursor-pointer p-2">
@@ -122,28 +141,22 @@ const WordQuiz = () => {
           // 인트로: 비활성 아이콘
           <GrayAudio className="h-[88px] w-[88px]" />
         ) : isRecording ? (
-          // 녹음 중: 타이머 + 정지 아이콘
-          <div className="relative h-[88px] w-[88px]">
-            {/* 중앙 아이콘 (파란 원 + 하얀 사각형) */}
-            <div className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-              <BlueCircle className="h-[88px] w-[88px]" />
-              <WhiteSquare className="absolute top-1/2 left-1/2 h-[24px] w-[24px] -translate-x-1/2 -translate-y-1/2" />
-            </div>
-            {/* CircularProgress를 최상단에 */}
-            <div className="absolute inset-0 z-20">
-              <CircularProgress progress={progress} size={88} strokeWidth={8} />
-            </div>
-          </div>
+          // 녹음 중: 타이머 + 정지 아이콘 (조음키트와 동일한 구조)
+          <button className="relative flex size-[88px] cursor-pointer items-center justify-center">
+            <CircularProgress progress={progress} />
+            <BlueCircle className="absolute size-[88px]" />
+            <WhiteSquare className="relative size-[26px]" />
+          </button>
         ) : (
           // 활성 상태: 클릭 가능한 아이콘
-          <button onClick={handleStartRecording} className="cursor-pointer">
+          <button onClick={handleStartRecording} className="cursor-pointer" disabled={isUploading || isEvaluating}>
             <BlueAudio className="h-[88px] w-[88px]" />
           </button>
         )}
       </div>
 
       {/* 점수 모달 */}
-      <ScoreModal isOpen={showScoreModal} score={score} onClose={() => setShowScoreModal(false)} />
+      <ScoreModal isOpen={showScoreModal} score={score} feedback={feedback} onClose={() => setShowScoreModal(false)} />
     </div>
   );
 };

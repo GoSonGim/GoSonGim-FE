@@ -3,6 +3,7 @@ import { getSituationList } from './queries/situationList';
 import { getKitList } from './queries/kitList';
 import { getMonthlyStudy } from './queries/monthlyStudy';
 import { getDailyStudy } from './queries/dailyStudy';
+import { evaluateWords } from './mutations/evaluateWords';
 
 export const reviewAPI = {
   getRandomWords,
@@ -10,4 +11,5 @@ export const reviewAPI = {
   getKitList,
   getMonthlyStudy,
   getDailyStudy,
+  evaluateWords,
 };

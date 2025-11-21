@@ -1,12 +1,16 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { logger } from '@/utils/common/loggerUtils';
 import { useRandomWordsQuery } from '@/hooks/review/queries/useRandomWordsQuery';
+import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
+import { reviewAPI } from '@/apis/review';
+import { lipSoundAPI } from '@/apis/search';
 import type { QuizWord } from '@/types/review';
 
 export type WordStatus = 'pending' | 'active' | 'completed';
 
 export const useWordQuiz = () => {
   const { data, isLoading, error } = useRandomWordsQuery();
+  const { startRecording: startAudioRecording, stopRecording: stopAudioRecording } = useAudioRecorder();
 
   // API 응답에서 상위 5개 단어만 QuizWord 타입으로 변환
   const words = useMemo<QuizWord[]>(() => {
@@ -20,9 +24,24 @@ export const useWordQuiz = () => {
 
   const [showIntro, setShowIntro] = useState(true);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-
-  // words 길이에 맞춰 동적으로 wordStatuses 초기화
   const [wordStatuses, setWordStatuses] = useState<WordStatus[]>([]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [showScoreModal, setShowScoreModal] = useState(false);
+  const [score, setScore] = useState(0);
+  const [feedback, setFeedback] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [isEvaluating, setIsEvaluating] = useState(false);
+
+  const timerRef = useRef<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const fileKeysRef = useRef<Map<number, string>>(new Map());
+  const currentWordIndexRef = useRef(currentWordIndex);
+
+  // currentWordIndex가 변경될 때 ref도 업데이트
+  useEffect(() => {
+    currentWordIndexRef.current = currentWordIndex;
+  }, [currentWordIndex]);
 
   // words가 변경되면 wordStatuses 초기화
   useEffect(() => {
@@ -30,17 +49,146 @@ export const useWordQuiz = () => {
       setWordStatuses(words.map((_, index) => (index === 0 ? 'active' : 'pending')));
     }
   }, [words, wordStatuses.length]);
-  const [isRecording, setIsRecording] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [showScoreModal, setShowScoreModal] = useState(false);
-  const [score] = useState(70); // 임시 점수
 
-  const timerRef = useRef<number | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // S3 업로드 함수
+  const uploadToS3 = useCallback(
+    async (index: number, blob: Blob): Promise<string> => {
+      const word = words[index];
+      if (!word) {
+        throw new Error(`인덱스 ${index}에 해당하는 단어를 찾을 수 없습니다.`);
+      }
+
+      const uuid =
+        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
+      const fileName = `word${index + 1}_${uuid}.wav`;
+
+      setIsUploading(true);
+
+      try {
+        const uploadResponse = await lipSoundAPI.getUploadUrl({
+          folder: 'kit',
+          fileName,
+        });
+
+        const { fileKey, url } = uploadResponse.result;
+
+        const uploadResult = await fetch(url, {
+          method: 'PUT',
+          body: blob,
+        });
+
+        if (!uploadResult.ok) {
+          throw new Error(`S3 업로드 실패 (status: ${uploadResult.status})`);
+        }
+
+        logger.log(`${index + 1}번째 단어 녹음 업로드 완료`, fileKey);
+        return fileKey;
+      } catch (error) {
+        logger.error(`${index + 1}번째 단어 녹음 업로드 실패:`, error);
+        throw error;
+      } finally {
+        setIsUploading(false);
+      }
+    },
+    [words],
+  );
+
+  // 평가 API 호출
+  const handleEvaluate = useCallback(
+    async (fileKeys: Map<number, string>) => {
+      try {
+        setIsEvaluating(true);
+        logger.log('단어 평가 시작, 총 녹음 파일:', fileKeys.size);
+
+        const payload = Array.from(fileKeys.entries())
+          .sort(([a], [b]) => a - b)
+          .map(([index, fileKey]) => ({
+            kitStageId: index + 1,
+            fileKey,
+            targetWord: words[index].text,
+          }));
+
+        logger.log('단어 평가 요청 페이로드:', JSON.stringify(payload, null, 2));
+
+        const response = await reviewAPI.evaluateWords(payload);
+        logger.log('평가 결과:', response);
+
+        const overallScore = Math.floor(response.result.overallResult?.overallScore || 0);
+        const overallFeedback = response.result.overallResult?.overallFeedback || '';
+
+        setScore(overallScore);
+        setFeedback(overallFeedback);
+        setShowScoreModal(true);
+      } catch (error) {
+        logger.error('단어 평가 실패:', error);
+        alert('단어 평가 중 오류가 발생했습니다. 다시 시도해주세요.');
+      } finally {
+        setIsEvaluating(false);
+      }
+    },
+    [words],
+  );
+
+  // 다음 단어로 이동
+  const moveToNextWord = useCallback(() => {
+    const newStatuses = [...wordStatuses];
+    newStatuses[currentWordIndex] = 'completed';
+
+    if (currentWordIndex < words.length - 1) {
+      newStatuses[currentWordIndex + 1] = 'active';
+      setCurrentWordIndex(currentWordIndex + 1);
+      setWordStatuses(newStatuses);
+    } else {
+      // 모든 단어 완료 → 평가 실행
+      setWordStatuses(newStatuses);
+      if (fileKeysRef.current.size === words.length) {
+        handleEvaluate(fileKeysRef.current);
+      }
+    }
+  }, [wordStatuses, currentWordIndex, words.length, handleEvaluate]);
+
+  // 녹음 중지 및 저장 처리
+  const handleStopRecordingAndSave = useCallback(async () => {
+    try {
+      const wavBlob = await stopAudioRecording();
+
+      if (!wavBlob) {
+        return;
+      }
+
+      const completedIndex = currentWordIndexRef.current;
+
+      setIsRecording(false);
+      setProgress(0);
+
+      logger.log(`${completedIndex + 1}번째 단어 녹음 완료:`, {
+        index: completedIndex,
+        size: wavBlob.size,
+        type: wavBlob.type,
+      });
+
+      const fileKey = await uploadToS3(completedIndex, wavBlob);
+
+      const updatedFileKeys = new Map(fileKeysRef.current);
+      updatedFileKeys.set(completedIndex, fileKey);
+      fileKeysRef.current = updatedFileKeys;
+
+      // 다음 단어로 이동 또는 평가 실행
+      setTimeout(() => {
+        moveToNextWord();
+      }, 500);
+    } catch (error) {
+      logger.error('녹음 저장 또는 업로드 실패:', error);
+      alert('녹음 파일을 처리하는 중 오류가 발생했습니다. 다시 시도해주세요.');
+      setIsRecording(false);
+      setProgress(0);
+    }
+  }, [stopAudioRecording, uploadToS3, moveToNextWord]);
 
   // 단어 음성 재생
   const playWordAudio = (word: QuizWord) => {
-    // 한글 파일명 URL 인코딩
     const encodedFileName = encodeURIComponent(word.text);
     const audioPath = `/audio/review/${encodedFileName}.mp3`;
 
@@ -51,7 +199,6 @@ export const useWordQuiz = () => {
 
     const audio = new Audio(audioPath);
 
-    // 오디오 파일이 충분히 로드된 후 재생
     audio.addEventListener(
       'canplaythrough',
       () => {
@@ -62,7 +209,6 @@ export const useWordQuiz = () => {
       { once: true },
     );
 
-    // 로드 에러 처리
     audio.addEventListener(
       'error',
       () => {
@@ -71,19 +217,16 @@ export const useWordQuiz = () => {
       { once: true },
     );
 
-    // 프리로드 시작
     audio.load();
     audioRef.current = audio;
   };
 
   // 인트로 타이머 (1초)
   useEffect(() => {
-    // 단어가 없으면 인트로 타이머 실행하지 않음
     if (words.length === 0) return;
 
     const timer = setTimeout(() => {
       setShowIntro(false);
-      // 인트로 종료 후 약간의 딜레이를 두고 첫 단어 음성 재생
       setTimeout(() => {
         playWordAudio(words[0]);
       }, 200);
@@ -92,58 +235,35 @@ export const useWordQuiz = () => {
   }, [words]);
 
   // 녹음 시작
-  const handleStartRecording = () => {
-    if (isRecording) return;
+  const handleStartRecording = async () => {
+    if (isRecording || isUploading || isEvaluating) return;
 
-    setIsRecording(true);
-    setProgress(0);
+    try {
+      await startAudioRecording();
+      setIsRecording(true);
+      setProgress(0);
 
-    timerRef.current = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          if (timerRef.current) {
-            clearInterval(timerRef.current);
+      timerRef.current = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+            }
+            handleStopRecordingAndSave();
+            return 100;
           }
-          handleStopRecording();
-          return 100;
-        }
-        return prev + 2.5; // 4초 = 4000ms, 100ms마다 2.5% 증가
-      });
-    }, 100);
-  };
-
-  // 녹음 중지 및 다음 단어로 이동
-  const handleStopRecording = () => {
-    setIsRecording(false);
-    setProgress(0);
-
-    // 타이머 종료 후 다음 단어로 자동 이동
-    setTimeout(() => {
-      moveToNextWord();
-    }, 500);
-  };
-
-  // 다음 단어로 이동
-  const moveToNextWord = () => {
-    const newStatuses = [...wordStatuses];
-    newStatuses[currentWordIndex] = 'completed';
-
-    if (currentWordIndex < words.length - 1) {
-      newStatuses[currentWordIndex + 1] = 'active';
-      setCurrentWordIndex(currentWordIndex + 1);
-      setWordStatuses(newStatuses);
-    } else {
-      // 모든 단어 완료 → 모달 표시
-      setWordStatuses(newStatuses);
-      setTimeout(() => {
-        setShowScoreModal(true);
-      }, 300);
+          return prev + 3.33; // 3초 = 3000ms, 100ms마다 3.33% 증가
+        });
+      }, 100);
+    } catch (error) {
+      logger.error('녹음 시작 실패:', error);
+      alert('마이크 권한이 필요합니다.');
     }
   };
 
   // 단어 변경 시 음성 재생
   useEffect(() => {
-    if (!showIntro && currentWordIndex > 0 && words[currentWordIndex]) {
+    if (!showIntro && currentWordIndex > 0 && words[currentWordIndex] && !isUploading && !isEvaluating) {
       playWordAudio(words[currentWordIndex]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,7 +275,6 @@ export const useWordQuiz = () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
-      // 오디오 정지
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
@@ -173,9 +292,12 @@ export const useWordQuiz = () => {
     progress,
     showScoreModal,
     score,
+    feedback,
     handleStartRecording,
     setShowScoreModal,
     isLoading,
     error,
+    isUploading,
+    isEvaluating,
   };
 };
