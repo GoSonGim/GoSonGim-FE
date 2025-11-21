@@ -1,17 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
 import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressBar';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
-import BreathAnimation from '@/assets/svgs/talkingkit/breathing/breathanimation.svg';
 import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
 import { logger } from '@/utils/common/loggerUtils';
+import breathingVideo from '/videos/breathinganimation.mp4';
 
 type Phase = 'ready' | 'playing' | 'complete';
 
 const SteadySound = () => {
   const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('ready');
+  const playCountRef = useRef(0);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const { data: kitDetail, error } = useKitDetail(2); // kitId: 2 (일정한 소리내기)
 
   // API 응답 데이터 콘솔 출력
@@ -35,6 +37,34 @@ const SteadySound = () => {
   // API에서 받아온 1단계 이름 (stageId: 1)
   const stage1Name: string =
     kitDetail?.result.stages.find((stage) => stage.stageId === 1)?.stageName || '복식 호흡 연습';
+
+  // phase 변경 시 playCount 초기화
+  useEffect(() => {
+    if (phase === 'ready') {
+      playCountRef.current = 0;
+    }
+  }, [phase]);
+
+  // playing 단계에서 영상 3번 반복
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || phase !== 'playing') return;
+
+    const handleEnded = () => {
+      if (playCountRef.current < 2) {
+        // 3번 재생 (0, 1, 2)
+        playCountRef.current += 1;
+        video.play();
+      }
+    };
+
+    video.addEventListener('ended', handleEnded);
+    video.play();
+
+    return () => {
+      video.removeEventListener('ended', handleEnded);
+    };
+  }, [phase]);
 
   const handleStart = () => {
     setPhase('playing');
@@ -64,8 +94,8 @@ const SteadySound = () => {
         onButtonClick={handleStart}
         onBackClick={handleBack}
       >
-        <div className="flex h-[352px] items-center justify-center">
-          <BreathAnimation className="h-auto w-[248px]" />
+        <div className="flex h-[352px] items-center justify-center overflow-hidden">
+          <video className="h-auto w-[248px]" src={breathingVideo} autoPlay muted playsInline loop />
         </div>
       </Step1Layout>
     );
@@ -82,14 +112,14 @@ const SteadySound = () => {
           onBackClick={handleBack}
           disableAnimation={true}
         >
-          <div className="flex h-[352px] items-center justify-center">
-            <BreathAnimation className="h-auto w-[248px]" />
+          <div className="flex h-[352px] items-center justify-center overflow-hidden">
+            <video ref={videoRef} className="h-auto w-[248px]" src={breathingVideo} muted playsInline />
           </div>
         </Step1Layout>
 
-        {/* 하단 타이머 진행바 */}
-        <div className="absolute right-0 bottom-0 left-0 z-50 px-[29px] pb-[40px]">
-          <TimerProgressBar duration={6000} onComplete={handleTimerComplete} />
+        {/* 하단 타이머 진행바 - 투명하게 숨기기 */}
+        <div className="absolute right-0 bottom-0 left-0 z-50 px-[29px] pb-[40px] opacity-0">
+          <TimerProgressBar duration={12000} onComplete={handleTimerComplete} />
         </div>
       </div>
     );

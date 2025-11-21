@@ -53,18 +53,46 @@ export const useKitReviewList = () => {
         return isCategoryMatch || isNameMatch;
       }
       if (selectedCategory === '조음위치') {
-        return (
-          kitCategoryLower.includes('조음 위치') ||
-          kitCategoryLower.includes('조음위치') ||
-          kitCategoryLower === 'place'
-        );
+        // 키트 카테고리로 확인 (있는 경우)
+        const isCategoryMatch =
+          kitCategoryLower &&
+          (kitCategoryLower.includes('조음 위치') ||
+            kitCategoryLower.includes('조음위치') ||
+            kitCategoryLower === 'place');
+
+        // 키트 이름으로 확인 (kitCategory가 없는 경우 이름으로만 판단)
+        const kitNameNoSpace = kitNameLower.replace(/\s/g, '');
+        const isNameMatch =
+          kitNameNoSpace.includes('입술소리') ||
+          kitNameLower.includes('입술 소리') ||
+          kitNameNoSpace.includes('혀끝소리') ||
+          kitNameLower.includes('혀끝 소리') ||
+          kitNameNoSpace.includes('목구멍소리') ||
+          kitNameLower.includes('목구멍 소리') ||
+          kitNameNoSpace.includes('잇몸소리') ||
+          kitNameLower.includes('잇몸 소리');
+
+        return isCategoryMatch || isNameMatch;
       }
       if (selectedCategory === '조음방법') {
-        return (
-          kitCategoryLower.includes('조음 방법') ||
-          kitCategoryLower.includes('조음방법') ||
-          kitCategoryLower === 'manner'
-        );
+        // 키트 카테고리로 확인 (있는 경우)
+        const isCategoryMatch =
+          kitCategoryLower &&
+          (kitCategoryLower.includes('조음 방법') ||
+            kitCategoryLower.includes('조음방법') ||
+            kitCategoryLower === 'manner');
+
+        // 키트 이름으로 확인 (kitCategory가 없는 경우 이름으로만 판단)
+        const isNameMatch =
+          kitNameLower.includes('파열음') ||
+          kitNameLower.includes('마찰음') ||
+          kitNameLower.includes('유음') ||
+          kitNameLower.includes('비음') ||
+          kitNameLower.includes('유음/비음') ||
+          kitNameLower.includes('턱 움직임') ||
+          kitNameLower.replace(/\s/g, '').includes('턱움직임');
+
+        return isCategoryMatch || isNameMatch;
       }
 
       return true;
