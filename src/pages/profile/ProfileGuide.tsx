@@ -1,6 +1,7 @@
 import { useState, lazy, Suspense, useRef } from 'react';
 import type { TouchEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import LeftIcon from '@/assets/svgs/profile/profilehome/review-leftarrow.svg';
 import ProfileInfo1 from '@/assets/svgs/profile/profileinfo/profile-info1.svg';
 import ProfileInfo2 from '@/assets/svgs/profile/profileinfo/profile-info2.svg';
@@ -212,7 +213,18 @@ const ProfileGuide = () => {
             </p>
             <div className="flex justify-center">
               <Suspense fallback={<div className="h-[151px] w-[143px]"></div>}>
-                <ProfileGood className="h-[151px] w-[143px] animate-bounce" />
+                <motion.div
+                  initial={{ scale: 0.8, rotate: -10, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 350,
+                    damping: 15,
+                    mass: 0.8,
+                  }}
+                >
+                  <ProfileGood className="h-[151px] w-[143px]" />
+                </motion.div>
               </Suspense>
             </div>
             <div className="mt-12 flex justify-center">

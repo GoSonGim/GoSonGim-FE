@@ -42,36 +42,34 @@ export default function GraphCard({
         <div className="border-gray-20 w-[200px] rounded-[16px] border px-4 py-2">
           <div className="relative flex flex-col items-center overflow-visible">
             <ResponsiveContainer width="100%" height={116}>
-              <ComposedChart data={data} margin={{ top: 3, right: 18, left: 0, bottom: 0 }}>
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#3c434f', fontSize: 16 }} />
+              <ComposedChart
+                data={data.map((item) => ({ ...item, lineValue: item.count === 0 ? 5.2 : item.count + 2.5 }))}
+                margin={{ top: 3, right: 5, left: 5, bottom: 0 }}
+              >
+                <XAxis
+                  dataKey="day"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: '#3c434f', fontSize: 16 }}
+                  interval={0}
+                />
                 <YAxis domain={[0, 8]} hide />
                 <Bar dataKey="count" fill="#9aadff" radius={[2, 2, 0, 0]} barSize={16} />
+                <Line
+                  type="monotone"
+                  dataKey="lineValue"
+                  stroke="#000000"
+                  strokeWidth={2}
+                  dot={(props) => {
+                    const { cx, cy, index } = props;
+                    if (index === data.length - 1) {
+                      return <circle key={`dot-${index}`} cx={cx} cy={cy} r={4} fill="#4c5eff" />;
+                    }
+                    return <circle key={`dot-${index}`} cx={cx} cy={cy} r={0} fill="transparent" />;
+                  }}
+                />
               </ComposedChart>
             </ResponsiveContainer>
-            <div className="pointer-events-none absolute inset-0 z-10">
-              <ResponsiveContainer width="100%" height={116}>
-                <ComposedChart
-                  data={data.map((item) => ({ ...item, lineValue: item.count === 0 ? 5.2 : item.count + 2.5 }))}
-                  margin={{ top: 3, right: 18, left: 3, bottom: 0 }}
-                >
-                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: 'transparent' }} hide />
-                  <YAxis domain={[0, 8]} hide />
-                  <Line
-                    type="monotone"
-                    dataKey="lineValue"
-                    stroke="#000000"
-                    strokeWidth={2}
-                    dot={(props) => {
-                      const { cx, cy, index } = props;
-                      if (index === data.length - 1) {
-                        return <circle key={`dot-${index}`} cx={cx} cy={cy} r={4} fill="#4c5eff" />;
-                      }
-                      return <circle key={`dot-${index}`} cx={cx} cy={cy} r={0} fill="transparent" />;
-                    }}
-                  />
-                </ComposedChart>
-              </ResponsiveContainer>
-            </div>
           </div>
         </div>
         <div className="flex flex-col">
