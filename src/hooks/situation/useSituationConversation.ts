@@ -39,6 +39,7 @@ interface UseSituationConversationReturn {
   resetConversation: () => void;
   retryCurrentTurn: () => Promise<void>;
   stopAvatarSession: () => Promise<void>;
+  restoreSession: (savedSessionId: string, savedTurns: Turn[], savedTurnIndex: number, question: string) => Promise<void>;
 }
 
 /**
@@ -371,6 +372,65 @@ export const useSituationConversation = ({
     }
   }, [avatar]);
 
+  /**
+   * 세션 복원 (학습 페이지에서 복귀 시)
+   * - 백엔드 세션은 유지하고 아바타만 재시작
+   * - 저장된 대화 내역 복원
+   */
+  const restoreSession = useCallback(
+    async (savedSessionId: string, savedTurns: Turn[], savedTurnIndex: number, question: string) => {
+      try {
+        setIsProcessing(true);
+        logger.log('[CONVERSATION] 세션 복원 시작', {
+          sessionId: savedSessionId,
+          turnIndex: savedTurnIndex,
+          turnsCount: savedTurns.length,
+        });
+
+        // 1. 아바타 세션만 재시작 (백엔드 세션은 이미 존재)
+        logger.log('[CONVERSATION] 아바타 세션 재시작');
+        await avatar.startSession();
+        logger.log('[CONVERSATION] 아바타 세션 시작 완료, 추가 대기 중...');
+
+        // 아바타 세션이 완전히 준비될 때까지 대기 (HeyGen API 안정화)
+        await new Promise((resolve) => setTimeout(resolve, 2500));
+        logger.log('[CONVERSATION] 아바타 세션 준비 완료');
+
+        // 2. 저장된 상태 복원 + nextQuestion을 새로운 turn으로 추가
+        setSessionId(savedSessionId);
+
+        // 새로운 턴 추가 (nextQuestion)
+        const nextTurnIndex = savedTurnIndex + 1;
+        const newTurn: Turn = {
+          turnIndex: nextTurnIndex,
+          question: question,
+        };
+        setTurns([...savedTurns, newTurn]);
+        setCurrentTurnIndex(nextTurnIndex);
+        currentQuestionRef.current = question;
+
+        logger.log('[CONVERSATION] 상태 복원 완료 (새 turn 추가)', {
+          sessionId: savedSessionId,
+          savedTurnIndex,
+          nextTurnIndex,
+          question,
+        });
+
+        // 3. 아바타가 저장된 질문 말하기
+        logger.log('[CONVERSATION] 저장된 질문 재생');
+        await avatar.speak({ text: question, taskType: TaskType.REPEAT });
+        logger.log('[CONVERSATION] 질문 재생 완료');
+
+        setIsProcessing(false);
+      } catch (error) {
+        logger.error('[CONVERSATION] 세션 복원 실패:', error);
+        setIsProcessing(false);
+        throw error;
+      }
+    },
+    [avatar],
+  );
+
   return {
     // 상태
     sessionId,
@@ -394,5 +454,6 @@ export const useSituationConversation = ({
     resetConversation,
     retryCurrentTurn,
     stopAvatarSession,
+    restoreSession,
   };
 };
