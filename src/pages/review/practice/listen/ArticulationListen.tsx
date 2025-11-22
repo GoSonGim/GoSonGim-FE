@@ -74,7 +74,9 @@ const ArticulationListen = () => {
 
   // 평균 점수 계산
   const averageScore =
-    records.length > 0 ? Math.round(records.reduce((sum, record) => sum + record.evaluationScore, 0) / records.length) : 0;
+    records.length > 0
+      ? Math.round(records.reduce((sum, record) => sum + record.evaluationScore, 0) / records.length)
+      : 0;
 
   // 대표 피드백 (첫 번째 레코드의 피드백 사용)
   const representativeFeedback = records.length > 0 ? records[0].evaluationFeedback : '피드백이 없습니다';
@@ -83,7 +85,10 @@ const ArticulationListen = () => {
     <div className="bg-background-primary relative flex h-full flex-col">
       {/* 메뉴 상단바 */}
       <div className="relative flex h-16 items-center justify-center bg-white">
-        <button onClick={() => navigate(-1)} className="absolute left-4 flex size-12 items-center justify-center p-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute left-4 flex size-12 cursor-pointer items-center justify-center p-2"
+        >
           <CloseIcon className="size-[48px]" />
         </button>
         <h1 className="text-heading-02-regular text-gray-100">{kitName}</h1>
@@ -97,7 +102,7 @@ const ArticulationListen = () => {
         <p className="text-heading-01-semibold mb-[16px] text-gray-100">{averageScore}점</p>
         <div className="relative flex gap-[10px]">
           {/* 세로선 */}
-          <div className="h-auto w-px bg-gray-20" />
+          <div className="bg-gray-20 h-auto w-px" />
           {/* 피드백 텍스트 */}
           <div className="text-body-01-regular text-gray-100">
             <p className="whitespace-pre-wrap">{representativeFeedback}</p>
@@ -117,20 +122,20 @@ const ArticulationListen = () => {
             <div key={record.id} className="relative">
               <button
                 onClick={() => handleRecordClick(record.id, record.audioFileUrl)}
-                className={`flex w-[344px] flex-col gap-2 rounded-lg px-4 py-2 ${
+                className={`flex w-[344px] cursor-pointer flex-col gap-2 rounded-lg px-4 py-2 ${
                   isSelected ? 'bg-background-primary' : 'bg-white'
                 }`}
               >
-                <p className="text-body-02-regular text-left text-gray-40">
+                <p className="text-body-02-regular text-gray-40 text-left">
                   {record.kitStageName} <span className="text-blue-2">( 학습 {index + 1} )</span>
                 </p>
                 <p className="text-heading-02-semibold text-left text-gray-100">{record.targetWord}</p>
-                <p className="text-body-02-regular text-left text-gray-60">{record.evaluationScore}점</p>
+                <p className="text-body-02-regular text-gray-60 text-left">{record.evaluationScore}점</p>
               </button>
 
               {/* 파란색 화살표 */}
               {isSelected && (
-                <div className="absolute left-[-25px] top-[70%] -translate-y-1/2">
+                <div className="absolute top-[70%] left-[-25px] -translate-y-1/2">
                   <BlueSelect className="h-[17px] w-[15px]" />
                 </div>
               )}
@@ -147,21 +152,29 @@ const ArticulationListen = () => {
       {/* 하단 컨트롤 바 */}
       <div className="relative flex h-[104px] items-center justify-center gap-14 bg-white">
         {/* 5초 뒤로가기 */}
-        <button onClick={handlePrevious} className="flex size-[31px] items-center justify-center" disabled={!isPlaying}>
+        <button
+          onClick={handlePrevious}
+          className="flex size-[31px] cursor-pointer items-center justify-center"
+          disabled={!isPlaying}
+        >
           <PrevIcon className="size-[31px]" />
         </button>
 
         {/* 재생/정지 */}
         <button
           onClick={handlePlayPause}
-          className="flex size-[45px] items-center justify-center"
+          className="flex size-[45px] cursor-pointer items-center justify-center"
           disabled={selectedRecordId === null}
         >
           {isPlaying ? <StartIcon className="size-[45px]" /> : <StopIcon className="size-[45px]" />}
         </button>
 
         {/* 5초 앞으로가기 */}
-        <button onClick={handleNext} className="flex size-[31px] items-center justify-center" disabled={!isPlaying}>
+        <button
+          onClick={handleNext}
+          className="flex size-[31px] cursor-pointer items-center justify-center"
+          disabled={!isPlaying}
+        >
           <NextIcon className="size-[31px]" />
         </button>
       </div>

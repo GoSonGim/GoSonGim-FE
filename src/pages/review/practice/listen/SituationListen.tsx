@@ -76,7 +76,10 @@ const SituationListen = () => {
     <div className="bg-background-primary relative flex h-full flex-col">
       {/* 메뉴 상단바 */}
       <div className="relative flex h-16 items-center justify-center bg-white">
-        <button onClick={() => navigate(-1)} className="absolute left-4 flex size-12 items-center justify-center p-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="absolute left-4 flex size-12 cursor-pointer items-center justify-center p-2"
+        >
           <CloseIcon className="size-[48px]" />
         </button>
         <h1 className="text-heading-02-regular text-gray-100">{situation.name}</h1>
@@ -120,7 +123,7 @@ const SituationListen = () => {
               <div className="relative">
                 <button
                   onClick={() => handleDialogueClick(index, turn.answer.audioUrl)}
-                  className={`flex w-[344px] flex-col gap-2 rounded-lg px-4 py-2 ${
+                  className={`flex w-[344px] cursor-pointer flex-col gap-2 rounded-lg px-4 py-2 ${
                     isSelected ? 'bg-background-primary' : 'bg-white'
                   }`}
                 >
@@ -150,21 +153,29 @@ const SituationListen = () => {
       {/* 하단 컨트롤 바 */}
       <div className="relative flex h-[104px] items-center justify-center gap-14 bg-white">
         {/* 5초 뒤로가기 */}
-        <button onClick={handlePrevious} className="flex size-[31px] items-center justify-center" disabled={!isPlaying}>
+        <button
+          onClick={handlePrevious}
+          className="flex size-[31px] cursor-pointer items-center justify-center"
+          disabled={!isPlaying}
+        >
           <PrevIcon className="size-[31px]" />
         </button>
 
         {/* 재생/정지 */}
         <button
           onClick={handlePlayPause}
-          className="flex size-[45px] items-center justify-center"
+          className="flex size-[45px] cursor-pointer items-center justify-center"
           disabled={selectedTurnIndex === null}
         >
           {isPlaying ? <StartIcon className="size-[45px]" /> : <StopIcon className="size-[45px]" />}
         </button>
 
         {/* 5초 앞으로가기 */}
-        <button onClick={handleNext} className="flex size-[31px] items-center justify-center" disabled={!isPlaying}>
+        <button
+          onClick={handleNext}
+          className="flex size-[31px] cursor-pointer items-center justify-center"
+          disabled={!isPlaying}
+        >
           <NextIcon className="size-[31px]" />
         </button>
       </div>
