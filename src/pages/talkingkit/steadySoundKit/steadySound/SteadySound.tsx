@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
 import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressBar';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
-import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import { useKitDetailSafe } from '@/hooks/talkingkit/queries/useKitDetailSafe';
 import { logger } from '@/utils/common/loggerUtils';
 import breathingVideo from '/videos/breathinganimation.mp4';
 
@@ -14,7 +14,7 @@ const SteadySound = () => {
   const [phase, setPhase] = useState<Phase>('ready');
   const playCountRef = useRef(0);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { data: kitDetail, error } = useKitDetail(2); // kitId: 2 (일정한 소리내기)
+  const { kitDetail, isLoading, isError, error, getStage } = useKitDetailSafe(2); // kitId: 2 (일정한 소리내기)
 
   // API 응답 데이터 콘솔 출력
   useEffect(() => {
@@ -34,9 +34,29 @@ const SteadySound = () => {
     }
   }, [error]);
 
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-body-01-regular text-gray-60">로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 에러 또는 데이터 없음
+  if (isError || !kitDetail) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <p className="text-body-01-regular text-gray-60">키트 정보를 불러올 수 없습니다</p>
+        <button onClick={() => navigate(-1)} className="text-body-02-regular text-blue-2">
+          돌아가기
+        </button>
+      </div>
+    );
+  }
+
   // API에서 받아온 1단계 이름 (stageId: 1)
-  const stage1Name: string =
-    kitDetail?.result.stages.find((stage) => stage.stageId === 1)?.stageName || '복식 호흡 연습';
+  const stage1Name: string = getStage(1)?.stageName || '복식 호흡 연습';
 
   // phase 변경 시 playCount 초기화
   useEffect(() => {
