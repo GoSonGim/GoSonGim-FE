@@ -14,7 +14,7 @@ const VowelPitch = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
-  const { kitDetail, isLoading, isError, error: apiError, getStage } = useKitDetailSafe(1); // kitId: 1 (길게 소리내기)
+  const { kitDetail, isLoading, isError, getStage } = useKitDetailSafe(1); // kitId: 1 (길게 소리내기)
 
   // API에서 받아온 2단계 이름 (stageId: 2)
   const stage2Name: string = getStage(2)?.stageName || '모음 길게 소리내기';

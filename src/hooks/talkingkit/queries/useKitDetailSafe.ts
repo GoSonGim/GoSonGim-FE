@@ -1,15 +1,12 @@
 import { useKitDetail } from './useKitDetail';
+import type { KitStage, KitDetailResponse } from '@/types/talkingkit/kit';
 
 interface UseKitDetailSafeReturn {
-  kitDetail: any;
+  kitDetail: KitDetailResponse | undefined;
   isLoading: boolean;
   isError: boolean;
-  error: any;
-  getStage: (stageId: number) => {
-    stageId: number;
-    stageName: string;
-    stageDescription: string;
-  } | null;
+  error: Error | null;
+  getStage: (stageId: number) => KitStage | null;
 }
 
 /**
@@ -21,11 +18,11 @@ interface UseKitDetailSafeReturn {
 export const useKitDetailSafe = (kitId: number): UseKitDetailSafeReturn => {
   const { data: kitDetail, isLoading, isError, error } = useKitDetail(kitId);
 
-  const getStage = (stageId: number) => {
+  const getStage = (stageId: number): KitStage | null => {
     if (!kitDetail?.result?.stages) {
       return null;
     }
-    return kitDetail.result.stages.find((stage: any) => stage.stageId === stageId) || null;
+    return kitDetail.result.stages.find((stage: KitStage) => stage.stageId === stageId) || null;
   };
 
   return {

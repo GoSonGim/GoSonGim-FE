@@ -11,7 +11,7 @@ import { logger } from '@/utils/common/loggerUtils';
 const TalkingKit = () => {
   const navigate = useNavigate();
   const { data: kitsData_API, error } = useKitsByCategory(1);
-  const { kitDetail, isLoading: detailLoading, isError: detailIsError, error: detailError, getStage } = useKitDetailSafe(1);
+  const { kitDetail, error: detailError } = useKitDetailSafe(1);
   const { getBookmarkStatus } = useBookmarkStatus('KIT');
 
   // API 응답 데이터 콘솔 출력 (카테고리별 키트 목록)
