@@ -162,7 +162,12 @@ const ReviewCalendar = () => {
                   };
 
                   const handleListen = () => {
-                    navigate(`/review/practice/listen?recordingId=${item.recordingId}`);
+                    if (item.type === 'situation') {
+                      navigate(`/review/practice/listen?recordingId=${item.recordingId}`);
+                    } else {
+                      // kit 타입 - 조음 키트
+                      navigate(`/review/practice/articulation-listen?kitId=${item.id}`);
+                    }
                   };
 
                   return (

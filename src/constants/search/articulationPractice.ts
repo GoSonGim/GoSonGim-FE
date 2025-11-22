@@ -18,48 +18,48 @@ export type ArticulationType =
 
 // 통합 단어 데이터
 export const articulationPracticeWords: Record<ArticulationType, PracticeWord[]> = {
-  // 조음 위치별 (1-12)
+  // 조음 위치별 - 백엔드 "실전 발음 연습" stage ID 사용
   'lip-sound': [
-    { round: 1, word: '마음', category: '명사', kitStageId: 1 },
-    { round: 2, word: '바다', category: '명사', kitStageId: 2 },
-    { round: 3, word: '포도', category: '명사', kitStageId: 3 },
+    { round: 1, word: '마음', category: '명사', kitStageId: 8 },
+    { round: 2, word: '바다', category: '명사', kitStageId: 8 },
+    { round: 3, word: '포도', category: '명사', kitStageId: 8 },
   ],
   'tongue-tip': [
-    { round: 1, word: '나비', category: '명사', kitStageId: 4 },
-    { round: 2, word: '다리', category: '명사', kitStageId: 5 },
-    { round: 3, word: '라면', category: '명사', kitStageId: 6 },
+    { round: 1, word: '나비', category: '명사', kitStageId: 10 },
+    { round: 2, word: '다리', category: '명사', kitStageId: 10 },
+    { round: 3, word: '라면', category: '명사', kitStageId: 10 },
   ],
   throat: [
-    { round: 1, word: '호수', category: '명사', kitStageId: 7 },
-    { round: 2, word: '강', category: '명사', kitStageId: 8 },
-    { round: 3, word: '커피', category: '명사', kitStageId: 9 },
+    { round: 1, word: '호수', category: '명사', kitStageId: 12 },
+    { round: 2, word: '강', category: '명사', kitStageId: 12 },
+    { round: 3, word: '커피', category: '명사', kitStageId: 12 },
   ],
   gum: [
-    { round: 1, word: '나무', category: '명사', kitStageId: 10 },
-    { round: 2, word: '도시', category: '명사', kitStageId: 11 },
-    { round: 3, word: '리본', category: '명사', kitStageId: 12 },
+    { round: 1, word: '나무', category: '명사', kitStageId: 14 },
+    { round: 2, word: '도시', category: '명사', kitStageId: 14 },
+    { round: 3, word: '리본', category: '명사', kitStageId: 14 },
   ],
 
-  // 조음 방법별 (13-24)
+  // 조음 방법별 - 백엔드 "실전 발음 연습" stage ID 사용
   plosive: [
-    { round: 1, word: '고기', category: '명사', kitStageId: 13 },
-    { round: 2, word: '가방', category: '명사', kitStageId: 14 },
-    { round: 3, word: '토끼', category: '명사', kitStageId: 15 },
+    { round: 1, word: '고기', category: '명사', kitStageId: 16 },
+    { round: 2, word: '가방', category: '명사', kitStageId: 16 },
+    { round: 3, word: '토끼', category: '명사', kitStageId: 16 },
   ],
   fricative: [
-    { round: 1, word: '사자', category: '명사', kitStageId: 16 },
-    { round: 2, word: '수박', category: '명사', kitStageId: 17 },
+    { round: 1, word: '사자', category: '명사', kitStageId: 18 },
+    { round: 2, word: '수박', category: '명사', kitStageId: 18 },
     { round: 3, word: '산책', category: '명사', kitStageId: 18 },
   ],
   'liquid-nasal': [
-    { round: 1, word: '음식', category: '명사', kitStageId: 19 },
+    { round: 1, word: '음식', category: '명사', kitStageId: 20 },
     { round: 2, word: '모자', category: '명사', kitStageId: 20 },
-    { round: 3, word: '노래', category: '명사', kitStageId: 21 },
+    { round: 3, word: '노래', category: '명사', kitStageId: 20 },
   ],
   'jaw-movement': [
     { round: 1, word: '아기', category: '명사', kitStageId: 22 },
-    { round: 2, word: '운동', category: '명사', kitStageId: 23 },
-    { round: 3, word: '우산', category: '명사', kitStageId: 24 },
+    { round: 2, word: '운동', category: '명사', kitStageId: 22 },
+    { round: 3, word: '우산', category: '명사', kitStageId: 22 },
   ],
 };
 
