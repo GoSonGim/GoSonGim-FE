@@ -12,7 +12,7 @@ import type { Turn, FinalSummary } from '@/types/situation';
 
 interface UseSituationConversationProps {
   situationId: number;
-  onSessionEnd?: (finalSummary: FinalSummary) => void;
+  onSessionEnd?: (finalSummary: FinalSummary, turns: Turn[]) => void;
   onEvaluationFailed?: (turn: Turn) => void;
 }
 
@@ -39,6 +39,7 @@ interface UseSituationConversationReturn {
   resetConversation: () => void;
   retryCurrentTurn: () => Promise<void>;
   stopAvatarSession: () => Promise<void>;
+  restoreSession: (savedSessionId: string, savedTurns: Turn[], savedTurnIndex: number, question: string) => Promise<void>;
 }
 
 /**
@@ -198,6 +199,7 @@ export const useSituationConversation = ({
       logger.log('[RECORDING] Step 3: 답변 평가');
       const replyResponse = await replyMutation.mutateAsync({
         sessionId,
+        turnIndex: currentTurnIndex,
         answer: recognizedText,
         audioFileKey: fileKey,
       });
@@ -206,26 +208,32 @@ export const useSituationConversation = ({
 
       logger.log('[RECORDING] 평가 결과', { evaluation, turnIndex, isSessionEnd });
 
-      // 5. 현재 턴 업데이트 (답변 + 평가 추가)
-      setTurns((prev) =>
-        prev.map((turn) =>
-          turn.turnIndex === currentTurnIndex
-            ? { ...turn, answer: recognizedText, audioFileKey: fileKey, evaluation }
-            : turn,
-        ),
+      // 5. 현재 턴 업데이트 (답변 + 평가 + nextQuestion 추가)
+      const updatedTurns = turns.map((turn) =>
+        turn.turnIndex === currentTurnIndex
+          ? { ...turn, answer: recognizedText, audioFileKey: fileKey, evaluation, nextQuestion: nextQuestion ?? undefined }
+          : turn,
       );
+      setTurns(updatedTurns);
 
       // 6. 평가 결과 처리
       if (!evaluation.isSuccess) {
         // 평가 실패
-        logger.log('[RECORDING] 평가 실패 - 연습 모드로 전환');
-        const failedTurn = turns.find((t) => t.turnIndex === currentTurnIndex);
+        logger.log('[RECORDING] 평가 실패 - 연습 모드로 전환', { nextQuestion });
+
+        // nextQuestion을 currentQuestionRef에 저장 (다시하기 시 사용)
+        if (nextQuestion) {
+          currentQuestionRef.current = nextQuestion;
+        }
+
+        const failedTurn = updatedTurns.find((t) => t.turnIndex === currentTurnIndex);
         if (failedTurn && onEvaluationFailed) {
           onEvaluationFailed({
             ...failedTurn,
             answer: recognizedText,
             audioFileKey: fileKey,
             evaluation,
+            nextQuestion: nextQuestion || undefined,
           });
         }
         setIsProcessing(false);
@@ -237,7 +245,7 @@ export const useSituationConversation = ({
         logger.log('[RECORDING] 세션 종료', { finalSummary: summary });
         setFinalSummary(summary);
         if (onSessionEnd) {
-          onSessionEnd(summary);
+          onSessionEnd(summary, updatedTurns);
         }
         setIsProcessing(false);
         return;
@@ -317,24 +325,36 @@ export const useSituationConversation = ({
   }, []);
 
   /**
-   * 현재 턴 다시하기 (답변과 평가 초기화 후 격려 메시지)
+   * 현재 턴 다시하기 (새로운 질문 턴 추가)
    */
   const retryCurrentTurn = useCallback(async () => {
-    logger.log('[CONVERSATION] 현재 턴 다시하기', { currentTurnIndex });
+    const nextQuestion = currentQuestionRef.current;
+    logger.log('[CONVERSATION] 현재 턴 다시하기', { currentTurnIndex, nextQuestion });
 
-    // 현재 턴의 답변과 평가 초기화
-    setTurns((prev) =>
-      prev.map((turn) =>
-        turn.turnIndex === currentTurnIndex ? { ...turn, answer: undefined, evaluation: undefined } : turn,
-      ),
-    );
+    if (!nextQuestion) {
+      logger.warn('[CONVERSATION] 다시 말할 질문이 없습니다');
+      return;
+    }
 
-    // 아바타 격려 메시지
+    // 1. 새로운 턴 추가 (nextQuestion을 질문으로)
+    const nextTurnIndex = currentTurnIndex + 1;
+    setTurns((prev) => [
+      ...prev,
+      {
+        turnIndex: nextTurnIndex,
+        question: nextQuestion,
+      },
+    ]);
+    setCurrentTurnIndex(nextTurnIndex);
+
+    logger.log('[CONVERSATION] 새 턴 추가 완료', { nextTurnIndex, question: nextQuestion });
+
+    // 2. 아바타가 새 질문 말하기
     try {
-      await avatar.speak({ text: '다시 한번 말해보실래요?', taskType: TaskType.REPEAT });
-      logger.log('[CONVERSATION] 격려 메시지 완료');
+      await avatar.speak({ text: nextQuestion, taskType: TaskType.REPEAT });
+      logger.log('[CONVERSATION] 질문 재생 완료', { question: nextQuestion });
     } catch (error) {
-      logger.error('[CONVERSATION] 격려 메시지 실패:', error);
+      logger.error('[CONVERSATION] 질문 재생 실패:', error);
     }
   }, [currentTurnIndex, avatar]);
 
@@ -351,6 +371,65 @@ export const useSituationConversation = ({
       throw error;
     }
   }, [avatar]);
+
+  /**
+   * 세션 복원 (학습 페이지에서 복귀 시)
+   * - 백엔드 세션은 유지하고 아바타만 재시작
+   * - 저장된 대화 내역 복원
+   */
+  const restoreSession = useCallback(
+    async (savedSessionId: string, savedTurns: Turn[], savedTurnIndex: number, question: string) => {
+      try {
+        setIsProcessing(true);
+        logger.log('[CONVERSATION] 세션 복원 시작', {
+          sessionId: savedSessionId,
+          turnIndex: savedTurnIndex,
+          turnsCount: savedTurns.length,
+        });
+
+        // 1. 아바타 세션만 재시작 (백엔드 세션은 이미 존재)
+        logger.log('[CONVERSATION] 아바타 세션 재시작');
+        await avatar.startSession();
+        logger.log('[CONVERSATION] 아바타 세션 시작 완료, 추가 대기 중...');
+
+        // 아바타 세션이 완전히 준비될 때까지 대기 (HeyGen API 안정화)
+        await new Promise((resolve) => setTimeout(resolve, 2500));
+        logger.log('[CONVERSATION] 아바타 세션 준비 완료');
+
+        // 2. 저장된 상태 복원 + nextQuestion을 새로운 turn으로 추가
+        setSessionId(savedSessionId);
+
+        // 새로운 턴 추가 (nextQuestion)
+        const nextTurnIndex = savedTurnIndex + 1;
+        const newTurn: Turn = {
+          turnIndex: nextTurnIndex,
+          question: question,
+        };
+        setTurns([...savedTurns, newTurn]);
+        setCurrentTurnIndex(nextTurnIndex);
+        currentQuestionRef.current = question;
+
+        logger.log('[CONVERSATION] 상태 복원 완료 (새 turn 추가)', {
+          sessionId: savedSessionId,
+          savedTurnIndex,
+          nextTurnIndex,
+          question,
+        });
+
+        // 3. 아바타가 저장된 질문 말하기
+        logger.log('[CONVERSATION] 저장된 질문 재생');
+        await avatar.speak({ text: question, taskType: TaskType.REPEAT });
+        logger.log('[CONVERSATION] 질문 재생 완료');
+
+        setIsProcessing(false);
+      } catch (error) {
+        logger.error('[CONVERSATION] 세션 복원 실패:', error);
+        setIsProcessing(false);
+        throw error;
+      }
+    },
+    [avatar],
+  );
 
   return {
     // 상태
@@ -375,5 +454,6 @@ export const useSituationConversation = ({
     resetConversation,
     retryCurrentTurn,
     stopAvatarSession,
+    restoreSession,
   };
 };
