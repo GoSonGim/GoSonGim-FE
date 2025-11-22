@@ -7,18 +7,17 @@ import PitchVisualizer from '@/components/talkingkit/vowelPitch/PitchVisualizer'
 import CircularProgress from '@/components/talkingkit/progressBar/CircularProgress';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
-import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import { useKitDetailSafe } from '@/hooks/talkingkit/queries/useKitDetailSafe';
 
 const VowelPitch = () => {
   const navigate = useNavigate();
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
-  const { data: kitDetail } = useKitDetail(1); // kitId: 1 (길게 소리내기)
+  const { kitDetail, isLoading, isError, error: apiError, getStage } = useKitDetailSafe(1); // kitId: 1 (길게 소리내기)
 
   // API에서 받아온 2단계 이름 (stageId: 2)
-  const stage2Name: string =
-    kitDetail?.result.stages.find((stage) => stage.stageId === 2)?.stageName || '모음 길게 소리내기';
+  const stage2Name: string = getStage(2)?.stageName || '모음 길게 소리내기';
 
   const {
     isDetecting,
@@ -77,6 +76,27 @@ const VowelPitch = () => {
       setIsRecording(false);
     }
   };
+
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-body-01-regular text-gray-60">로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 에러 또는 데이터 없음
+  if (isError || !kitDetail) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <p className="text-body-01-regular text-gray-60">키트 정보를 불러올 수 없습니다</p>
+        <button onClick={() => navigate(-1)} className="text-body-02-regular text-blue-2">
+          돌아가기
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>

@@ -3,7 +3,7 @@ import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import KitCard from '@/components/talkingkit/common/KitCard';
 import { kitsData } from '@/mock/talkingkit/kitsData';
 import { useKitsByCategory } from '@/hooks/talkingkit/queries/useKitsByCategory';
-import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import { useKitDetailSafe } from '@/hooks/talkingkit/queries/useKitDetailSafe';
 import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '@/utils/common/loggerUtils';
@@ -11,7 +11,7 @@ import { logger } from '@/utils/common/loggerUtils';
 const TalkingKit = () => {
   const navigate = useNavigate();
   const { data: kitsData_API, error } = useKitsByCategory(1);
-  const { data: kitDetail, error: detailError } = useKitDetail(1);
+  const { kitDetail, isLoading: detailLoading, isError: detailIsError, error: detailError, getStage } = useKitDetailSafe(1);
   const { getBookmarkStatus } = useBookmarkStatus('KIT');
 
   // API 응답 데이터 콘솔 출력 (카테고리별 키트 목록)

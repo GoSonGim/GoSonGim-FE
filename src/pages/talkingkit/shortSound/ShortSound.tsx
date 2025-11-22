@@ -19,7 +19,7 @@ import {
 } from '@/constants/talkingkit/shortSound';
 import { logger } from '@/utils/common/loggerUtils';
 import { handleError } from '@/utils/talkingkit/audioErrorHandlerUtils';
-import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import { useKitDetailSafe } from '@/hooks/talkingkit/queries/useKitDetailSafe';
 
 type Phase = 'ready' | 'playing' | 'result';
 
@@ -32,11 +32,10 @@ const ShortSound = () => {
   const processedPointsRef = useRef<Set<number>>(new Set()); // 처리된 지점 추적
   const stopVoiceRef = useRef<(() => void) | null>(null);
   const stopBallRef = useRef<(() => void) | null>(null);
-  const { data: kitDetail } = useKitDetail(2); // kitId: 2 (일정한 소리내기)
+  const { kitDetail, isLoading, isError, error, getStage } = useKitDetailSafe(2); // kitId: 2 (일정한 소리내기)
 
   // API에서 받아온 2단계 이름 (stageId: 2)
-  const stage2Name: string =
-    kitDetail?.result.stages.find((stage) => stage.stageId === 2)?.stageName || '짧게 끊어 발성하기';
+  const stage2Name: string = getStage(2)?.stageName || '짧게 끊어 발성하기';
 
   const handleTimerComplete = useCallback(() => {
     logger.log('타이머 완료, 평가 시작');
@@ -121,6 +120,27 @@ const ShortSound = () => {
     }
     navigate(-1);
   };
+
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-body-01-regular text-gray-60">로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 에러 또는 데이터 없음
+  if (isError || !kitDetail) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <p className="text-body-01-regular text-gray-60">키트 정보를 불러올 수 없습니다</p>
+        <button onClick={() => navigate(-1)} className="text-body-02-regular text-blue-2">
+          돌아가기
+        </button>
+      </div>
+    );
+  }
 
   // 시작 전 화면
   if (phase === 'ready') {

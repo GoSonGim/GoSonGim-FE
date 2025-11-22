@@ -5,16 +5,15 @@ import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer'
 import GraybigCircle from '@/assets/svgs/talkingkit/loudSound/biggraycircle.svg';
 import BlueRing from '@/assets/svgs/talkingkit/loudSound/bluering.svg';
 import { useLoudSound } from '@/hooks/talkingkit/loudSound/useLoudSound';
-import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import { useKitDetailSafe } from '@/hooks/talkingkit/queries/useKitDetailSafe';
 
 const LoudSound = () => {
   const navigate = useNavigate();
   const { phase, activeText, ringScale, start } = useLoudSound();
-  const { data: kitDetail } = useKitDetail(3); // kitId: 3 (큰 소리 내기)
+  const { kitDetail, isLoading, isError, error, getStage } = useKitDetailSafe(3); // kitId: 3 (큰 소리 내기)
 
   // API에서 받아온 1단계 이름 (stageId: 1)
-  const stage1Name: string =
-    kitDetail?.result.stages.find((stage) => stage.stageId === 1)?.stageName || '호흡 세게 뱉기';
+  const stage1Name: string = getStage(1)?.stageName || '호흡 세게 뱉기';
 
   const handleStart = () => {
     start();
@@ -27,6 +26,27 @@ const LoudSound = () => {
   const handleNext = () => {
     navigate('/talkingkit/3/loud-sound-volume');
   };
+
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-body-01-regular text-gray-60">로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 에러 또는 데이터 없음
+  if (isError || !kitDetail) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <p className="text-body-01-regular text-gray-60">키트 정보를 불러올 수 없습니다</p>
+        <button onClick={() => navigate(-1)} className="text-body-02-regular text-blue-2">
+          돌아가기
+        </button>
+      </div>
+    );
+  }
 
   // 완료 화면
   if (phase === 'complete') {
