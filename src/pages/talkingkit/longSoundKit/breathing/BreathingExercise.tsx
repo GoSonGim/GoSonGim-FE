@@ -6,13 +6,21 @@ import { kitsData } from '@/mock/talkingkit/kitsData';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
 import { logger } from '@/utils/common/loggerUtils';
-import { useKitDetailSafe } from '@/hooks/talkingkit/queries/useKitDetailSafe';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import type { KitStage } from '@/types/talkingkit/kit';
 
 const BreathingExercise = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const kitId = id ? parseInt(id, 10) : 1; // fallback to 1 for breathing kit
+
   const { phase, ballPosition, start, reset, setBluePathRef, setRedPathRef } = useBreathingAnimation();
-  const { kitDetail, isLoading, isError, error, getStage } = useKitDetailSafe(1); // kitId: 1 (길게 소리내기)
+  const { data: kitDetail, isLoading, isError } = useKitDetail(kitId);
+
+  const getStage = (stageId: number): KitStage | null => {
+    if (!kitDetail?.result?.stages) return null;
+    return kitDetail.result.stages.find((stage) => stage.stageId === stageId) || null;
+  };
 
   // 키트 정보 가져오기
   const kit = kitsData.find((k) => k.id === Number(id));

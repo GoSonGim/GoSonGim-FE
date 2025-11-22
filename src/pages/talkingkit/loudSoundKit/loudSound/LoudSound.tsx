@@ -1,16 +1,25 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import GraybigCircle from '@/assets/svgs/talkingkit/loudSound/biggraycircle.svg';
 import BlueRing from '@/assets/svgs/talkingkit/loudSound/bluering.svg';
 import { useLoudSound } from '@/hooks/talkingkit/loudSound/useLoudSound';
-import { useKitDetailSafe } from '@/hooks/talkingkit/queries/useKitDetailSafe';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import type { KitStage } from '@/types/talkingkit/kit';
 
 const LoudSound = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const kitId = id ? parseInt(id, 10) : 3; // fallback to 3 for loud sound kit
+
   const { phase, activeText, ringScale, start } = useLoudSound();
-  const { kitDetail, isLoading, isError, error, getStage } = useKitDetailSafe(3); // kitId: 3 (큰 소리 내기)
+  const { data: kitDetail, isLoading, isError } = useKitDetail(kitId);
+
+  const getStage = (stageId: number): KitStage | null => {
+    if (!kitDetail?.result?.stages) return null;
+    return kitDetail.result.stages.find((stage) => stage.stageId === stageId) || null;
+  };
 
   // API에서 받아온 1단계 이름 (stageId: 1)
   const stage1Name: string = getStage(1)?.stageName || '호흡 세게 뱉기';

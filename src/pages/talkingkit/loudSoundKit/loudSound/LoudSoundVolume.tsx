@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Mike2 from '@/assets/svgs/talkingkit/vowelPitch/mike2.svg';
 import { useDecibelDetection } from '@/hooks/talkingkit/common/useDecibelDetection';
 import CircularProgress from '@/components/talkingkit/progressBar/CircularProgress';
@@ -8,15 +8,24 @@ import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
 import DecibelBar from '@/components/talkingkit/loudSound/DecibelBar';
 import { evaluateVolume } from '@/utils/talkingkit/volumeEvaluation';
 import type { VolumeEvaluationResult } from '@/utils/talkingkit/volumeEvaluation';
-import { useKitDetailSafe } from '@/hooks/talkingkit/queries/useKitDetailSafe';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import type { KitStage } from '@/types/talkingkit/kit';
 
 const LoudSoundVolume = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const kitId = id ? parseInt(id, 10) : 3; // fallback to 3 for loud sound kit
+
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
   const [evaluationResult, setEvaluationResult] = useState<VolumeEvaluationResult | null>(null);
-  const { kitDetail, isLoading, isError, error: apiError, getStage } = useKitDetailSafe(3); // kitId: 3 (큰 소리 내기)
+  const { data: kitDetail, isLoading, isError } = useKitDetail(kitId);
+
+  const getStage = (stageId: number): KitStage | null => {
+    if (!kitDetail?.result?.stages) return null;
+    return kitDetail.result.stages.find((stage) => stage.stageId === stageId) || null;
+  };
 
   // API에서 받아온 2단계 이름 (stageId: 2)
   const stage2Name: string = getStage(2)?.stageName || '최대 성량으로 말하기';

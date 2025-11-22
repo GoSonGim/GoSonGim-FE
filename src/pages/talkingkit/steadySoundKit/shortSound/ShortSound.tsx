@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Step2Layout from '@/components/talkingkit/layout/Step2Layout';
 import ShortSoundVisualizer from '@/components/talkingkit/shortSound/ShortSoundVisualizer';
 import ShortSoundResult from '@/pages/talkingkit/shortSound/ShortSoundResult';
@@ -19,12 +19,16 @@ import {
 } from '@/constants/talkingkit/shortSound';
 import { logger } from '@/utils/common/loggerUtils';
 import { handleError } from '@/utils/talkingkit/audioErrorHandlerUtils';
-import { useKitDetailSafe } from '@/hooks/talkingkit/queries/useKitDetailSafe';
+import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import type { KitStage } from '@/types/talkingkit/kit';
 
 type Phase = 'ready' | 'playing' | 'result';
 
 const ShortSound = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const kitId = id ? parseInt(id, 10) : 2; // fallback to 2 for steady sound kit
+
   const [phase, setPhase] = useState<Phase>('ready');
   const [recordings, setRecordings] = useState<number[]>([]);
   const [evaluationResult, setEvaluationResult] = useState<ShortSoundEvaluationResult | null>(null);
@@ -32,7 +36,12 @@ const ShortSound = () => {
   const processedPointsRef = useRef<Set<number>>(new Set()); // 처리된 지점 추적
   const stopVoiceRef = useRef<(() => void) | null>(null);
   const stopBallRef = useRef<(() => void) | null>(null);
-  const { kitDetail, isLoading, isError, error, getStage } = useKitDetailSafe(2); // kitId: 2 (일정한 소리내기)
+  const { data: kitDetail, isLoading, isError } = useKitDetail(kitId);
+
+  const getStage = (stageId: number): KitStage | null => {
+    if (!kitDetail?.result?.stages) return null;
+    return kitDetail.result.stages.find((stage) => stage.stageId === stageId) || null;
+  };
 
   // API에서 받아온 2단계 이름 (stageId: 2)
   const stage2Name: string = getStage(2)?.stageName || '짧게 끊어 발성하기';
