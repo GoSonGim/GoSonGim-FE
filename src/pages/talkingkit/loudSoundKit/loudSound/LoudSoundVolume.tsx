@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Mike2 from '@/assets/svgs/talkingkit/vowelPitch/mike2.svg';
 import { useDecibelDetection } from '@/hooks/talkingkit/common/useDecibelDetection';
 import CircularProgress from '@/components/talkingkit/progressBar/CircularProgress';
@@ -9,18 +9,26 @@ import DecibelBar from '@/components/talkingkit/loudSound/DecibelBar';
 import { evaluateVolume } from '@/utils/talkingkit/volumeEvaluation';
 import type { VolumeEvaluationResult } from '@/utils/talkingkit/volumeEvaluation';
 import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import type { KitStage } from '@/types/talkingkit/kit';
 
 const LoudSoundVolume = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const kitId = id ? parseInt(id, 10) : 3; // fallback to 3 for loud sound kit
+
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
   const [evaluationResult, setEvaluationResult] = useState<VolumeEvaluationResult | null>(null);
-  const { data: kitDetail } = useKitDetail(3); // kitId: 3 (큰 소리 내기)
+  const { data: kitDetail, isLoading, isError } = useKitDetail(kitId);
+
+  const getStage = (stageId: number): KitStage | null => {
+    if (!kitDetail?.result?.stages) return null;
+    return kitDetail.result.stages.find((stage) => stage.stageId === stageId) || null;
+  };
 
   // API에서 받아온 2단계 이름 (stageId: 2)
-  const stage2Name: string =
-    kitDetail?.result.stages.find((stage) => stage.stageId === 2)?.stageName || '최대 성량으로 말하기';
+  const stage2Name: string = getStage(2)?.stageName || '최대 성량으로 말하기';
 
   const { isDetecting, currentDecibel, averageDecibel, maxDecibel, startDetection, stopDetection } =
     useDecibelDetection({
@@ -84,6 +92,27 @@ const LoudSoundVolume = () => {
       handleRecordingComplete();
     }
   }, [isRecording, isDetecting, handleRecordingComplete]);
+
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-body-01-regular text-gray-60">로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 에러 또는 데이터 없음
+  if (isError || !kitDetail) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <p className="text-body-01-regular text-gray-60">키트 정보를 불러올 수 없습니다</p>
+        <button onClick={() => navigate(-1)} className="text-body-02-regular text-blue-2">
+          돌아가기
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>

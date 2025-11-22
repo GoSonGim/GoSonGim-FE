@@ -7,12 +7,20 @@ import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer'
 import Step1Layout from '@/components/talkingkit/layout/Step1Layout';
 import { logger } from '@/utils/common/loggerUtils';
 import { useKitDetail } from '@/hooks/talkingkit/queries/useKitDetail';
+import type { KitStage } from '@/types/talkingkit/kit';
 
 const BreathingExercise = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const kitId = id ? parseInt(id, 10) : 1; // fallback to 1 for breathing kit
+
   const { phase, ballPosition, start, reset, setBluePathRef, setRedPathRef } = useBreathingAnimation();
-  const { data: kitDetail } = useKitDetail(1); // kitId: 1 (길게 소리내기)
+  const { data: kitDetail, isLoading, isError } = useKitDetail(kitId);
+
+  const getStage = (stageId: number): KitStage | null => {
+    if (!kitDetail?.result?.stages) return null;
+    return kitDetail.result.stages.find((stage) => stage.stageId === stageId) || null;
+  };
 
   // 키트 정보 가져오기
   const kit = kitsData.find((k) => k.id === Number(id));
@@ -23,8 +31,7 @@ const BreathingExercise = () => {
   }
 
   // API에서 받아온 1단계 이름 (stageId: 1)
-  const stage1Name: string =
-    kitDetail?.result.stages.find((stage) => stage.stageId === 1)?.stageName || '횡경막 호흡 연습';
+  const stage1Name: string = getStage(1)?.stageName || '횡경막 호흡 연습';
 
   const handleStart = () => {
     logger.log('애니메이션 시작');
@@ -37,6 +44,27 @@ const BreathingExercise = () => {
     // vowel-pitch 페이지로 이동
     navigate('/talkingkit/vowel-pitch');
   };
+
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-body-01-regular text-gray-60">로딩 중...</p>
+      </div>
+    );
+  }
+
+  // 에러 또는 데이터 없음
+  if (isError || !kitDetail) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center gap-4">
+        <p className="text-body-01-regular text-gray-60">키트 정보를 불러올 수 없습니다</p>
+        <button onClick={() => navigate(-1)} className="text-body-02-regular text-blue-2">
+          돌아가기
+        </button>
+      </div>
+    );
+  }
 
   // 완료 화면 (GREAT!)
   if (phase === 'complete') {

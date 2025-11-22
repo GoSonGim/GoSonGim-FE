@@ -48,7 +48,7 @@ const SituationCard = ({ situation, onClick, isBookmarked = false, bookmarkId }:
       <div className="flex h-[138px] w-[173px] flex-col items-end gap-[4px] overflow-hidden rounded-[inherit] py-2 pr-0 pl-2 shadow-lg">
         <button
           onClick={handleBookmarkClick}
-          className="relative size-12 shrink-0 overflow-hidden"
+          className="relative size-12 shrink-0 overflow-hidden cursor-pointer"
           aria-label={isBookmarked ? '북마크 제거' : '북마크 추가'}
         >
           <div className="absolute inset-[24.81%_33.33%_29.75%_33.33%]">

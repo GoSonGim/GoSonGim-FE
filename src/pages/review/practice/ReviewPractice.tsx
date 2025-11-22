@@ -202,9 +202,7 @@ const ReviewPractice = () => {
                           </button>
                           {/* 녹음 듣기 버튼 */}
                           <button
-                            onClick={() =>
-                              navigate(`/review/practice/articulation-listen?recordingId=${kit.recordingId}`)
-                            }
+                            onClick={() => navigate(`/review/practice/articulation-listen?kitId=${kit.kitId}`)}
                             className="border-blue-3 flex size-[52px] cursor-pointer items-center justify-center rounded-2xl border bg-white"
                           >
                             <AudioIcon className="pointer-events-none h-[52px] w-[52px]" />

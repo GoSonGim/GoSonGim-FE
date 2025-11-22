@@ -4,4 +4,6 @@ export * from './queries/situationList.types';
 export * from './queries/kitList.types';
 export * from './queries/monthlyStudy.types';
 export * from './queries/dailyStudy.types';
+export * from './queries/situationDetail.types';
+export * from './queries/kitDetail.types';
 export * from './mutations/evaluateWords.types';

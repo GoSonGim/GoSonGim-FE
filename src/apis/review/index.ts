@@ -3,6 +3,8 @@ import { getSituationList } from './queries/situationList';
 import { getKitList } from './queries/kitList';
 import { getMonthlyStudy } from './queries/monthlyStudy';
 import { getDailyStudy } from './queries/dailyStudy';
+import { getSituationDetail } from './queries/situationDetail';
+import { getKitDetail } from './queries/kitDetail';
 import { evaluateWords } from './mutations/evaluateWords';
 
 export const reviewAPI = {
@@ -11,5 +13,7 @@ export const reviewAPI = {
   getKitList,
   getMonthlyStudy,
   getDailyStudy,
+  getSituationDetail,
+  getKitDetail,
   evaluateWords,
 };
