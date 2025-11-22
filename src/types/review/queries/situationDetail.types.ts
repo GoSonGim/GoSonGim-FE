@@ -1,8 +1,10 @@
+import type { ApiResponse } from '@/types/common/api.types';
+
 export interface SituationDetailRequest {
   recordingId: number;
 }
 
-export interface SituationDetailResponse {
+export interface SituationDetailResult {
   recordingId: number;
   situation: {
     id: number;
@@ -21,3 +23,5 @@ export interface SituationDetailResponse {
     };
   }>;
 }
+
+export type SituationDetailResponse = ApiResponse<SituationDetailResult>;

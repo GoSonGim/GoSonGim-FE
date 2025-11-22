@@ -1,8 +1,10 @@
+import type { ApiResponse } from '@/types/common/api.types';
+
 export interface KitDetailRequest {
   kitId: number;
 }
 
-export interface KitDetailResponse {
+export interface KitDetailResult {
   kitId: number;
   kitName: string;
   records: Array<{
@@ -17,3 +19,5 @@ export interface KitDetailResponse {
     createdAt: string;
   }>;
 }
+
+export type KitDetailResponse = ApiResponse<KitDetailResult>;
