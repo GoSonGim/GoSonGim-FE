@@ -274,7 +274,7 @@ export default function SituationConversation() {
             </div>
             <button
               onClick={handleResumeSession}
-              className="bg-blue-1 hover:bg-blue-2 rounded-lg px-8 py-3 text-white transition-colors"
+              className="bg-blue-1 hover:bg-blue-2 cursor-pointer rounded-lg px-8 py-3 text-white transition-colors"
             >
               <span className="text-body-01-semibold">세션 재개하기</span>
             </button>
