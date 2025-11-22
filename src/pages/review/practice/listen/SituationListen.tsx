@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import CloseIcon from '@/assets/svgs/review/review-close.svg';
 import StopIcon from '@/assets/svgs/review/review-stop.svg';
@@ -18,7 +18,7 @@ const SituationListen = () => {
   const [selectedTurnIndex, setSelectedTurnIndex] = useState<number | null>(null);
 
   // API 데이터 가져오기
-  const { data, isLoading, isError, error } = useSituationDetailQuery(recordingId);
+  const { data, isLoading, isError } = useSituationDetailQuery(recordingId);
 
   // 오디오 플레이어
   const { loadAudio, play, pause, seekForward, seekBackward, isPlaying, progress } = useAudioPlayer();
