@@ -68,7 +68,7 @@ export const useWordQuiz = () => {
 
       try {
         const uploadResponse = await lipSoundAPI.getUploadUrl({
-          folder: 'kit',
+          folder: 'test',
           fileName,
         });
 

@@ -16,5 +16,6 @@ export const useInfiniteSituationListQuery = (params: Omit<SituationListParams, 
       return pageInfo.hasNext ? pageInfo.page + 1 : undefined;
     },
     initialPageParam: 1,
+    refetchOnMount: 'always',
   });
 };

@@ -16,5 +16,6 @@ export const useInfiniteKitListQuery = (params: Omit<KitListParams, 'page'>) => 
       return pageInfo.hasNext ? pageInfo.page + 1 : undefined;
     },
     initialPageParam: 1,
+    refetchOnMount: 'always',
   });
 };
