@@ -27,7 +27,6 @@ export default defineConfig({
         secure: true,
         // 대용량 파일 업로드를 위한 타임아웃 설정 (60초)
         timeout: 60000,
-        // ws: true, // WebSocket 지원 (필요시)
         // 프록시 요청 전처리
         configure: (proxy) => {
           proxy.on('proxyReq', (proxyReq, req) => {
