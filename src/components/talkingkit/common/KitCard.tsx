@@ -3,8 +3,7 @@ import type { Kit } from '@/types/talkingkit';
 import type { TalkingKit } from '@/types/talkingkit';
 import { useAddKitBookmarkMutation } from '@/hooks/bookmark/mutations/useAddKitBookmarkMutation';
 import { useRemoveBookmarkMutation } from '@/hooks/bookmark/mutations/useRemoveBookmarkMutation';
-import BookmarkEmptyIcon from '@/assets/svgs/talkingkit/common/bookmarkempty.svg';
-import BookmarkCheckedIcon from '@/assets/svgs/home/bookmarkchecked.svg';
+import { AnimatedBookmark } from '@/components/common/AnimatedBookmark';
 
 interface KitCardProps {
   kit: TalkingKit | Kit;
@@ -73,11 +72,7 @@ const KitCard = ({ kit, onClick, isBookmarked = false, bookmarkId }: KitCardProp
           aria-label={isBookmarked ? '북마크 제거' : '북마크 추가'}
         >
           <div className="absolute inset-[24.81%_33.33%_29.75%_33.33%]">
-            {isBookmarked ? (
-              <BookmarkCheckedIcon className="h-full w-full" />
-            ) : (
-              <BookmarkEmptyIcon className="h-full w-full" />
-            )}
+            <AnimatedBookmark isBookmarked={isBookmarked} />
           </div>
         </button>
 

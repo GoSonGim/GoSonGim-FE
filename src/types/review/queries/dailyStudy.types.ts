@@ -1,7 +1,7 @@
 import type { ApiResponse } from '@/types/common/api.types';
 
 export interface DailyStudyItem {
-  type: 'situation' | 'kit';
+  type: 'SITUATION' | 'KIT';
   id: number;
   name: string;
   recordingId: number;

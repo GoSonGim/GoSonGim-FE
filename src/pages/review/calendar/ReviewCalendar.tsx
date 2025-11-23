@@ -154,7 +154,7 @@ const ReviewCalendar = () => {
                 {/* 키트 리스트 */}
                 {getKitsForDate(selectedDate).map((item: DailyStudyItem, index: number) => {
                   const handleRestudy = () => {
-                    if (item.type === 'situation') {
+                    if (item.type === 'SITUATION') {
                       navigate(getSituationRoute(item.id));
                     } else {
                       navigate(getKitRoute(item.name));
@@ -162,7 +162,7 @@ const ReviewCalendar = () => {
                   };
 
                   const handleListen = () => {
-                    if (item.type === 'situation') {
+                    if (item.type === 'SITUATION') {
                       navigate(`/review/practice/listen?recordingId=${item.recordingId}`);
                     } else {
                       // kit 타입 - 조음 키트

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChevronLeft from '@/assets/svgs/home/leftarrow.svg';
 import Mike1 from '@/assets/svgs/home/mike1.svg';
@@ -9,12 +9,16 @@ import { useTypingAnimation } from '@/hooks/freetalk/useTypingAnimation';
 import { useFreeTalkConversation } from '@/hooks/freetalk/useFreeTalkConversation';
 import { useChromaKey } from '@/hooks/freetalk/useChromaKey';
 import { logger } from '@/utils/common/loggerUtils';
+import Modal, { ModalButton } from '@/components/common/Modal';
 import clsx from 'clsx';
 
 export default function FreeTalk() {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // 안내 모달 상태
+  const [isGuideModalOpen, setIsGuideModalOpen] = useState(true);
 
   // 대화 관리 훅 (아바타 포함)
   const conversation = useFreeTalkConversation();
@@ -144,8 +148,8 @@ export default function FreeTalk() {
                 key={num}
                 className={clsx(
                   'flex h-[30px] items-center justify-center rounded-[8px] text-[16px] leading-normal font-normal shadow-lg',
-                  status === 'completed' && 'text-gray-40 w-[70px] bg-[#757a9e]',
-                  isActive && 'w-[70px] border border-solid border-[#757a9e] bg-white text-[#757a9e]',
+                  status === 'completed' && 'text-gray-40 bg-blue-4 w-[70px]',
+                  isActive && 'border-blue-4 text-blue-4 w-[70px] border border-solid bg-white',
                   status === 'pending' && 'bg-gray-20 w-[70px] text-[#232323]',
                 )}
               >
@@ -178,7 +182,7 @@ export default function FreeTalk() {
                 </p>
                 <button
                   onClick={() => conversation.startSession()}
-                  className="cursor-pointer rounded-lg bg-[#757a9e] px-4 py-2 text-[14px] text-white"
+                  className="bg-blue-4 cursor-pointer rounded-lg px-4 py-2 text-[14px] text-white"
                 >
                   재시도
                 </button>
@@ -190,7 +194,7 @@ export default function FreeTalk() {
               <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/90">
                 <button
                   onClick={() => conversation.startSession()}
-                  className="cursor-pointer rounded-lg bg-[#757a9e] px-4 py-2 text-[16px] text-white"
+                  className="bg-blue-4 cursor-pointer rounded-lg px-4 py-2 text-[16px] text-white"
                 >
                   아바타 시작하기
                 </button>
@@ -232,7 +236,7 @@ export default function FreeTalk() {
             <div className="mb-6 flex flex-col gap-4">
               {/* 아바타 질문 (타이핑 효과) */}
               <div className="flex justify-start">
-                <div className="flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[2px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[16px] bg-[#757a9e] px-[16px] py-[16px] shadow-lg">
+                <div className="bg-blue-4 flex min-h-[62px] w-[361px] items-center justify-center rounded-tl-[2px] rounded-tr-[16px] rounded-br-[16px] rounded-bl-[16px] px-[16px] py-[16px] shadow-lg">
                   <p className="text-center text-[20px] leading-normal font-normal wrap-break-word whitespace-pre-wrap text-white">
                     {displayedText}
                   </p>
@@ -304,6 +308,30 @@ export default function FreeTalk() {
           </button>
         )}
       </div>
+
+      {/* 안내 모달 */}
+      <Modal isOpen={isGuideModalOpen} onClose={() => setIsGuideModalOpen(false)} hideCloseOnBackdrop>
+        <div className="flex w-[280px] flex-col items-center gap-[20px]">
+          {/* 아이콘 */}
+          <div className="flex h-[56px] w-[56px] items-center justify-center rounded-full">
+            <span className="text-[40px]">⚠️</span>
+          </div>
+
+          {/* 텍스트 */}
+          <div className="flex flex-col items-center gap-[6px]">
+            <p className="text-center text-[20px] leading-normal font-semibold text-gray-100">
+              아바타가 말하는 내용을
+              <br />
+              전부 듣고 대답해주세요!
+            </p>
+          </div>
+
+          {/* 버튼 */}
+          <ModalButton onClick={() => setIsGuideModalOpen(false)} variant="primary" className="w-full!">
+            계속하기
+          </ModalButton>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import { useRemoveBookmarkMutation } from '@/hooks/bookmark/mutations/useRemoveBookmarkMutation';
 import { getSituationCategoryQuery } from '@/utils/studytalk/categoryUtils';
-import BookmarkIcon from '@/assets/svgs/home/bookmarkchecked.svg';
+import { AnimatedBookmark } from '@/components/common/AnimatedBookmark';
 import DeleteConfirmModal from '@/components/common/DeleteConfirmModal';
 
 interface SituationPracticeCardProps {
@@ -52,7 +52,7 @@ export default function SituationPracticeCard({
           className="flex size-[48px] shrink-0 cursor-pointer items-center justify-center"
           aria-label="북마크 제거"
         >
-          <BookmarkIcon className="h-[21.814px] w-[16px] cursor-pointer" />
+          <AnimatedBookmark isBookmarked={true} className="h-[21.814px] w-[16px]" />
         </button>
 
         <div className="flex w-full flex-col items-start px-[4px]">

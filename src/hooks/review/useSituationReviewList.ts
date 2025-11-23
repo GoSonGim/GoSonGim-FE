@@ -1,5 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useInfiniteSituationListQuery } from './queries/useInfiniteSituationListQuery';
+import { useReviewStore } from '@/stores/useReviewStore';
 import type { SituationCategoryOption } from '@/components/studytalk/SituationCategoryFilter';
 
 type SortOption = '최신순' | '오래된순';
@@ -26,8 +27,11 @@ const sortMap: Record<SortOption, 'latest' | 'oldest'> = {
 };
 
 export const useSituationReviewList = () => {
-  const [selectedCategory, setSelectedCategory] = useState<SituationCategoryOption>('전체');
-  const [selectedSort, setSelectedSort] = useState<SortOption>('최신순');
+  // Zustand 스토어에서 상태와 액션 가져오기
+  const selectedCategory = useReviewStore((state) => state.situationCategory);
+  const selectedSort = useReviewStore((state) => state.situationSort);
+  const setSelectedCategory = useReviewStore((state) => state.setSituationCategory);
+  const setSelectedSort = useReviewStore((state) => state.setSituationSort);
 
   const apiCategory = categoryMap[selectedCategory];
   const apiSort = sortMap[selectedSort];

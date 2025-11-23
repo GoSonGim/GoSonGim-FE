@@ -1,12 +1,15 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useInfiniteKitListQuery } from './queries/useInfiniteKitListQuery';
 import { filterKitsByCategory } from '@/utils/review';
 import { sortMap } from '@/constants/review/sort';
-import type { KitCategoryOption, SortOption } from '@/constants/review/sort';
+import { useReviewStore } from '@/stores/useReviewStore';
 
 export const useKitReviewList = () => {
-  const [selectedCategory, setSelectedCategory] = useState<KitCategoryOption>('전체');
-  const [selectedSort, setSelectedSort] = useState<SortOption>('최신순');
+  // Zustand 스토어에서 상태와 액션 가져오기
+  const selectedCategory = useReviewStore((state) => state.kitCategory);
+  const selectedSort = useReviewStore((state) => state.kitSort);
+  const setSelectedCategory = useReviewStore((state) => state.setKitCategory);
+  const setSelectedSort = useReviewStore((state) => state.setKitSort);
 
   const apiSort = sortMap[selectedSort];
 
