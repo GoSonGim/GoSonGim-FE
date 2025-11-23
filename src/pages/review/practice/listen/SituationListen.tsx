@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import CloseIcon from '@/assets/svgs/review/review-close.svg';
 import StopIcon from '@/assets/svgs/review/review-stop.svg';
@@ -8,46 +7,26 @@ import StartIcon from '@/assets/svgs/review/review-play.svg';
 import BlueSelect from '@/assets/svgs/review/review-blueselect.svg';
 import ProgressBar from '@/components/review/ProgressBar';
 import { useSituationDetailQuery } from '@/hooks/review/queries/useSituationDetailQuery';
-import { useAudioPlayer } from '@/hooks/review/useAudioPlayer';
+import { useListenControls } from '@/hooks/review/listen';
 
 const SituationListen = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const recordingId = Number(searchParams.get('recordingId')) || 0;
 
-  const [selectedTurnIndex, setSelectedTurnIndex] = useState<number | null>(null);
-
   // API 데이터 가져오기
   const { data, isLoading, isError } = useSituationDetailQuery(recordingId);
 
-  // 오디오 플레이어
-  const { loadAudio, play, pause, seekForward, seekBackward, isPlaying, progress } = useAudioPlayer();
-
-  // 대화 선택 핸들러
-  const handleDialogueClick = (turnIndex: number, audioUrl: string) => {
-    setSelectedTurnIndex(turnIndex);
-    loadAudio(audioUrl);
-    play();
-  };
-
-  // 재생/정지 토글
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      pause();
-    } else {
-      play();
-    }
-  };
-
-  // 5초 뒤로
-  const handlePrevious = () => {
-    seekBackward(5);
-  };
-
-  // 5초 앞으로
-  const handleNext = () => {
-    seekForward(5);
-  };
+  // 오디오 플레이어 제어
+  const {
+    selectedId: selectedTurnIndex,
+    isPlaying,
+    progress,
+    handleItemClick,
+    handlePlayPause,
+    handlePrevious,
+    handleNext,
+  } = useListenControls();
 
   // 로딩 상태
   if (isLoading) {
@@ -122,7 +101,7 @@ const SituationListen = () => {
               {/* 사용자 답변 */}
               <div className="relative">
                 <button
-                  onClick={() => handleDialogueClick(index, turn.answer.audioUrl)}
+                  onClick={() => handleItemClick(index, turn.answer.audioUrl)}
                   className={`flex w-[344px] cursor-pointer flex-col gap-2 rounded-lg px-4 py-2 ${
                     isSelected ? 'bg-background-primary' : 'bg-white'
                   }`}

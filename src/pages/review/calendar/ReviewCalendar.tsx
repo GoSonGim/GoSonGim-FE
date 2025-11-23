@@ -5,12 +5,11 @@ import RightIcon from '@/assets/svgs/review/review-rightarrow.svg';
 import RestudyIcon from '@/assets/svgs/review/review-restudy.svg';
 import AudioIcon from '@/assets/svgs/review/review-audio.svg';
 import TodayIcon from '@/assets/svgs/review/review-todayicon.svg';
-import { useCalendar } from '@/hooks/review/useCalendar';
+import { useCalendar } from '@/hooks/review/calendar';
 import { getKitRoute } from '@/utils/review/kitRouteUtils';
 import { getSituationRoute } from '@/utils/review/situationRouteUtils';
 import type { DailyStudyItem } from '@/types/review';
-
-const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토'];
+import { WEEKDAYS } from '@/constants/review/calendar';
 
 const ReviewCalendar = () => {
   const navigate = useNavigate();

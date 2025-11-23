@@ -1,4 +1,3 @@
-import { useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import LeftIcon from '@/assets/svgs/review/review-leftarrow.svg';
 import RestudyIcon from '@/assets/svgs/review/review-restudy.svg';
@@ -6,8 +5,7 @@ import AudioIcon from '@/assets/svgs/review/review-audio.svg';
 import CategoryFilter from '@/components/studytalk/CategoryFilter';
 import SituationCategoryFilter from '@/components/studytalk/SituationCategoryFilter';
 import SortFilter from '@/components/studytalk/SortFilter';
-import { useSituationReviewList } from '@/hooks/review/useSituationReviewList';
-import { useKitReviewList } from '@/hooks/review/useKitReviewList';
+import { useSituationReviewList, useKitReviewList, useInfiniteScroll } from '@/hooks/review/practice';
 import { getKitRoute } from '@/utils/review/kitRouteUtils';
 import { getSituationRoute } from '@/utils/review/situationRouteUtils';
 
@@ -42,46 +40,16 @@ const ReviewPractice = () => {
     isLoading: isKitLoading,
   } = useKitReviewList();
 
-  // 무한 스크롤 ref
-  const loadMoreRef = useRef<HTMLDivElement>(null);
-
   // 헤더 타이틀
   const headerTitle = type === 'roleplay' ? '상황극 복습' : '조음 키트 복습';
 
-  // 무한 스크롤 구현
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          if (type === 'roleplay' && hasSituationNextPage && !isFetchingSituationNextPage) {
-            fetchSituationNextPage();
-          } else if (type === 'articulation' && hasKitNextPage && !isFetchingKitNextPage) {
-            fetchKitNextPage();
-          }
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    const currentRef = loadMoreRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, [
-    type,
-    hasSituationNextPage,
-    isFetchingSituationNextPage,
-    fetchSituationNextPage,
-    hasKitNextPage,
-    isFetchingKitNextPage,
-    fetchKitNextPage,
-  ]);
+  // 무한 스크롤
+  const { loadMoreRef } = useInfiniteScroll({
+    hasNextPage: type === 'roleplay' ? hasSituationNextPage : hasKitNextPage,
+    isFetchingNextPage: type === 'roleplay' ? isFetchingSituationNextPage : isFetchingKitNextPage,
+    fetchNextPage: type === 'roleplay' ? fetchSituationNextPage : fetchKitNextPage,
+    enabled: true,
+  });
 
   return (
     <div className="bg-background-primary relative flex h-full flex-col">

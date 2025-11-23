@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
-import { useInfiniteKitListQuery } from './queries/useInfiniteKitListQuery';
+import { useInfiniteKitListQuery } from '../queries/useInfiniteKitListQuery';
 import { filterKitsByCategory } from '@/utils/review';
-import { sortMap } from '@/constants/review/sort';
-import type { KitCategoryOption, SortOption } from '@/constants/review/sort';
+import { sortMap } from '@/constants/review/practice';
+import type { KitCategoryOption, SortOption } from '@/constants/review/practice';
 
 export const useKitReviewList = () => {
   const [selectedCategory, setSelectedCategory] = useState<KitCategoryOption>('전체');

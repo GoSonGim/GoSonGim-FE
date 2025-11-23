@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useInfiniteSituationListQuery } from './queries/useInfiniteSituationListQuery';
+import { useInfiniteSituationListQuery } from '../queries/useInfiniteSituationListQuery';
 import type { SituationCategoryOption } from '@/components/studytalk/SituationCategoryFilter';
 
 type SortOption = '최신순' | '오래된순';
