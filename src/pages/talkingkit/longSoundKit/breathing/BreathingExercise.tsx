@@ -73,7 +73,7 @@ const BreathingExercise = () => {
         <Step1Layout
           headerTitle={`${kit.highlightedText} 소리내기`}
           title={stage1Name}
-          onBackClick={() => navigate(-1)}
+          onBackClick={() => navigate('/talkingkit')}
         >
           <div className="flex h-[352px] w-full items-center justify-center">
             <h1 className="text-[48px] leading-normal font-medium text-[#ff1f1f]">GREAT!</h1>

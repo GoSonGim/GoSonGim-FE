@@ -3,7 +3,10 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import LeftArrowIcon from '@/assets/svgs/talkingkit/common/leftarrow.svg';
 import AnimatedContainer from '@/components/talkingkit/common/AnimatedContainer';
 import TimerProgressBar from '@/components/talkingkit/progressBar/TimerProgressBar';
-import { articulationTypeConfig, type ArticulationType } from '@/constants/talkingkit/soundPosition/articulationPractice';
+import {
+  articulationTypeConfig,
+  type ArticulationType,
+} from '@/constants/talkingkit/soundPosition/articulationPractice';
 
 const ArticulationStep1 = () => {
   const navigate = useNavigate();
@@ -21,9 +24,7 @@ const ArticulationStep1 = () => {
   const config = articulationTypeConfig[validType];
 
   // URL 패턴에서 기본 경로 추출
-  const basePath = location.pathname.includes('sound-position')
-    ? 'sound-position'
-    : 'sound-way';
+  const basePath = location.pathname.includes('sound-position') ? 'sound-position' : 'sound-way';
 
   // 시작하기 버튼 클릭
   const handleButtonClick = () => {
@@ -50,7 +51,11 @@ const ArticulationStep1 = () => {
   };
 
   const handleBackClick = () => {
-    navigate(-1);
+    if (basePath === 'sound-position') {
+      navigate('/search/articulation-position');
+    } else {
+      navigate('/search/articulation-method');
+    }
   };
 
   return (
