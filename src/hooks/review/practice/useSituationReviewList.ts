@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useInfiniteSituationListQuery } from './queries/useInfiniteSituationListQuery';
+import { useInfiniteSituationListQuery } from '@/hooks/review/queries/useInfiniteSituationListQuery';
 import { useReviewStore } from '@/stores/useReviewStore';
 import type { SituationCategoryOption } from '@/components/studytalk/SituationCategoryFilter';
 

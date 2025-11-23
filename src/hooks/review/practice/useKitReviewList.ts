@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { useInfiniteKitListQuery } from './queries/useInfiniteKitListQuery';
+import { useInfiniteKitListQuery } from '@/hooks/review/queries/useInfiniteKitListQuery';
 import { filterKitsByCategory } from '@/utils/review';
-import { sortMap } from '@/constants/review/sort';
+import { sortMap } from '@/constants/review/practice';
 import { useReviewStore } from '@/stores/useReviewStore';
 
 export const useKitReviewList = () => {

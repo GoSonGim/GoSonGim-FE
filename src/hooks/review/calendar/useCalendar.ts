@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useMonthlyStudyQuery } from './queries/useMonthlyStudyQuery';
-import { useDailyStudyQuery } from './queries/useDailyStudyQuery';
+import { useMonthlyStudyQuery } from '../queries/useMonthlyStudyQuery';
+import { useDailyStudyQuery } from '../queries/useDailyStudyQuery';
 import type { DailyStudyItem } from '@/types/review';
 
 export const useCalendar = () => {
