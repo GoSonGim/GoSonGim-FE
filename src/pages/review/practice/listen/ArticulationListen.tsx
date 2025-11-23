@@ -9,6 +9,7 @@ import BlueSelect from '@/assets/svgs/review/review-blueselect.svg';
 import ProgressBar from '@/components/review/ProgressBar';
 import { useKitDetailQuery } from '@/hooks/review/queries/useKitDetailQuery';
 import { useAudioPlayer } from '@/hooks/review/useAudioPlayer';
+import { calculateAverageFeedback } from '@/utils/review';
 
 const ArticulationListen = () => {
   const navigate = useNavigate();
@@ -78,8 +79,8 @@ const ArticulationListen = () => {
       ? Math.round(records.reduce((sum, record) => sum + record.evaluationScore, 0) / records.length)
       : 0;
 
-  // 대표 피드백 (첫 번째 레코드의 피드백 사용)
-  const representativeFeedback = records.length > 0 ? records[0].evaluationFeedback : '피드백이 없습니다';
+  // 평균 피드백 계산
+  const averageFeedback = calculateAverageFeedback(records.map((record) => record.evaluationFeedback));
 
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
@@ -99,13 +100,14 @@ const ArticulationListen = () => {
 
       {/* 점수 및 피드백 영역 */}
       <div className="relative bg-white px-4 pt-[14px] pb-[32px]">
+        <p className="text-body-02-regular text-gray-60 mb-1">평균 점수</p>
         <p className="text-heading-01-semibold mb-[16px] text-gray-100">{averageScore}점</p>
         <div className="relative flex gap-[10px]">
           {/* 세로선 */}
           <div className="bg-gray-20 h-auto w-px" />
           {/* 피드백 텍스트 */}
           <div className="text-body-01-regular text-gray-100">
-            <p className="whitespace-pre-wrap">{representativeFeedback}</p>
+            <p className="whitespace-pre-wrap">{averageFeedback}</p>
           </div>
         </div>
       </div>
@@ -131,6 +133,7 @@ const ArticulationListen = () => {
                 </p>
                 <p className="text-heading-02-semibold text-left text-gray-100">{record.targetWord}</p>
                 <p className="text-body-02-regular text-gray-60 text-left">{record.evaluationScore}점</p>
+                <p className="text-body-02-regular text-gray-60 text-left">{record.evaluationFeedback}</p>
               </button>
 
               {/* 파란색 화살표 */}
