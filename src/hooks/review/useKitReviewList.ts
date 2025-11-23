@@ -3,7 +3,6 @@ import { useInfiniteKitListQuery } from './queries/useInfiniteKitListQuery';
 import { filterKitsByCategory } from '@/utils/review';
 import { sortMap } from '@/constants/review/sort';
 import { useReviewStore } from '@/stores/useReviewStore';
-import type { KitCategoryOption, SortOption } from '@/constants/review/sort';
 
 export const useKitReviewList = () => {
   // Zustand 스토어에서 상태와 액션 가져오기
