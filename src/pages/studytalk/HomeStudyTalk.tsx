@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBookmarkList } from '@/hooks/bookmark/queries/useBookmarkList';
 import type { BookmarkSortType, BookmarkItem } from '@/types/bookmark';
@@ -8,31 +8,32 @@ import {
   getKitCategoryParam,
 } from '@/utils/studytalk/categoryUtils';
 import { getKitRoute } from '@/utils/talkingkit/routingUtils';
+import { useStudyTalkStore } from '@/stores/useStudyTalkStore';
 import BottomNav from '@/components/common/BottomNav';
 import StudyTalkTabs from '@/components/studytalk/StudyTalkTabs';
 import CategoryFilter from '@/components/studytalk/CategoryFilter';
-import SituationCategoryFilter, { type SituationCategoryOption } from '@/components/studytalk/SituationCategoryFilter';
+import SituationCategoryFilter from '@/components/studytalk/SituationCategoryFilter';
 import SortFilter from '@/components/studytalk/SortFilter';
 import PracticeKitCard from '@/components/studytalk/PracticeKitCard';
 import SituationPracticeCard from '@/components/studytalk/SituationPracticeCard';
 import EmptyState from '@/components/studytalk/EmptyState';
 import ChevronLeft from '@/assets/svgs/home/leftarrow.svg';
 
-type TabType = '조음발음' | '상황극';
-type CategoryOption = '전체' | '호흡' | '조음위치' | '조음방법';
-type SortOption = '최신순' | '오래된순';
-
 export default function HomeStudyTalk() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<TabType>('조음발음');
 
-  // 조음발음 연습용 state
-  const [selectedCategory, setSelectedCategory] = useState<CategoryOption>('전체');
-  const [selectedSort, setSelectedSort] = useState<SortOption>('최신순');
+  // Zustand 스토어에서 상태와 액션 가져오기
+  const activeTab = useStudyTalkStore((state) => state.activeTab);
+  const selectedCategory = useStudyTalkStore((state) => state.selectedCategory);
+  const selectedSort = useStudyTalkStore((state) => state.selectedSort);
+  const selectedSituationCategory = useStudyTalkStore((state) => state.selectedSituationCategory);
+  const selectedSituationSort = useStudyTalkStore((state) => state.selectedSituationSort);
 
-  // 상황극 연습용 state
-  const [selectedSituationCategory, setSelectedSituationCategory] = useState<SituationCategoryOption>('전체');
-  const [selectedSituationSort, setSelectedSituationSort] = useState<SortOption>('최신순');
+  const setActiveTab = useStudyTalkStore((state) => state.setActiveTab);
+  const setSelectedCategory = useStudyTalkStore((state) => state.setCategory);
+  const setSelectedSort = useStudyTalkStore((state) => state.setSort);
+  const setSelectedSituationCategory = useStudyTalkStore((state) => state.setSituationCategory);
+  const setSelectedSituationSort = useStudyTalkStore((state) => state.setSituationSort);
 
   // KIT 카테고리 변환
   const kitCategoryParam = getKitCategoryParam(selectedCategory);
@@ -73,7 +74,7 @@ export default function HomeStudyTalk() {
     return selectedSituationSort === '오래된순' ? [...data].reverse() : data;
   }, [situationBookmarksData, selectedSituationSort]);
 
-  const handleTabChange = (tab: TabType) => {
+  const handleTabChange = (tab: '조음발음' | '상황극') => {
     setActiveTab(tab);
   };
 
