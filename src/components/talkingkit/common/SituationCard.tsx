@@ -2,8 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { Situation } from '@/types/search';
 import { useAddSituationBookmarkMutation } from '@/hooks/bookmark/mutations/useAddSituationBookmarkMutation';
 import { useRemoveBookmarkMutation } from '@/hooks/bookmark/mutations/useRemoveBookmarkMutation';
-import BookmarkEmptyIcon from '@/assets/svgs/talkingkit/common/bookmarkempty.svg';
-import BookmarkCheckedIcon from '@/assets/svgs/home/bookmarkchecked.svg';
+import { AnimatedBookmark } from '@/components/common/AnimatedBookmark';
 
 interface SituationCardProps {
   situation: Situation;
@@ -52,11 +51,7 @@ const SituationCard = ({ situation, onClick, isBookmarked = false, bookmarkId }:
           aria-label={isBookmarked ? '북마크 제거' : '북마크 추가'}
         >
           <div className="absolute inset-[24.81%_33.33%_29.75%_33.33%]">
-            {isBookmarked ? (
-              <BookmarkCheckedIcon className="h-full w-full" />
-            ) : (
-              <BookmarkEmptyIcon className="h-full w-full" />
-            )}
+            <AnimatedBookmark isBookmarked={isBookmarked} />
           </div>
         </button>
 
