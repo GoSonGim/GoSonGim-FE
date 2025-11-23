@@ -70,7 +70,7 @@ const ArticulationListen = () => {
     );
   }
 
-  const { kitName, records } = data.result;
+  const { kitName, records = [] } = data.result || {};
 
   // 평균 점수 계산
   const averageScore =

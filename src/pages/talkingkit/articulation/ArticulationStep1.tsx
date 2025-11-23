@@ -50,7 +50,7 @@ const ArticulationStep1 = () => {
   };
 
   const handleBackClick = () => {
-    navigate(-1);
+    navigate('/search');
   };
 
   return (

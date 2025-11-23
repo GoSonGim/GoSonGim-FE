@@ -50,7 +50,7 @@ const VowelPitchResult = () => {
         // 4. 학습 기록 저장 API 호출
         logger.log('학습 기록 저장 중...');
         await kitAPI.saveKitStageLog({
-          kitStageId: 3,
+          kitStageId: 2, // 모음 길게 소리내기 (길게 소리내기 키트의 2번째 stage)
           evaluationScore: evaluationResult.score,
           evaluationFeedback: evaluationResult.feedback,
           isSuccess: true,

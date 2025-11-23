@@ -56,7 +56,7 @@ const LoginForm = () => {
             value={password}
             onChange={handlePasswordChange}
             error={passwordError}
-            placeholder="6자리를 입력하세요"
+            placeholder="8자리 이상 입력하세요"
           />
         </div>
 
