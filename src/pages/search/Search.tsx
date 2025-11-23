@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNav from '@/components/common/BottomNav';
 import ArrowButton from '@/assets/svgs/home/arrow-button.svg';
@@ -8,15 +8,15 @@ import { useKitCategories } from '@/hooks/talkingkit/queries/useKitCategories';
 import { useSituations } from '@/hooks/search/queries/useSituations';
 import { getSituationCategoryQuery } from '@/utils/common/situationUtils';
 import { logger } from '@/utils/common/loggerUtils';
+import { useSearchStore } from '@/stores/useSearchStore';
 
 // Lazy load home icon
 const HomeIcon = lazy(() => import('@/assets/svgs/search/studyfind-home.svg'));
 
-type TabType = '조음발음' | '상황극';
-
 const Search = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<TabType>('조음발음');
+  const activeTab = useSearchStore((state) => state.activeTab);
+  const setActiveTab = useSearchStore((state) => state.setActiveTab);
   const { data: kitCategoriesData, isLoading, error } = useKitCategories();
   const { data: situationsData } = useSituations('daily');
 
