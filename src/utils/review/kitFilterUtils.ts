@@ -1,5 +1,5 @@
 import type { KitReviewItem } from '@/types/review';
-import type { KitCategoryOption } from '@/constants/review/sort';
+import type { KitCategoryOption } from '@/constants/review/practice';
 
 /**
  * 키트 목록을 카테고리로 필터링
