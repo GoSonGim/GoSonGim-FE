@@ -13,6 +13,9 @@ import CircularProgress from '@/components/freetalk/CircularProgress';
 import { diagnosisSentence } from '@/mock/talkingkit/soundPosition/kitDiagnosis.mock';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
 import { useRandomSituations } from '@/hooks/home/useRandomSituations';
+import { useAddKitBookmarkMutation } from '@/hooks/bookmark/mutations/useAddKitBookmarkMutation';
+import { useRemoveBookmarkMutation } from '@/hooks/bookmark/mutations/useRemoveBookmarkMutation';
+import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
 import { getSituationCategoryName, getSituationCategoryQuery } from '@/utils/studytalk/categoryUtils';
 import { kitAPI } from '@/apis/talkingkit';
 import { logger } from '@/utils/common/loggerUtils';
@@ -32,6 +35,9 @@ const KitDiagnosis = () => {
 
   const { startRecording, stopRecording } = useAudioRecorder();
   const { randomSituations } = useRandomSituations();
+  const addKitBookmarkMutation = useAddKitBookmarkMutation();
+  const removeBookmarkMutation = useRemoveBookmarkMutation();
+  const { getBookmarkStatus } = useBookmarkStatus('KIT');
 
   // 녹음 완료 처리
   const handleRecordingComplete = useCallback(async () => {
@@ -151,22 +157,57 @@ const KitDiagnosis = () => {
     setProgress(0);
   };
 
-  const handleToggleSaveKit = (kitId: number) => {
-    setSavedKits((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(kitId)) {
-        newSet.delete(kitId);
+  const handleToggleSaveKit = async (kitId: number) => {
+    const isCurrentlySaved = savedKits.has(kitId);
+
+    if (isCurrentlySaved) {
+      // 이미 저장된 경우 API 호출하여 북마크 제거
+      const { bookmarkId } = getBookmarkStatus(kitId);
+
+      if (bookmarkId) {
+        try {
+          await removeBookmarkMutation.mutateAsync(bookmarkId);
+          setSavedKits((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(kitId);
+            return newSet;
+          });
+          logger.log('키트 북마크 제거 성공:', kitId);
+        } catch (error) {
+          logger.error('키트 북마크 제거 실패:', error);
+        }
       } else {
-        newSet.add(kitId);
+        // bookmarkId를 찾지 못한 경우 UI에서만 제거
+        setSavedKits((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(kitId);
+          return newSet;
+        });
       }
-      return newSet;
-    });
+    } else {
+      // 저장되지 않은 경우 API 호출하여 북마크 추가
+      try {
+        await addKitBookmarkMutation.mutateAsync({ kitList: [kitId] });
+        setSavedKits((prev) => new Set(prev).add(kitId));
+        logger.log('키트 북마크 추가 성공:', kitId);
+      } catch (error) {
+        logger.error('키트 북마크 추가 실패:', error);
+      }
+    }
   };
 
-  const handleSaveAll = () => {
-    if (diagnosisResult?.recommendedKits) {
-      const allKitIds = new Set(diagnosisResult.recommendedKits.map((kit) => kit.kitId));
-      setSavedKits(allKitIds);
+  const handleSaveAll = async () => {
+    if (diagnosisResult?.recommendedKits && diagnosisResult.recommendedKits.length > 0) {
+      const allKitIds = diagnosisResult.recommendedKits.map((kit) => kit.kitId);
+
+      try {
+        // API 호출하여 모든 키트를 북마크에 추가
+        await addKitBookmarkMutation.mutateAsync({ kitList: allKitIds });
+        setSavedKits(new Set(allKitIds));
+        logger.log('모든 키트 북마크 추가 성공:', allKitIds);
+      } catch (error) {
+        logger.error('모든 키트 북마크 추가 실패:', error);
+      }
     }
   };
 
@@ -183,8 +224,9 @@ const KitDiagnosis = () => {
     if (savedKits.size === 0) {
       setShowModal(true);
     } else {
+      navigate('/studytalk');
       logger.log('내 학습 가기로 라우팅');
-      // TODO: 내 학습 페이지로 라우팅
+      setShowModal(false);
     }
   };
 
@@ -193,8 +235,7 @@ const KitDiagnosis = () => {
   };
 
   const handleConfirmNoSave = () => {
-    logger.log('내 학습 가기로 라우팅');
-    // TODO: 내 학습 페이지로 라우팅
+    navigate('/studytalk');
     setShowModal(false);
   };
 
