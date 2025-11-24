@@ -1,8 +1,9 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNav from '@/components/common/BottomNav';
-import ArrowButton from '@/assets/svgs/home/arrow-button.svg';
 import ArrowRight from '@/assets/svgs/search/studyfind-arrowright.svg';
+import BlueArrow from '@/assets/svgs/review/review-bluearrow.svg';
+import WhiteArrow from '@/assets/svgs/review/review-whitearrow.svg';
 import { situationCategoriesMockData } from '@/mock/search/search.mock';
 import { useKitCategories } from '@/hooks/talkingkit/queries/useKitCategories';
 import { useSituations } from '@/hooks/search/queries/useSituations';
@@ -17,6 +18,7 @@ const Search = () => {
   const navigate = useNavigate();
   const activeTab = useSearchStore((state) => state.activeTab);
   const setActiveTab = useSearchStore((state) => state.setActiveTab);
+  const [hoveredDiagnosis, setHoveredDiagnosis] = useState(false);
   const { data: kitCategoriesData, isLoading, error } = useKitCategories();
   const { data: situationsData } = useSituations('daily');
 
@@ -110,18 +112,30 @@ const Search = () => {
         {activeTab === '조음발음' ? (
           <div className="flex flex-col gap-10 px-4 pt-[36px]">
             {/* 진단 받기 섹션 */}
-            <button
+            <div
+              className={`border-blue-2 flex h-[88px] cursor-pointer items-center justify-between rounded-2xl border p-4 shadow-lg transition-colors ${
+                hoveredDiagnosis ? 'bg-blue-1' : 'bg-white'
+              }`}
+              onMouseEnter={() => setHoveredDiagnosis(true)}
+              onMouseLeave={() => setHoveredDiagnosis(false)}
               onClick={handleDiagnosisClick}
-              className="border-blue-2 flex h-[88px] w-full items-center justify-between rounded-2xl border bg-white p-4 shadow-lg transition-colors"
             >
-              <div className="flex w-[232px] flex-col items-start leading-normal">
-                <p className="text-detail-01 w-full text-gray-50">체계적인 근육 강화와 발음 연습!</p>
-                <p className="text-heading-01 w-full text-gray-100">조음•발음 키트 진단 받기</p>
+              <div className="flex w-[232px] flex-col gap-0">
+                <p className={`text-detail-01 transition-colors ${hoveredDiagnosis ? 'text-gray-20' : 'text-gray-50'}`}>
+                  체계적인 근육 강화와 발음 연습!
+                </p>
+                <p className={`text-heading-01 transition-colors ${hoveredDiagnosis ? 'text-white' : 'text-gray-100'}`}>
+                  조음•발음 키트 진단 받기
+                </p>
               </div>
-              <div className="bg-blue-2 flex size-12 cursor-pointer items-center justify-center rounded-full">
-                <ArrowButton className="h-[48px] w-[48px]" />
-              </div>
-            </button>
+              <button
+                className={`flex h-12 w-12 cursor-pointer items-center justify-center rounded-full transition-colors ${
+                  hoveredDiagnosis ? 'bg-white' : 'bg-blue-2'
+                }`}
+              >
+                {hoveredDiagnosis ? <WhiteArrow className="h-20 w-20" /> : <BlueArrow className="h-20 w-20" />}
+              </button>
+            </div>
 
             {/* 조음발음 키트 리스트 */}
             <div className="flex flex-col gap-6">

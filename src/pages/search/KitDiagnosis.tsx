@@ -253,13 +253,13 @@ const KitDiagnosis = () => {
             <div className="flex w-full gap-2">
               <button
                 onClick={handleCloseModal}
-                className="bg-gray-20 flex w-[152px] items-center justify-center rounded-lg px-[45px] py-3"
+                className="bg-gray-20 flex w-[152px] cursor-pointer items-center justify-center rounded-lg px-[45px] py-3"
               >
                 <p className="text-body-01-regular text-gray-80 whitespace-nowrap">취소하기</p>
               </button>
               <button
                 onClick={handleConfirmNoSave}
-                className="bg-blue-1 flex w-[152px] items-center justify-center rounded-lg px-[45px] py-3"
+                className="bg-blue-1 flex w-[152px] cursor-pointer items-center justify-center rounded-lg px-[45px] py-3"
               >
                 <p className="text-body-01-regular whitespace-nowrap text-white">담지 않기</p>
               </button>
