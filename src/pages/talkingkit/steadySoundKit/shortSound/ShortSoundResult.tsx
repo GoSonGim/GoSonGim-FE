@@ -15,7 +15,7 @@ const ShortSoundResult = ({ evaluationResult }: ShortSoundResultProps) => {
   };
 
   return (
-    <div className="bg-background-primary flex min-h-screen flex-col">
+    <div className="bg-background-primary flex h-full flex-col overflow-y-auto">
       {/* 상단 헤더 */}
       <div className="h-16 w-full overflow-hidden bg-white">
         <div className="relative flex h-full items-center justify-center">

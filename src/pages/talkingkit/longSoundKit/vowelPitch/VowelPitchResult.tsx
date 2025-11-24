@@ -73,7 +73,7 @@ const VowelPitchResult = () => {
   }
 
   return (
-    <div className="bg-background-primary min-h-screen">
+    <div className="bg-background-primary h-full overflow-y-auto">
       {/* 상단 바 */}
       <div className="h-16 w-full overflow-hidden bg-white">
         <div className="relative flex h-full items-center justify-center">
