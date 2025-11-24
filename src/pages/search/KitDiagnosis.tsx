@@ -1,4 +1,3 @@
-import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChevronLeft from '@/assets/svgs/home/leftarrow.svg';
 import Mike2 from '@/assets/svgs/home/mike2.svg';
@@ -11,233 +10,37 @@ import CheckIcon from '@/assets/svgs/search/studyfind-check.svg';
 import ArrowRight from '@/assets/svgs/home/arrow-right.svg';
 import CircularProgress from '@/components/freetalk/CircularProgress';
 import { diagnosisSentence } from '@/mock/talkingkit/soundPosition/kitDiagnosis.mock';
-import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
 import { useRandomSituations } from '@/hooks/home/useRandomSituations';
-import { useAddKitBookmarkMutation } from '@/hooks/bookmark/mutations/useAddKitBookmarkMutation';
-import { useRemoveBookmarkMutation } from '@/hooks/bookmark/mutations/useRemoveBookmarkMutation';
-import { useBookmarkStatus } from '@/hooks/bookmark/useBookmarkStatus';
+import { useKitDiagnosis } from '@/hooks/search/kitDiagnosis/useKitDiagnosis';
 import { getSituationCategoryName, getSituationCategoryQuery } from '@/utils/studytalk/categoryUtils';
-import { kitAPI } from '@/apis/talkingkit';
-import { logger } from '@/utils/common/loggerUtils';
-import type { KitDiagnosisResponse } from '@/types/talkingkit';
-
-type StepType = 'start' | 'loading' | 'result';
 
 const KitDiagnosis = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState<StepType>('start');
-  const [isRecording, setIsRecording] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [savedKits, setSavedKits] = useState<Set<number>>(new Set());
-  const [showModal, setShowModal] = useState(false);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
-  const [diagnosisResult, setDiagnosisResult] = useState<KitDiagnosisResponse['result'] | null>(null);
-
-  const { startRecording, stopRecording } = useAudioRecorder();
   const { randomSituations } = useRandomSituations();
-  const addKitBookmarkMutation = useAddKitBookmarkMutation();
-  const removeBookmarkMutation = useRemoveBookmarkMutation();
-  const { getBookmarkStatus } = useBookmarkStatus('KIT');
 
-  // 녹음 완료 처리
-  const handleRecordingComplete = useCallback(async () => {
-    const blob = await stopRecording();
-    if (blob) {
-      setAudioBlob(blob);
-      logger.log('녹음 완료, Blob 크기:', blob.size);
-    }
-    // 로딩 단계로 전환
-    setStep('loading');
-  }, [stopRecording]);
+  const {
+    // State
+    step,
+    diagnosisResult,
+    showModal,
 
-  // 8초 녹음 타이머
-  useEffect(() => {
-    if (!isRecording) return;
+    // Recording
+    isRecording,
+    progress,
+    handleStartRecording,
+    handleStopRecording,
 
-    const duration = 8000; // 8초
-    const interval = 50; // 50ms마다 업데이트
-    const increment = (interval / duration) * 100;
+    // Bookmark
+    savedKits,
+    handleToggleSaveKit,
+    handleSaveAll,
 
-    const timer = setInterval(() => {
-      setProgress((prev) => {
-        const newProgress = prev + increment;
-        if (newProgress >= 100) {
-          clearInterval(timer);
-          setIsRecording(false);
-          setProgress(0);
-          // 녹음 완료 후 audioBlob 획득
-          handleRecordingComplete();
-          return 100;
-        }
-        return newProgress;
-      });
-    }, interval);
-
-    return () => clearInterval(timer);
-  }, [isRecording, handleRecordingComplete]);
-
-  // API 호출 로직
-  useEffect(() => {
-    if (step !== 'loading' || !audioBlob) {
-      logger.warn('API 호출 조건 미충족 - step:', step, 'audioBlob:', audioBlob);
-      return;
-    }
-
-    const callDiagnosisAPI = async () => {
-      try {
-        // 디버깅: audioBlob 상태 확인
-        logger.log('audioBlob 정보:', {
-          size: audioBlob.size,
-          type: audioBlob.type,
-        });
-
-        // 1. Blob을 File로 변환
-        const audioFile = new File([audioBlob], 'diagnosis.wav', { type: 'audio/wav' });
-
-        // 디버깅: File 객체 확인
-        logger.log('audioFile 정보:', {
-          name: audioFile.name,
-          size: audioFile.size,
-          type: audioFile.type,
-        });
-
-        // 2. FormData 생성
-        const formData = new FormData();
-        formData.append('targetText', diagnosisSentence);
-        formData.append('audioFile', audioFile);
-
-        // 디버깅: FormData 내용 확인
-        logger.log('FormData 내용:');
-        for (const [key, value] of formData.entries()) {
-          if (value instanceof File) {
-            logger.log(`  ${key}:`, { name: value.name, size: value.size, type: value.type });
-          } else {
-            logger.log(`  ${key}:`, value);
-          }
-        }
-
-        // 3. API 호출
-        logger.log('진단 API 호출 시작...');
-        const response = await kitAPI.diagnosisKit(formData);
-
-        // 4. 콘솔 출력
-        logger.log('진단 결과:', response);
-
-        // 5. State 저장
-        setDiagnosisResult(response.result);
-
-        // 6. result 화면으로 전환 (약간의 딜레이 후)
-        setTimeout(() => {
-          setStep('result');
-        }, 500);
-      } catch (error) {
-        logger.error('진단 API 호출 실패:', error);
-        // 에러 발생 시에도 result 화면으로 이동 (mock 데이터로 폴백 가능)
-        setTimeout(() => {
-          setStep('result');
-        }, 500);
-      }
-    };
-
-    callDiagnosisAPI();
-  }, [step, audioBlob]);
-
-  const handleStartRecording = async () => {
-    try {
-      await startRecording();
-      setIsRecording(true);
-      setProgress(0);
-    } catch (error) {
-      logger.error('녹음 시작 실패:', error);
-    }
-  };
-
-  const handleStopRecording = () => {
-    setIsRecording(false);
-    setProgress(0);
-  };
-
-  const handleToggleSaveKit = async (kitId: number) => {
-    const isCurrentlySaved = savedKits.has(kitId);
-
-    if (isCurrentlySaved) {
-      // 이미 저장된 경우 API 호출하여 북마크 제거
-      const { bookmarkId } = getBookmarkStatus(kitId);
-
-      if (bookmarkId) {
-        try {
-          await removeBookmarkMutation.mutateAsync(bookmarkId);
-          setSavedKits((prev) => {
-            const newSet = new Set(prev);
-            newSet.delete(kitId);
-            return newSet;
-          });
-          logger.log('키트 북마크 제거 성공:', kitId);
-        } catch (error) {
-          logger.error('키트 북마크 제거 실패:', error);
-        }
-      } else {
-        // bookmarkId를 찾지 못한 경우 UI에서만 제거
-        setSavedKits((prev) => {
-          const newSet = new Set(prev);
-          newSet.delete(kitId);
-          return newSet;
-        });
-      }
-    } else {
-      // 저장되지 않은 경우 API 호출하여 북마크 추가
-      try {
-        await addKitBookmarkMutation.mutateAsync({ kitList: [kitId] });
-        setSavedKits((prev) => new Set(prev).add(kitId));
-        logger.log('키트 북마크 추가 성공:', kitId);
-      } catch (error) {
-        logger.error('키트 북마크 추가 실패:', error);
-      }
-    }
-  };
-
-  const handleSaveAll = async () => {
-    if (diagnosisResult?.recommendedKits && diagnosisResult.recommendedKits.length > 0) {
-      const allKitIds = diagnosisResult.recommendedKits.map((kit) => kit.kitId);
-
-      try {
-        // API 호출하여 모든 키트를 북마크에 추가
-        await addKitBookmarkMutation.mutateAsync({ kitList: allKitIds });
-        setSavedKits(new Set(allKitIds));
-        logger.log('모든 키트 북마크 추가 성공:', allKitIds);
-      } catch (error) {
-        logger.error('모든 키트 북마크 추가 실패:', error);
-      }
-    }
-  };
-
-  const handleRetry = () => {
-    setStep('start');
-    setProgress(0);
-    setIsRecording(false);
-    setSavedKits(new Set());
-    setAudioBlob(null);
-    setDiagnosisResult(null);
-  };
-
-  const handleGoToStudyTalk = () => {
-    if (savedKits.size === 0) {
-      setShowModal(true);
-    } else {
-      navigate('/studytalk');
-      logger.log('내 학습 가기로 라우팅');
-      setShowModal(false);
-    }
-  };
-
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  const handleConfirmNoSave = () => {
-    navigate('/studytalk');
-    setShowModal(false);
-  };
+    // Actions
+    handleRetry,
+    handleGoToStudyTalk,
+    handleCloseModal,
+    handleConfirmNoSave,
+  } = useKitDiagnosis();
 
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
