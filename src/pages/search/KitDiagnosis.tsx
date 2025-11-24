@@ -12,11 +12,15 @@ import CircularProgress from '@/components/freetalk/CircularProgress';
 import { diagnosisSentence } from '@/mock/talkingkit/soundPosition/kitDiagnosis.mock';
 import { useRandomSituations } from '@/hooks/home/useRandomSituations';
 import { useKitDiagnosis } from '@/hooks/search/kitDiagnosis/useKitDiagnosis';
+import { useProfileQuery } from '@/hooks/profile/queries/useProfileQuery';
 import { getSituationCategoryName, getSituationCategoryQuery } from '@/utils/studytalk/categoryUtils';
 
 const KitDiagnosis = () => {
   const navigate = useNavigate();
   const { randomSituations } = useRandomSituations();
+  const { data: profileData } = useProfileQuery();
+
+  const userName = profileData?.result.user.nickname || '사용자';
 
   const {
     // State
@@ -123,7 +127,7 @@ const KitDiagnosis = () => {
               {/* 제목 */}
               {diagnosisResult?.recommendedKits && diagnosisResult.recommendedKits.length > 0 ? (
                 <div className="text-heading-01 text-gray-100">
-                  <p>다현님은</p>
+                  <p>{userName}님은</p>
                   <p>해당 키트가 필요해요</p>
                 </div>
               ) : (
