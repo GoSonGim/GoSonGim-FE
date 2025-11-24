@@ -8,9 +8,12 @@ import MarkLeft from '@/assets/svgs/search/studyfind-markleft.svg';
 import MarkRight from '@/assets/svgs/search/studyfind-markright.svg';
 import LoadingDot from '@/assets/svgs/search/studyfind-loadingdot.svg';
 import CheckIcon from '@/assets/svgs/search/studyfind-check.svg';
+import ArrowRight from '@/assets/svgs/home/arrow-right.svg';
 import CircularProgress from '@/components/freetalk/CircularProgress';
 import { diagnosisSentence } from '@/mock/talkingkit/soundPosition/kitDiagnosis.mock';
 import { useAudioRecorder } from '@/hooks/common/useAudioRecorder';
+import { useRandomSituations } from '@/hooks/home/useRandomSituations';
+import { getSituationCategoryName, getSituationCategoryQuery } from '@/utils/studytalk/categoryUtils';
 import { kitAPI } from '@/apis/talkingkit';
 import { logger } from '@/utils/common/loggerUtils';
 import type { KitDiagnosisResponse } from '@/types/talkingkit';
@@ -28,6 +31,7 @@ const KitDiagnosis = () => {
   const [diagnosisResult, setDiagnosisResult] = useState<KitDiagnosisResponse['result'] | null>(null);
 
   const { startRecording, stopRecording } = useAudioRecorder();
+  const { randomSituations } = useRandomSituations();
 
   // 녹음 완료 처리
   const handleRecordingComplete = useCallback(async () => {
@@ -273,23 +277,30 @@ const KitDiagnosis = () => {
           <main className="flex-1 overflow-y-auto pb-40 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             <div className="flex flex-col gap-8 px-4 pt-[17px]">
               {/* 제목 */}
-              <div className="text-[24px] leading-normal font-medium text-gray-100">
-                <p>다현님은</p>
-                <p>해당 키트가 필요해요</p>
-              </div>
+              {diagnosisResult?.recommendedKits && diagnosisResult.recommendedKits.length > 0 ? (
+                <div className="text-heading-01 text-gray-100">
+                  <p>다현님은</p>
+                  <p>해당 키트가 필요해요</p>
+                </div>
+              ) : (
+                <div className="text-heading-01 text-gray-100">
+                  <p>발음이 아주 좋습니다!</p>
+                  <p>상황극 연습을 추천드려요.</p>
+                </div>
+              )}
 
               {/* 모두 담기 버튼 + 키트 리스트 */}
-              <div className="flex flex-col items-end gap-2">
-                <button
-                  onClick={handleSaveAll}
-                  className="border-gray-10 hover:bg-gray-10 flex cursor-pointer items-center justify-center rounded-full border bg-white px-4 py-2 transition-colors"
-                >
-                  <p className="text-body-02-regular text-gray-100">모두 내학습에 담기</p>
-                </button>
+              {diagnosisResult?.recommendedKits && diagnosisResult.recommendedKits.length > 0 ? (
+                <div className="flex flex-col items-end gap-2">
+                  <button
+                    onClick={handleSaveAll}
+                    className="border-gray-10 hover:bg-gray-10 flex cursor-pointer items-center justify-center rounded-full border bg-white px-4 py-2 transition-colors"
+                  >
+                    <p className="text-body-02-regular text-gray-100">모두 내학습에 담기</p>
+                  </button>
 
-                <div className="flex w-full flex-col gap-2">
-                  {diagnosisResult?.recommendedKits && diagnosisResult.recommendedKits.length > 0 ? (
-                    diagnosisResult.recommendedKits.map((kit) => {
+                  <div className="flex w-full flex-col gap-2">
+                    {diagnosisResult.recommendedKits.map((kit) => {
                       const isSaved = savedKits.has(kit.kitId);
                       return (
                         <div
@@ -311,18 +322,58 @@ const KitDiagnosis = () => {
                             ) : (
                               <div className="bg-gray-40 size-[14px] rounded-full" />
                             )}
-                            <p className={`text-body-01-semibold ${isSaved ? 'text-gray-100' : 'text-gray-40'}`}>담기</p>
+                            <p
+                              className={`text-body-01-semibold cursor-pointer ${isSaved ? 'text-gray-100' : 'text-gray-40'}`}
+                            >
+                              담기
+                            </p>
                           </button>
                         </div>
                       );
-                    })
-                  ) : (
-                    <div className="flex h-[100px] items-center justify-center rounded-lg bg-white">
-                      <p className="text-body-01-regular text-gray-60">추천 키트가 없습니다</p>
-                    </div>
-                  )}
+                    })}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="mt-10 flex flex-col gap-6">
+                  <p className="text-heading-01 text-gray-100">
+                    이런 <span className="text-blue-1">상황 연습</span>은 어떠신가요?
+                  </p>
+
+                  <div className="flex flex-col gap-2">
+                    {randomSituations && randomSituations.length > 0 ? (
+                      randomSituations.map((situation) => (
+                        <div
+                          key={situation.situationId}
+                          onClick={() => {
+                            const categoryQuery = getSituationCategoryQuery(situation.categoryEnum);
+                            navigate(`/search/situation/${categoryQuery}/${situation.situationId}`);
+                          }}
+                          className="flex cursor-pointer items-center justify-between rounded-2xl bg-white px-3 py-4 shadow-lg hover:bg-[#f1f1f5]"
+                        >
+                          <div className="flex items-center gap-1 leading-normal">
+                            <p className="text-heading-02-semibold whitespace-nowrap text-gray-100">
+                              {situation.situationName}
+                            </p>
+                            <p className="text-detail-02 whitespace-nowrap text-gray-50">
+                              •{getSituationCategoryName(situation.categoryEnum)}
+                            </p>
+                          </div>
+                          <button
+                            aria-label={`${situation.situationName} 시작하기`}
+                            className="flex shrink-0 items-center justify-center"
+                          >
+                            <ArrowRight />
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex h-[100px] items-center justify-center rounded-lg bg-white">
+                        <p className="text-body-01-regular text-gray-60">상황 연습을 불러오는 중...</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </main>
 
@@ -330,13 +381,13 @@ const KitDiagnosis = () => {
           <div className="absolute bottom-0 left-0 flex w-full gap-4 px-[15px] pb-[68px]">
             <button
               onClick={handleRetry}
-              className="bg-gray-20 hover:bg-gray-40 flex h-16 w-[173px] items-center justify-center rounded-lg p-[10px] transition-colors"
+              className="bg-gray-20 hover:bg-gray-40 flex h-16 w-[173px] cursor-pointer items-center justify-center rounded-lg p-[10px] transition-colors"
             >
               <p className="text-body-01-semibold text-gray-100">다시 탐색하기</p>
             </button>
             <button
               onClick={handleGoToStudyTalk}
-              className="bg-blue-1 hover:bg-blue-1-hover flex h-16 w-[173px] items-center justify-center rounded-lg p-[10px] transition-colors"
+              className="bg-blue-1 hover:bg-blue-1-hover flex h-16 w-[173px] cursor-pointer items-center justify-center rounded-lg p-[10px] transition-colors"
             >
               <p className="text-body-01-semibold text-white">내 학습 가기</p>
             </button>
