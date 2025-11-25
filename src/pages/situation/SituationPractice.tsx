@@ -154,13 +154,13 @@ export default function SituationPractice() {
               </div>
 
               {/* 안내 문구 */}
-              {/* <div className="text-center">
+              <div className="text-center">
                 <p className="text-body-01-regular text-blue-1">
                   말씀하시려던 문장을 작성하고
                   <br />
                   시작하기 버튼을 눌러주세요.
                 </p>
-              </div> */}
+              </div>
 
               {/* 피드백 표시 (실패한 경우) */}
               {failedTurn?.evaluation && (
@@ -235,7 +235,7 @@ export default function SituationPractice() {
               나가기
             </ModalButton>
             <ModalButton onClick={handleRestart} variant="primary">
-              다시 시작하기
+              상황극 복귀하기
             </ModalButton>
           </div>
         </div>
