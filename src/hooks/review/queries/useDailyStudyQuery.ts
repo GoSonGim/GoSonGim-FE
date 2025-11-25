@@ -11,5 +11,7 @@ export const useDailyStudyQuery = (date: string | null) => {
     queryFn: () => reviewAPI.getDailyStudy(date!),
     enabled: !!date,
     refetchOnMount: 'always',
+    staleTime: 0,
+    gcTime: 0,
   });
 };

@@ -6,4 +6,5 @@ export * from './queries/monthlyStudy.types';
 export * from './queries/dailyStudy.types';
 export * from './queries/situationDetail.types';
 export * from './queries/kitDetail.types';
+export * from './queries/kitLogDetail.types';
 export * from './mutations/evaluateWords.types';

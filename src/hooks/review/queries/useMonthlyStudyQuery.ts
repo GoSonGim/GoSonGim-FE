@@ -10,5 +10,7 @@ export const useMonthlyStudyQuery = (month: string) => {
     queryKey: ['monthlyStudy', month],
     queryFn: () => reviewAPI.getMonthlyStudy(month),
     refetchOnMount: 'always',
+    staleTime: 0,
+    gcTime: 0,
   });
 };
