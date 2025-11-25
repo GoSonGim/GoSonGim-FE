@@ -1,73 +1,84 @@
-# React + TypeScript + Vite
+# 🐣 또박이 (Ttobaki)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **AI 아바타와의 대화를 통해 발화 및 의사소통 재활을 돕는 웹 애플리케이션**
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ 주요 기능
 
-## React Compiler
+### 🎭 상황극 연습 (Situation Practice)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+실제 생활 상황을 가정하고 대화 연습을 할 수 있습니다:
 
-## Expanding the ESLint configuration
+- 카페에서 주문하기
+- 친구와 인사하기
+- 의사에게 진단 받기 등
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🤖 AI 자유대화 (Free Talk)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+AI 아바타와 자연스러운 대화 연습을 할 수 있습니다:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- 실시간 음성 대화
+- AI가 대화를 이끌어줌
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 🎤 조음 발음 키트 (Talking Kit)
+
+다양한 발음 훈련 도구를 제공합니다:
+
+- **호흡 및 발성 기초 키트** - 제대로 된 단어를 발음하기 전, 호흡과 발성을 연습할 수 있습니다.
+- **근욱 강화하기** - 움직이는 구강 구조 단면도 영상을 보고 발음 근육을 강화할 수 있습니다
+- **실전 단어 연습** - 제시되는 단어를 직접 발음해보고, 정확도(accuracy), 유창성(fluency), 완성도(completeness), 운율(prosody) 점수를 확인할 수 있습니다
+
+### 📚 복습 (Review)
+
+이전에 학습한 내용을 다시 연습하고 진행 상황을 확인할 수 있습니다:
+
+- 조음, 발음 키트 복습 (녹음본 듣기)
+- 상황극 복습 (녹음본 듣기)
+- 학습 기록 캘린더
+
+---
+
+## 🛠 기술 스택
+
+| 분류                | 기술                    |
+| ------------------- | ----------------------- |
+| **프레임워크**      | React, TypeScript, Vite |
+| **상태 관리**       | Zustand, Tanstack Query |
+| **스타일링**        | Tailwind CSS            |
+| **오디오 분석**     | Meyda, Pitchy           |
+| **애니메이션**      | Framer Motion, Lottie   |
+| **HTTP 클라이언트** | Axios                   |
+
+---
+
+## 📂 프로젝트 구조
+
+```
+src/
+├── apis/          # 백엔드 API 통신
+├── assets/        # SVG, 폰트 등 정적 파일
+├── components/    # 재사용 가능한 컴포넌트
+├── hooks/         # 커스텀 훅
+├── pages/         # 페이지 컴포넌트
+├── stores/        # 전역 상태 관리
+├── types/         # TypeScript 타입 정의
+└── utils/         # 유틸리티 함수
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🎯 브라우저 지원
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- ✅ Chrome (권장)
+- ✅ Edge
+- ✅ Safari
+- ⚠️ Firefox (일부 오디오 기능 제한 가능)
+
+> **참고**: 마이크 권한이 필요하며, HTTPS 환경에서 사용을 권장합니다.
+
+---
+
+<p align="center">
+  <strong>또바기와 함께 자신감 있는 말하기를 시작하세요! 🎉</strong>
+</p>
