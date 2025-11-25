@@ -13,7 +13,12 @@ import type { Turn, FinalSummary } from '@/types/situation';
 interface UseSituationConversationProps {
   situationId: number;
   onSessionEnd?: (finalSummary: FinalSummary, turns: Turn[]) => void;
-  onEvaluationFailed?: (turn: Turn) => void;
+  onEvaluationFailed?: (
+    turn: Turn,
+    isSessionEnd: boolean,
+    finalSummary: FinalSummary | null,
+    turns: Turn[],
+  ) => void;
 }
 
 interface UseSituationConversationReturn {
@@ -219,22 +224,32 @@ export const useSituationConversation = ({
       // 6. 평가 결과 처리
       if (!evaluation.isSuccess) {
         // 평가 실패
-        logger.log('[RECORDING] 평가 실패 - 연습 모드로 전환', { nextQuestion });
+        logger.log('[RECORDING] 평가 실패 - 연습 모드로 전환', { nextQuestion, isSessionEnd });
 
         // nextQuestion을 currentQuestionRef에 저장 (다시하기 시 사용)
         if (nextQuestion) {
           currentQuestionRef.current = nextQuestion;
         }
 
+        // 5회차(마지막 턴)에서 실패 시 finalSummary도 함께 저장
+        if (isSessionEnd && summary) {
+          setFinalSummary(summary);
+        }
+
         const failedTurn = updatedTurns.find((t) => t.turnIndex === currentTurnIndex);
         if (failedTurn && onEvaluationFailed) {
-          onEvaluationFailed({
-            ...failedTurn,
-            answer: recognizedText,
-            audioFileKey: fileKey,
-            evaluation,
-            nextQuestion: nextQuestion || undefined,
-          });
+          onEvaluationFailed(
+            {
+              ...failedTurn,
+              answer: recognizedText,
+              audioFileKey: fileKey,
+              evaluation,
+              nextQuestion: nextQuestion || undefined,
+            },
+            isSessionEnd,
+            summary,
+            updatedTurns,
+          );
         }
         setIsProcessing(false);
         return;

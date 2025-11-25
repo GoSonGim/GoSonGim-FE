@@ -3,33 +3,52 @@ import CheckIcon from '@/assets/svgs/situation/checkIconsvg.svg';
 
 interface FailureModalProps {
   isOpen: boolean;
+  isLastTurn?: boolean;
   onRetry: () => void;
   onLearn: () => void;
+  onViewResult?: () => void;
 }
 
 /**
  * 학습 감지 모달 컴포넌트
  * Figma: 601-4079
+ * - isLastTurn이 true일 때: "다시하기" → "결과보기"로 변경
  */
-export const FailureModal = ({ isOpen, onRetry, onLearn }: FailureModalProps) => {
+export const FailureModal = ({
+  isOpen,
+  isLastTurn = false,
+  onRetry,
+  onLearn,
+  onViewResult,
+}: FailureModalProps) => {
+  // 왼쪽 버튼 클릭 핸들러 (마지막 턴이면 결과보기, 아니면 다시하기)
+  const handleLeftButtonClick = () => {
+    if (isLastTurn && onViewResult) {
+      onViewResult();
+    } else {
+      onRetry();
+    }
+  };
+
   // ESC 키로 닫기
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
-        onRetry();
+        handleLeftButtonClick();
       }
     };
 
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
-  }, [isOpen, onRetry]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, isLastTurn, onRetry, onViewResult]);
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* 배경 오버레이 */}
-      <div className="absolute inset-0 bg-black/50" onClick={onRetry} />
+      <div className="absolute inset-0 bg-black/50" onClick={handleLeftButtonClick} />
 
       {/* 모달 컨텐츠 */}
       <div className="relative z-10 mx-4 w-full max-w-[312px] rounded-[16px] bg-white px-4 py-6 shadow-xl">
@@ -50,10 +69,10 @@ export const FailureModal = ({ isOpen, onRetry, onLearn }: FailureModalProps) =>
         {/* 버튼들 */}
         <div className="flex w-full gap-2">
           <button
-            onClick={onRetry}
+            onClick={handleLeftButtonClick}
             className="text-body-01-regular hover:bg-gray-30 bg-gray-20 text-gray-80 flex h-12 w-[152px] cursor-pointer items-center justify-center rounded-[8px] transition-colors"
           >
-            다시하기
+            {isLastTurn ? '결과보기' : '다시하기'}
           </button>
           <button
             onClick={onLearn}

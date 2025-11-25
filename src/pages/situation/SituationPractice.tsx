@@ -23,6 +23,7 @@ export default function SituationPractice() {
   // 실패한 턴 데이터 (대화 페이지에서 전달)
   const failedTurn = location.state?.failedTurn as Turn | undefined;
   const situationName = location.state?.situationName as string | undefined;
+  const isLastTurn = location.state?.isLastTurn as boolean | undefined;
 
   // 연습 단계 상태
   const [step, setStep] = useState<'input' | 'practice' | 'complete'>('input');
@@ -31,8 +32,11 @@ export default function SituationPractice() {
   // 토스트
   const toast = useToast();
 
-  // Store에서 세션 복원 플래그 설정 함수 가져오기
+  // Store에서 세션 관련 함수 및 상태 가져오기
   const setShouldRestore = useSituationSessionStore((state) => state.setShouldRestore);
+  const savedFinalSummary = useSituationSessionStore((state) => state.finalSummary);
+  const savedTurns = useSituationSessionStore((state) => state.turns);
+  const clearSession = useSituationSessionStore((state) => state.clearSession);
 
   const practice = useSituationPractice({
     onPracticeComplete: () => {
@@ -93,6 +97,22 @@ export default function SituationPractice() {
     // 대화 페이지로 이동하면서 fromPractice 플래그 전달
     navigate(`/situation/${situationIdNum}/conversation`, {
       state: { fromPractice: true, situationName },
+    });
+  };
+
+  // 결과 확인하기 (마지막 턴에서 학습 완료 후)
+  const handleViewResult = () => {
+    logger.log('[PRACTICE] 결과 확인하기 - 결과 페이지로 이동', {
+      hasFinalSummary: !!savedFinalSummary,
+      turnsCount: savedTurns.length,
+    });
+
+    // 세션 데이터 클리어
+    clearSession();
+
+    // 결과 페이지로 이동
+    navigate(`/situation/${situationIdNum}/feedback`, {
+      state: { finalSummary: savedFinalSummary, turns: savedTurns },
     });
   };
 
@@ -234,8 +254,8 @@ export default function SituationPractice() {
             <ModalButton onClick={handleBack} variant="secondary">
               나가기
             </ModalButton>
-            <ModalButton onClick={handleRestart} variant="primary">
-              상황극 복귀하기
+            <ModalButton onClick={isLastTurn ? handleViewResult : handleRestart} variant="primary">
+              {isLastTurn ? '결과 확인하기' : '상황극 복귀하기'}
             </ModalButton>
           </div>
         </div>

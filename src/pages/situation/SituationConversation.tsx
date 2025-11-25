@@ -26,6 +26,9 @@ export default function SituationConversation() {
   // 실패 모달 상태
   const [isFailureModalOpen, setIsFailureModalOpen] = useState(false);
   const [failedTurn, setFailedTurn] = useState<Turn | null>(null);
+  const [isLastTurn, setIsLastTurn] = useState(false);
+  const [lastTurnSummary, setLastTurnSummary] = useState<FinalSummary | null>(null);
+  const [lastTurnTurns, setLastTurnTurns] = useState<Turn[]>([]);
 
   // 세션 재개 버튼 표시 상태
   const [showResumeButton, setShowResumeButton] = useState(false);
@@ -46,9 +49,17 @@ export default function SituationConversation() {
         state: { finalSummary, turns },
       });
     },
-    onEvaluationFailed: (turn: Turn) => {
-      logger.log('[PAGE] 평가 실패, 모달 표시', turn);
+    onEvaluationFailed: (
+      turn: Turn,
+      isSessionEnd: boolean,
+      finalSummary: FinalSummary | null,
+      turns: Turn[],
+    ) => {
+      logger.log('[PAGE] 평가 실패, 모달 표시', { turn, isSessionEnd, hasFinalSummary: !!finalSummary });
       setFailedTurn(turn);
+      setIsLastTurn(isSessionEnd);
+      setLastTurnSummary(finalSummary);
+      setLastTurnTurns(turns);
       setIsFailureModalOpen(true);
     },
   });
@@ -88,10 +99,12 @@ export default function SituationConversation() {
         situationId: situationIdNum,
         situationName: situationName || '',
         currentTurnIndex: conversation.currentTurnIndex,
-        turns: conversation.turns,
+        turns: isLastTurn ? lastTurnTurns : conversation.turns,
         currentQuestion: failedTurn.nextQuestion || failedTurn.question,
+        isLastTurn: isLastTurn,
+        finalSummary: lastTurnSummary,
       });
-      logger.log('[PAGE] 세션 상태 저장 완료');
+      logger.log('[PAGE] 세션 상태 저장 완료', { isLastTurn, hasFinalSummary: !!lastTurnSummary });
     }
 
     // 아바타 세션만 종료 (백엔드 세션은 유지)
@@ -102,7 +115,21 @@ export default function SituationConversation() {
     }
 
     navigate(`/situation/${situationIdNum}/practice`, {
-      state: { failedTurn, situationName },
+      state: { failedTurn, situationName, isLastTurn },
+    });
+  };
+
+  // 결과보기 버튼 클릭 (5회차 실패 시)
+  const handleViewResult = () => {
+    setIsFailureModalOpen(false);
+    logger.log('[PAGE] 결과 페이지로 이동', { finalSummary: lastTurnSummary, turnsCount: lastTurnTurns.length });
+
+    // 세션 데이터 클리어
+    clearSession();
+
+    // 결과 페이지로 이동
+    navigate(`/situation/${situationIdNum}/feedback`, {
+      state: { finalSummary: lastTurnSummary, turns: lastTurnTurns },
     });
   };
 
@@ -283,7 +310,13 @@ export default function SituationConversation() {
       )}
 
       {/* 학습 감지 모달 */}
-      <FailureModal isOpen={isFailureModalOpen} onRetry={handleRetry} onLearn={handleLearn} />
+      <FailureModal
+        isOpen={isFailureModalOpen}
+        isLastTurn={isLastTurn}
+        onRetry={handleRetry}
+        onLearn={handleLearn}
+        onViewResult={handleViewResult}
+      />
 
       {/* 토스트 */}
       <Toast message={toast.message} isVisible={toast.isVisible} onClose={toast.hideToast} />
