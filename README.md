@@ -80,5 +80,5 @@ src/
 ---
 
 <p align="center">
-  <strong>또바기와 함께 자신감 있는 말하기를 시작하세요! 🎉</strong>
+  <strong>또박이이와 함께 자신감 있는 말하기를 시작하세요! 🎉</strong>
 </p>
