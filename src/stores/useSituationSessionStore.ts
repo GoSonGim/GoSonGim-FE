@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Turn } from '@/types/situation';
+import type { Turn, FinalSummary } from '@/types/situation';
 
 interface SituationSessionState {
   sessionId: string | null;
@@ -10,6 +10,8 @@ interface SituationSessionState {
   turns: Turn[];
   currentQuestion: string;
   shouldRestoreSession: boolean;
+  isLastTurn: boolean;
+  finalSummary: FinalSummary | null;
 }
 
 interface SituationSessionActions {
@@ -20,6 +22,8 @@ interface SituationSessionActions {
     currentTurnIndex: number;
     turns: Turn[];
     currentQuestion: string;
+    isLastTurn?: boolean;
+    finalSummary?: FinalSummary | null;
   }) => void;
   clearSession: () => void;
   setShouldRestore: (shouldRestore: boolean) => void;
@@ -38,6 +42,8 @@ export const useSituationSessionStore = create<SituationSessionStore>()(
       turns: [],
       currentQuestion: '',
       shouldRestoreSession: false,
+      isLastTurn: false,
+      finalSummary: null,
 
       // Actions
       saveSession: (data) =>
@@ -49,6 +55,8 @@ export const useSituationSessionStore = create<SituationSessionStore>()(
           turns: data.turns,
           currentQuestion: data.currentQuestion,
           shouldRestoreSession: false,
+          isLastTurn: data.isLastTurn ?? false,
+          finalSummary: data.finalSummary ?? null,
         }),
 
       clearSession: () =>
@@ -60,6 +68,8 @@ export const useSituationSessionStore = create<SituationSessionStore>()(
           turns: [],
           currentQuestion: '',
           shouldRestoreSession: false,
+          isLastTurn: false,
+          finalSummary: null,
         }),
 
       setShouldRestore: (shouldRestore) =>

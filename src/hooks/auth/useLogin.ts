@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '@/utils/common/loggerUtils';
 
 // 구글 OAuth 설정
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || `${window.location.origin}/auth/callback`;
+const GOOGLE_REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI || `${window.location.origin}/callback`;
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 
 export const useLogin = () => {
@@ -12,13 +12,30 @@ export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
 
-  // 구글 OAuth에서 돌아왔을 때 로딩 상태 리셋
-  useEffect(() => {
+  // 로딩 상태 리셋 함수
+  const resetLoadingState = useCallback(() => {
     if (sessionStorage.getItem('googleAuthAttempt') === 'true') {
       sessionStorage.removeItem('googleAuthAttempt');
       setIsLoading(false);
     }
   }, []);
+
+  // 구글 OAuth에서 돌아왔을 때 로딩 상태 리셋
+  useEffect(() => {
+    // 초기 마운트 시 체크
+    resetLoadingState();
+
+    // BFCache에서 복원될 때도 로딩 상태 리셋 (뒤로가기 대응)
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        // BFCache에서 복원된 경우
+        resetLoadingState();
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, [resetLoadingState]);
 
   // 구글 OAuth URL 생성
   const getGoogleAuthUrl = (isSignup: boolean = false) => {
