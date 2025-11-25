@@ -23,8 +23,8 @@ const NicknamePage = () => {
           label="닉네임"
           value={nickname}
           onChange={handleNicknameChange}
-          placeholder="8글자 이내로 작성해주세요."
-          maxLength={8}
+          placeholder="4글자 이내로 작성해주세요."
+          maxLength={4}
         />
       </div>
 
