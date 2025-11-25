@@ -29,8 +29,8 @@ export const useNickname = () => {
     }
   };
 
-  // 다음 버튼 활성화 조건: 1글자 이상 10글자 이하, 로딩 중이 아닐 때
-  const isNextEnabled = nickname.trim().length > 0 && nickname.length <= 10 && !updateNicknameMutation.isPending;
+  // 다음 버튼 활성화 조건: 1글자 이상 4글자 이하, 로딩 중이 아닐 때
+  const isNextEnabled = nickname.trim().length > 0 && nickname.length <= 4 && !updateNicknameMutation.isPending;
 
   return {
     nickname,

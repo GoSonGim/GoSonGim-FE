@@ -26,7 +26,7 @@ export const Button = ({
     primary: 'bg-blue-2 text-white hover:bg-blue-2-hover',
     secondary: 'bg-white text-gray-80 border border-gray-40 hover:bg-gray-5',
     google: 'bg-white text-[#1F1F1F] border border-[#747775] hover:bg-gray-5',
-    signup: 'bg-white text-gray-80 border border-blue-1 hover:bg-gray-5 hover:border-gray-40',
+    signup: 'bg-[#EAEEFF] text-[#3540A8]',
   };
 
   return (

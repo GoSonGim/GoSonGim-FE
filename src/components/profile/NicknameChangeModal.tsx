@@ -41,15 +41,15 @@ export default function NicknameChangeModal({ isOpen, onClose, currentNickname }
 
   const handleInputChange = (value: string) => {
     setNewNickname(value);
-    if (value.length > 20) {
-      setError('20자 이하로 입력해주세요!');
+    if (value.length > 4) {
+      setError('4자 이하로 입력해주세요!');
     } else {
       setError('');
     }
   };
 
   const handleChange = () => {
-    if (newNickname.trim() && newNickname.length <= 20) {
+    if (newNickname.trim() && newNickname.length <= 4) {
       updateNicknameMutation.mutate(
         { nickname: newNickname.trim() },
         {
@@ -63,7 +63,7 @@ export default function NicknameChangeModal({ isOpen, onClose, currentNickname }
     }
   };
 
-  const isButtonDisabled = !newNickname.trim() || newNickname.length > 20 || updateNicknameMutation.isPending;
+  const isButtonDisabled = !newNickname.trim() || newNickname.length > 4 || updateNicknameMutation.isPending;
 
   return createPortal(
     <div
@@ -100,7 +100,7 @@ export default function NicknameChangeModal({ isOpen, onClose, currentNickname }
                     handleChange();
                   }
                 }}
-                placeholder=""
+                placeholder="4글자 이내로 작성해주세요."
                 className="text-body-02-regular border-blue-1 h-[48px] rounded-[8px] border bg-[#f1f1f5] px-2 text-black outline-none"
               />
               {error && <p className="text-body-02-regular mt-1 text-red-500">{error}</p>}

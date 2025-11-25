@@ -34,7 +34,7 @@ export const SignupBottomSheet = ({ isOpen, onClose, onGoogleSignup, onEmailSign
           {/* 또는 구분선 */}
           <div className="flex w-full items-center justify-center gap-4">
             <DividerLine className="text-gray-30 h-px w-[136px]" />
-            <p className="text-detail-01 text-gray-60">또는</p>
+            <p className="text-detail-01 text-gray-60 shrink-0 whitespace-nowrap">또는</p>
             <DividerLine className="text-gray-30 h-px w-[136px]" />
           </div>
 

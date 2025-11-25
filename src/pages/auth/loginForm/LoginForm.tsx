@@ -23,7 +23,7 @@ const LoginForm = () => {
       {/* 뒤로가기 버튼 */}
       <button
         onClick={() => navigate(-1)}
-        className="absolute top-[60px] left-4 flex cursor-pointer items-center justify-center"
+        className="absolute top-4 left-4 flex cursor-pointer items-center justify-center"
       >
         <BackIcon className="h-5 w-5" />
       </button>

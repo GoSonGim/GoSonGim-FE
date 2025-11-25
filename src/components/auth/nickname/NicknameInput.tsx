@@ -9,7 +9,7 @@ interface NicknameInputProps {
   maxLength?: number;
 }
 
-export const NicknameInput = ({ label, value, onChange, placeholder, maxLength = 10 }: NicknameInputProps) => {
+export const NicknameInput = ({ label, value, onChange, placeholder, maxLength = 4 }: NicknameInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const hasValue = value.length > 0;
@@ -22,7 +22,7 @@ export const NicknameInput = ({ label, value, onChange, placeholder, maxLength =
     return 'border-gray-60'; // 기본 회색
   };
 
-  // Input 변경 핸들러 (10글자 제한)
+  // Input 변경 핸들러 (4글자 제한)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     if (newValue.length <= maxLength) {
