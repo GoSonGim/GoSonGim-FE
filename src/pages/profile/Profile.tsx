@@ -65,12 +65,14 @@ const Profile = () => {
   const situationTotalCount = statsData?.result.graph.situation.totalSuccessCount || 0;
 
   return (
-    <div className="relative flex h-full w-full flex-col bg-background-primary">
+    <div className="bg-background-primary relative flex h-full w-full flex-col">
       {/* 스크롤 가능 영역 */}
       <div className="flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* 상단 헤더 */}
-        <div className="flex h-16 items-center bg-white px-4 py-2">
-          <h1 className="px-4 text-[24px] font-medium text-gray-100">내 프로필</h1>
+        <div className="flex h-16 items-center justify-between bg-white px-4 py-2">
+          <div className="flex items-center justify-center px-4 py-0">
+            <h1 className="text-[24px] leading-normal font-medium text-gray-100">내 프로필</h1>
+          </div>
         </div>
 
         {/* 메인 컨텐츠 */}

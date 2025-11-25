@@ -19,6 +19,7 @@ export default defineConfig({
   ],
   server: {
     port: 8080,
+    host: true, // TODO: 모바일 로컬 접근 임시 설정 (머지 전 삭제 예정)
     // 개발 환경에서는 프록시 사용, 프로덕션에서는 실제 URL 사용
     proxy: {
       '/api': {
