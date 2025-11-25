@@ -1,0 +1,17 @@
+  chore/#4-layout-ui           [m 615b52a [[34morigin/chore/#4-layout-ui[m] #4 [CHORE] 폰트, 색상 글로벌 스타일 지정
+  develop                      [m 033dced [[34morigin/develop[m] Merge branch 'feature/#55-review-optimize' into develop
+  feature/#12-talkingkit-ui    [m f641aed [[34morigin/feature/#12-talkingkit-ui[m: ahead 1, behind 16] gitignore 수정
+  feature/#18-reviewpage-ui    [m acc4262 [[34morigin/feature/#18-reviewpage-ui[m: behind 24] svg 파일 최적화
+  feature/#20-profile-ui       [m b7a8d62 [[34morigin/develop[m: ahead 1, behind 155] #31[FEAT] 프로필 API 연결
+  feature/#22-findstudy-ui     [m 23014c9 헤이젠 아바타 완성
+  feature/#35-reviewpage-api   [m d6077a2 #35[FEAT] 복습 API 1차 완료
+  feature/#37-talkingkit-audio [m 25819c7 #37[FEAT] 조음 키트 영상 업로드 & API 연결
+  feature/#39-profile-graph-fix[m fdb5480 #39[FIX] 그래프 UI 수정 & 이용안내 애니메이션 수정
+  feature/#41-api-update       [m 0071cb3 #41 [FIX] 일/워별 학습 조회 & 로그아웃 API 수정, 랜덤 단어 복습 퀴즈 API 연결
+  feature/#44-talkingkit-upload[m 9048b8c #44 [FEAT] 영상 업로드 & 필터링 구현
+  feature/#46-layout-mobile    [m 3c132e0 #46[FEAT] 모바일 레이아웃 개선 완료
+  feature/#55-review-optimize  [m 8c4f567 #55[FEAT] 복습 기능/상수 분리 완료
+  feature/#58-profile-optimize [m 14937e4 Merge pull request #56 from GoSonGim/fix/#52-review-fix
+  feature/#7-Homepage-UI       [m 13f4018 [[34morigin/feature/#7-Homepage-UI[m: behind 14] #7 [UI] 자유대화 구현
+* [32mfix/#62-login-fix            [m 09948d2 #62[FIX] 로그인 UI/버그 수정 & BottomNav 여백 문제해결
+  main                         [m 154d176 [[34morigin/main[m] Merge pull request #3 from GoSonGim/chore/#1-setup-project
