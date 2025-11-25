@@ -5,6 +5,7 @@ import { getMonthlyStudy } from './queries/monthlyStudy';
 import { getDailyStudy } from './queries/dailyStudy';
 import { getSituationDetail } from './queries/situationDetail';
 import { getKitDetail } from './queries/kitDetail';
+import { getKitLogDetail } from './queries/kitLogDetail';
 import { evaluateWords } from './mutations/evaluateWords';
 
 export const reviewAPI = {
@@ -15,5 +16,6 @@ export const reviewAPI = {
   getDailyStudy,
   getSituationDetail,
   getKitDetail,
+  getKitLogDetail,
   evaluateWords,
 };

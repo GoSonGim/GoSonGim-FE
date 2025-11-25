@@ -7,6 +7,7 @@ import StartIcon from '@/assets/svgs/review/review-play.svg';
 import BlueSelect from '@/assets/svgs/review/review-blueselect.svg';
 import ProgressBar from '@/components/review/ProgressBar';
 import { useKitDetailQuery } from '@/hooks/review/queries/useKitDetailQuery';
+import { useKitLogDetailQuery } from '@/hooks/review/queries/useKitLogDetailQuery';
 import { useListenControls } from '@/hooks/review/listen';
 import { calculateAverageFeedback } from '@/utils/review';
 
@@ -14,9 +15,14 @@ const ArticulationListen = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const kitId = Number(searchParams.get('kitId')) || 0;
+  const recordingId = Number(searchParams.get('recordingId')) || 0;
 
-  // API 데이터 가져오기
-  const { data, isLoading, isError } = useKitDetailQuery(kitId);
+  // API 데이터 가져오기 - ReviewPractice에서는 kitId, ReviewCalendar에서는 recordingId 사용
+  const kitDetailQuery = useKitDetailQuery(kitId);
+  const kitLogDetailQuery = useKitLogDetailQuery(recordingId);
+
+  // recordingId가 있으면 kitLogDetailQuery, 없으면 kitDetailQuery 사용
+  const { data, isLoading, isError } = recordingId > 0 ? kitLogDetailQuery : kitDetailQuery;
 
   // 오디오 플레이어 제어
   const {

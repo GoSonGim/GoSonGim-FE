@@ -164,8 +164,8 @@ const ReviewCalendar = () => {
                     if (item.type === 'SITUATION') {
                       navigate(`/review/practice/listen?recordingId=${item.recordingId}`);
                     } else {
-                      // kit 타입 - 조음 키트
-                      navigate(`/review/practice/articulation-listen?kitId=${item.id}`);
+                      // kit 타입 - 조음 키트 (recordingId로 일별 학습 세션 조회)
+                      navigate(`/review/practice/articulation-listen?recordingId=${item.recordingId}`);
                     }
                   };
 
