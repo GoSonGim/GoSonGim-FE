@@ -21,7 +21,7 @@ const LandingPage = () => {
       }}
     >
       {/* Lottie 애니메이션 */}
-      <div className="flex items-center justify-center">
+      <div className="flex -translate-y-12 items-center justify-center">
         <DotLottieReact src="/landingPageLogo.lottie" loop autoplay speed={0.7} className="h-[300px] w-[300px]" />
       </div>
     </div>

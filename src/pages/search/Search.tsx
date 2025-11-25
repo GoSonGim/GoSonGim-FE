@@ -67,9 +67,9 @@ const Search = () => {
   return (
     <div className="bg-background-primary relative flex h-full flex-col">
       {/* Header */}
-      <div className="relative flex h-16 items-center overflow-clip bg-white px-0 py-2">
-        <div className="flex w-full items-center justify-center px-4 py-0">
-          <p className="text-center text-[24px] leading-normal font-medium text-gray-100">학습탐색</p>
+      <div className="flex h-16 items-center justify-between bg-white px-4 py-2">
+        <div className="flex items-center justify-center px-4 py-0">
+          <p className="text-[24px] leading-normal font-medium text-gray-100">학습탐색</p>
         </div>
       </div>
 

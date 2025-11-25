@@ -17,7 +17,9 @@ const Review = () => {
     <div className="bg-background-primary relative flex h-full flex-col">
       {/* 헤더 */}
       <header className="flex h-16 items-center justify-between bg-white px-4 py-2">
-        <h1 className="text-heading-02-regular text-gray-100">복습</h1>
+        <div className="flex items-center justify-center px-4 py-0">
+          <h1 className="text-[24px] leading-normal font-medium text-gray-100">복습</h1>
+        </div>
         <button className="cursor-pointer" onClick={() => navigate('/review/calendar')}>
           <CalendarIcon className="h-[48px] w-[48px]" />
         </button>
@@ -29,7 +31,7 @@ const Review = () => {
         <div className="mb-10 flex flex-col gap-2">
           {/* 단어복습 랜덤퀴즈 카드 */}
           <div
-            className={`border-blue-2 shadow-lg flex h-[88px] cursor-pointer items-center justify-between rounded-2xl border p-4 transition-colors ${
+            className={`border-blue-2 flex h-[88px] cursor-pointer items-center justify-between rounded-2xl border p-4 shadow-lg transition-colors ${
               hoveredCard === 'quiz' ? 'bg-blue-1' : 'bg-white'
             }`}
             onMouseEnter={() => setHoveredCard('quiz')}
@@ -63,7 +65,7 @@ const Review = () => {
 
           {/* 학습한 단어 모두보기 카드 */}
           <div
-            className={`border-blue-2 shadow-lg flex h-[88px] cursor-pointer items-center justify-between rounded-2xl border p-4 transition-colors ${
+            className={`border-blue-2 flex h-[88px] cursor-pointer items-center justify-between rounded-2xl border p-4 shadow-lg transition-colors ${
               hoveredCard === 'all' ? 'bg-blue-1' : 'bg-white'
             }`}
             onMouseEnter={() => setHoveredCard('all')}
@@ -100,7 +102,7 @@ const Review = () => {
         <div className="grid grid-cols-2 gap-4">
           {/* 조음·발음 복습하기 카드 */}
           <div
-            className="border-gray-20 shadow-lg flex h-64 cursor-pointer flex-col justify-between rounded-2xl border bg-white p-4"
+            className="border-gray-20 flex h-64 cursor-pointer flex-col justify-between rounded-2xl border bg-white p-4 shadow-lg"
             onClick={() => navigate('/review/practice?type=articulation')}
           >
             <div className="flex flex-col gap-4">
@@ -119,7 +121,7 @@ const Review = () => {
 
           {/* 상황극 복습하기 카드 */}
           <div
-            className="border-gray-20 shadow-lg relative flex h-64 cursor-pointer flex-col rounded-2xl border bg-white p-4"
+            className="border-gray-20 relative flex h-64 cursor-pointer flex-col rounded-2xl border bg-white p-4 shadow-lg"
             onClick={() => navigate('/review/practice?type=roleplay')}
           >
             <div className="flex flex-col gap-4">
