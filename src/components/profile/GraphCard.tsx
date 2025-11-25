@@ -73,7 +73,7 @@ export default function GraphCard({
           </div>
         </div>
         <div className="flex flex-col">
-          <p className="text-detail-01 text-gray-80 leading-normal">총 발화 성공 횟수</p>
+          <p className="text-detail-01 text-gray-80 leading-normal whitespace-nowrap">총 발화 성공 횟수</p>
           <p className="text-blue-1 text-[24px] leading-[1.4] font-semibold">{totalCount.toLocaleString()}회</p>
         </div>
       </div>
