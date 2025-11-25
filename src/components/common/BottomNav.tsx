@@ -13,10 +13,10 @@ const BottomNav = () => {
   const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="absolute bottom-0 flex w-full items-end justify-center gap-8 border-t border-[#dde2e7] bg-white px-0 pt-1 pb-10">
+    <nav className="absolute bottom-0 flex w-full items-end justify-center gap-8 border-t border-[#dde2e7] bg-white px-0 pt-2 pb-2">
       <button
         onClick={() => navigate('/home')}
-        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
+        className="flex h-14 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
       >
         <div
           className={clsx('h-6 w-6', {
@@ -38,7 +38,7 @@ const BottomNav = () => {
 
       <button
         onClick={() => navigate('/search')}
-        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
+        className="flex h-14 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
       >
         <div
           className={clsx('h-6 w-6', {
@@ -60,7 +60,7 @@ const BottomNav = () => {
 
       <button
         onClick={() => navigate('/review')}
-        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
+        className="flex h-14 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
       >
         <div
           className={clsx('h-6 w-6', {
@@ -82,7 +82,7 @@ const BottomNav = () => {
 
       <button
         onClick={() => navigate('/profile')}
-        className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
+        className="flex h-14 w-16 cursor-pointer flex-col items-center justify-center gap-[4px]"
       >
         <div
           className={clsx('h-6 w-6', {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '@/utils/common/loggerUtils';
 
@@ -11,6 +11,14 @@ export const useLogin = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [isSignupOpen, setIsSignupOpen] = useState(false);
+
+  // 구글 OAuth에서 돌아왔을 때 로딩 상태 리셋
+  useEffect(() => {
+    if (sessionStorage.getItem('googleAuthAttempt') === 'true') {
+      sessionStorage.removeItem('googleAuthAttempt');
+      setIsLoading(false);
+    }
+  }, []);
 
   // 구글 OAuth URL 생성
   const getGoogleAuthUrl = (isSignup: boolean = false) => {
@@ -34,6 +42,7 @@ export const useLogin = () => {
   // 구글로 로그인
   const handleGoogleLogin = () => {
     setIsLoading(true);
+    sessionStorage.setItem('googleAuthAttempt', 'true');
     // 구글 OAuth 페이지로 리다이렉트
     window.location.href = getGoogleAuthUrl(false);
   };
@@ -53,6 +62,7 @@ export const useLogin = () => {
   const handleGoogleSignup = () => {
     setIsLoading(true);
     setIsSignupOpen(false);
+    sessionStorage.setItem('googleAuthAttempt', 'true');
     // 구글 OAuth 페이지로 리다이렉트 (state=signup)
     window.location.href = getGoogleAuthUrl(true);
   };

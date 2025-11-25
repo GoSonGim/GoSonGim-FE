@@ -10,9 +10,7 @@ export const NextButton = ({ children, className, disabled, ...props }: NextButt
     <button
       className={clsx(
         'text-body-01-semibold flex w-full cursor-pointer items-center justify-center rounded-full px-4 py-3 transition-colors',
-        disabled
-          ? 'bg-gray-20 text-gray-60 cursor-not-allowed'
-          : 'bg-green-2 text-green-1 hover:bg-green-3 active:bg-green-3',
+        disabled ? 'bg-gray-20 text-gray-60 cursor-not-allowed' : 'bg-[#EAEEFF] text-[#3540A8]',
         className,
       )}
       disabled={disabled}
