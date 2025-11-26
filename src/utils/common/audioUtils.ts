@@ -100,3 +100,29 @@ export const blobToBase64 = (blob: Blob): Promise<string> => {
     reader.readAsDataURL(blob);
   });
 };
+
+/**
+ * Audio Blob 검증 결과
+ */
+export interface BlobValidationResult {
+  isValid: boolean;
+  error?: string;
+}
+
+/**
+ * Audio Blob이 유효한지 검증
+ * @param blob - 검증할 Blob
+ * @returns 검증 결과
+ */
+export const validateAudioBlob = (blob: Blob | null): BlobValidationResult => {
+  if (!blob) {
+    return { isValid: false, error: 'Audio blob is null' };
+  }
+  if (blob.size === 0) {
+    return { isValid: false, error: 'Audio blob is empty (0 bytes)' };
+  }
+  if (blob.size < 100) {
+    return { isValid: false, error: `Audio blob too small (${blob.size} bytes)` };
+  }
+  return { isValid: true };
+};
