@@ -1,6 +1,7 @@
 import { useRef, useCallback } from 'react';
 import { logger } from '@/utils/common/loggerUtils';
 import { handleError } from '@/utils/talkingkit/audioErrorHandlerUtils';
+import { createAudioContext, getUserMedia } from '@/utils/common/browserCompatibilityUtils';
 import {
   AUDIO_FFT_SIZE,
   AUDIO_SMOOTHING_TIME_CONSTANT,
@@ -43,15 +44,15 @@ export const useVoiceDetection = ({ onVoiceDetected, threshold = VOICE_DETECTION
 
   const start = useCallback(async () => {
     try {
-      // 마이크 권한 요청
-      const stream = await navigator.mediaDevices.getUserMedia({
+      // 마이크 권한 요청 (webkit 호환)
+      const stream = await getUserMedia({
         audio: AUDIO_CONFIG,
       });
 
       streamRef.current = stream;
 
-      // AudioContext 생성
-      const audioContext = new AudioContext();
+      // AudioContext 생성 (webkit 호환)
+      const audioContext = createAudioContext();
       audioContextRef.current = audioContext;
 
       // Analyser 노드 생성
