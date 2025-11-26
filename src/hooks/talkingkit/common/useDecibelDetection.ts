@@ -79,8 +79,8 @@ export const useDecibelDetection = (options: DecibelDetectionOptions = {}) => {
 
       streamRef.current = stream;
 
-      // AudioContext 생성 (webkit 호환)
-      const audioContext = createAudioContext();
+      // AudioContext 생성 (webkit 호환 + 자동 resume)
+      const audioContext = await createAudioContext();
       audioContextRef.current = audioContext;
 
       // Analyser 노드 생성
