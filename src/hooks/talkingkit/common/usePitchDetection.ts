@@ -4,6 +4,7 @@ import type { PitchData, PitchDetectionState } from '@/types/talkingkit/longSoun
 import { evaluatePitch, frequencyToNote, isSoundLoudEnough } from '@/utils/talkingkit/pitchEvaluation';
 import { logger } from '@/utils/common/loggerUtils';
 import { handleError } from '@/utils/talkingkit/audioErrorHandlerUtils';
+import { createAudioContext, getUserMedia } from '@/utils/common/browserCompatibilityUtils';
 import {
   AUDIO_FFT_SIZE,
   AUDIO_SMOOTHING_TIME_CONSTANT,
@@ -85,63 +86,6 @@ export const usePitchDetection = (options: PitchDetectionOptions = {}) => {
     animationFrameRef.current = requestAnimationFrame(detectPitch);
   }, []);
 
-  const startDetection = useCallback(async () => {
-    try {
-      // 마이크 권한 요청
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: AUDIO_CONFIG,
-      });
-
-      streamRef.current = stream;
-
-      // AudioContext 생성
-      const audioContext = new AudioContext();
-      audioContextRef.current = audioContext;
-
-      // Analyser 노드 생성
-      const analyser = audioContext.createAnalyser();
-      analyser.fftSize = AUDIO_FFT_SIZE;
-      analyser.smoothingTimeConstant = AUDIO_SMOOTHING_TIME_CONSTANT;
-      analyserRef.current = analyser;
-
-      // 마이크 입력 연결
-      const source = audioContext.createMediaStreamSource(stream);
-      source.connect(analyser);
-
-      // PitchDetector 생성
-      const detector = PitchDetector.forFloat32Array(analyser.fftSize);
-      pitchDetectorRef.current = detector;
-
-      // 감지 시작
-      startTimeRef.current = Date.now();
-      setState((prev) => ({
-        ...prev,
-        isDetecting: true,
-        detectionTime: 0,
-        pitchDataList: [],
-        baselineFrequency: null,
-        evaluationResult: null,
-      }));
-
-      // 음정 감지 시작
-      detectPitch();
-
-      // 타이머 시작
-      timerRef.current = setInterval(() => {
-        const elapsed = Date.now() - startTimeRef.current;
-        setState((prev) => ({ ...prev, detectionTime: elapsed }));
-
-        // 최대 시간 도달 시 자동 중지
-        if (elapsed >= maxDuration) {
-          stopDetection();
-        }
-      }, updateInterval);
-    } catch (error) {
-      logger.error('Failed to start pitch detection:', error);
-      throw new Error(handleError(error));
-    }
-  }, [maxDuration, updateInterval, detectPitch]);
-
   const stopDetection = useCallback(() => {
     // 애니메이션 프레임 중지
     if (animationFrameRef.current) {
@@ -208,6 +152,63 @@ export const usePitchDetection = (options: PitchDetectionOptions = {}) => {
       };
     });
   }, [minDuration]);
+
+  const startDetection = useCallback(async () => {
+    try {
+      // 마이크 권한 요청 (webkit 호환)
+      const stream = await getUserMedia({
+        audio: AUDIO_CONFIG,
+      });
+
+      streamRef.current = stream;
+
+      // AudioContext 생성 (webkit 호환)
+      const audioContext = createAudioContext();
+      audioContextRef.current = audioContext;
+
+      // Analyser 노드 생성
+      const analyser = audioContext.createAnalyser();
+      analyser.fftSize = AUDIO_FFT_SIZE;
+      analyser.smoothingTimeConstant = AUDIO_SMOOTHING_TIME_CONSTANT;
+      analyserRef.current = analyser;
+
+      // 마이크 입력 연결
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+
+      // PitchDetector 생성
+      const detector = PitchDetector.forFloat32Array(analyser.fftSize);
+      pitchDetectorRef.current = detector;
+
+      // 감지 시작
+      startTimeRef.current = Date.now();
+      setState((prev) => ({
+        ...prev,
+        isDetecting: true,
+        detectionTime: 0,
+        pitchDataList: [],
+        baselineFrequency: null,
+        evaluationResult: null,
+      }));
+
+      // 음정 감지 시작
+      detectPitch();
+
+      // 타이머 시작
+      timerRef.current = setInterval(() => {
+        const elapsed = Date.now() - startTimeRef.current;
+        setState((prev) => ({ ...prev, detectionTime: elapsed }));
+
+        // 최대 시간 도달 시 자동 중지
+        if (elapsed >= maxDuration) {
+          stopDetection();
+        }
+      }, updateInterval);
+    } catch (error) {
+      logger.error('Failed to start pitch detection:', error);
+      throw new Error(handleError(error));
+    }
+  }, [maxDuration, updateInterval, detectPitch, stopDetection]);
 
   const resetDetection = useCallback(() => {
     setState({

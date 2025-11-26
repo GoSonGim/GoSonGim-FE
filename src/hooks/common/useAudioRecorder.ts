@@ -1,6 +1,14 @@
 import { useState, useRef, useCallback } from 'react';
 import { audioBufferToWav } from '@/utils/common/audioUtils';
 import { logger } from '@/utils/common/loggerUtils';
+import {
+  createAudioContext,
+  getUserMedia,
+  getSupportedAudioMimeType,
+  isMediaRecorderSupported,
+  isIOS,
+  isSafari,
+} from '@/utils/common/browserCompatibilityUtils';
 
 interface UseAudioRecorderReturn {
   isRecording: boolean;
@@ -30,8 +38,8 @@ export const useAudioRecorder = (): UseAudioRecorderReturn => {
       setError(null);
       audioChunksRef.current = [];
 
-      // 마이크 권한 요청
-      const stream = await navigator.mediaDevices.getUserMedia({
+      // 마이크 권한 요청 (webkit 호환)
+      const stream = await getUserMedia({
         audio: {
           channelCount: 1,
           sampleRate: 16000,
@@ -42,9 +50,17 @@ export const useAudioRecorder = (): UseAudioRecorderReturn => {
 
       streamRef.current = stream;
 
+      // MediaRecorder 지원 확인
+      if (!isMediaRecorderSupported()) {
+        throw new Error('MediaRecorder not supported');
+      }
+
+      // 브라우저에서 지원하는 mimeType 자동 감지
+      const mimeType = getSupportedAudioMimeType();
+
       // MediaRecorder 생성
       const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'audio/webm', // 브라우저에서 지원하는 형식
+        mimeType: mimeType || undefined, // 빈 문자열이면 기본값 사용
       });
 
       mediaRecorderRef.current = mediaRecorder;
@@ -85,15 +101,56 @@ export const useAudioRecorder = (): UseAudioRecorderReturn => {
         try {
           logger.log('녹음 중지, WAV 변환 시작');
 
-          // Blob 생성
-          const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          // Device/Browser 정보 로깅
+          logger.log('Device info:', { isIOS: isIOS(), isSafari: isSafari() });
 
-          // AudioContext로 디코딩
-          const audioContext = new AudioContext({ sampleRate: 16000 });
+          // 실제 사용된 mimeType 가져오기
+          const actualMimeType = mediaRecorder.mimeType || getSupportedAudioMimeType();
+          logger.log('Recording mimeType:', actualMimeType);
+
+          // Blob 생성
+          const audioBlob = new Blob(audioChunksRef.current, { type: actualMimeType });
+          logger.log('Audio blob:', { size: audioBlob.size, type: audioBlob.type });
+
+          // Blob 검증
+          if (audioBlob.size === 0) {
+            throw new Error('녹음된 오디오가 비어있습니다.');
+          }
+          if (audioBlob.size < 100) {
+            throw new Error(`녹음된 오디오가 너무 작습니다 (${audioBlob.size} bytes)`);
+          }
+
+          // AudioContext로 디코딩 (webkit 호환)
+          // Note: sampleRate를 지정하지 않고 네이티브 샘플레이트로 디코딩
+          // audioBufferToWav()에서 16000 Hz로 리샘플링 처리
+          const audioContext = createAudioContext();
           audioContextRef.current = audioContext;
 
+          logger.log('AudioContext:', {
+            sampleRate: audioContext.sampleRate,
+            state: audioContext.state,
+          });
+
           const arrayBuffer = await audioBlob.arrayBuffer();
-          const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+
+          let audioBuffer: AudioBuffer;
+          try {
+            audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+            logger.log('Decoded audio:', {
+              duration: audioBuffer.duration,
+              sampleRate: audioBuffer.sampleRate,
+              channels: audioBuffer.numberOfChannels,
+            });
+          } catch (decodeError) {
+            logger.error('decodeAudioData failed:', {
+              errorName: decodeError instanceof Error ? decodeError.name : 'unknown',
+              errorMessage: decodeError instanceof Error ? decodeError.message : String(decodeError),
+              blobSize: audioBlob.size,
+              blobType: audioBlob.type,
+              isIOS: isIOS(),
+            });
+            throw decodeError;
+          }
 
           // WAV로 변환
           const wavArrayBuffer = audioBufferToWav(audioBuffer, 16000);
