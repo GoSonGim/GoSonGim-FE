@@ -73,7 +73,7 @@ const VowelPitchResult = () => {
   }
 
   return (
-    <div className="bg-background-primary h-full overflow-y-auto">
+    <div className="bg-background-primary h-full overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {/* 상단 바 */}
       <div className="h-16 w-full overflow-hidden bg-white">
         <div className="relative flex h-full items-center justify-center">

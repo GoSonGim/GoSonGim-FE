@@ -1,9 +1,16 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNav from '@/components/common/BottomNav';
 import ArrowRight from '@/assets/svgs/search/studyfind-arrowright.svg';
 import BlueArrow from '@/assets/svgs/review/review-bluearrow.svg';
 import WhiteArrow from '@/assets/svgs/review/review-whitearrow.svg';
+import Category1Icon from '@/assets/svgs/search/studyfind-category1.svg';
+import Category2Icon from '@/assets/svgs/search/studyfind-category2.svg';
+import Category3Icon from '@/assets/svgs/search/studyfind-category3.svg';
+import Category4Icon from '@/assets/svgs/search/studyfind-category4.svg';
+import Category5Icon from '@/assets/svgs/search/studyfind-category5.svg';
+import Category6Icon from '@/assets/svgs/search/studyfind-category6.svg';
+import Category7Icon from '@/assets/svgs/search/studyfind-category7.svg';
 import { situationCategoriesMockData } from '@/mock/search/search.mock';
 import { useKitCategories } from '@/hooks/talkingkit/queries/useKitCategories';
 import { useSituations } from '@/hooks/search/queries/useSituations';
@@ -11,8 +18,16 @@ import { getSituationCategoryQuery } from '@/utils/common/situationUtils';
 import { logger } from '@/utils/common/loggerUtils';
 import { useSearchStore } from '@/stores/useSearchStore';
 
-// Lazy load home icon
-const HomeIcon = lazy(() => import('@/assets/svgs/search/studyfind-home.svg'));
+// 카테고리 ID와 아이콘 매핑
+const categoryIcons: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
+  'daily-life': Category1Icon,
+  shopping: Category2Icon,
+  'medical-service': Category3Icon,
+  transportation: Category4Icon,
+  'job-education': Category5Icon,
+  'social-relationship': Category6Icon,
+  emergency: Category7Icon,
+};
 
 const Search = () => {
   const navigate = useNavigate();
@@ -178,9 +193,10 @@ const Search = () => {
                       <p className="text-heading-02-semibold min-w-full text-gray-100">{category.title}</p>
                       <div className="flex w-full justify-end">
                         <div className="size-16">
-                          <Suspense fallback={<div className="bg-gray-10 size-16 rounded-lg" />}>
-                            <HomeIcon className="size-16" />
-                          </Suspense>
+                          {(() => {
+                            const IconComponent = categoryIcons[category.id];
+                            return IconComponent ? <IconComponent className="size-16" /> : null;
+                          })()}
                         </div>
                       </div>
                     </button>
