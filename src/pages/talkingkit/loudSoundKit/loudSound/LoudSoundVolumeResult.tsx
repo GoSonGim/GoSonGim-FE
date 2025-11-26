@@ -19,7 +19,7 @@ const LoudSoundVolumeResult = () => {
   };
 
   return (
-    <div className="bg-background-primary relative flex h-full flex-col">
+    <div className="bg-background-primary flex h-full flex-col overflow-y-auto">
       {/* 상단 헤더 */}
       <div className="h-16 w-full overflow-hidden bg-white">
         <div className="relative flex h-full items-center justify-center">
@@ -62,7 +62,7 @@ const LoudSoundVolumeResult = () => {
       </AnimatedContainer>
 
       {/* 데시벨 정보 박스 */}
-      <div className="grid w-full grid-cols-2 gap-4 px-4">
+      <div className="grid w-full grid-cols-2 gap-4 px-4 pb-6">
         {/* 평균 데시벨 박스 */}
         <AnimatedContainer variant="fadeInUp" delay={0.25}>
           <div className="border-gray-20 flex w-full flex-col items-center justify-center gap-3 rounded-[16px] border bg-white px-3 py-6">
@@ -87,7 +87,7 @@ const LoudSoundVolumeResult = () => {
       </div>
 
       {/* 완료하기 버튼 */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2">
+      <div className="flex justify-center px-4 pt-6 pb-12">
         <AnimatedContainer variant="fadeIn" delay={0.35}>
           <button
             onClick={handleComplete}

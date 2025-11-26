@@ -73,7 +73,7 @@ const VowelPitchResult = () => {
   }
 
   return (
-    <div className="bg-background-primary relative min-h-screen">
+    <div className="bg-background-primary h-full overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {/* 상단 바 */}
       <div className="h-16 w-full overflow-hidden bg-white">
         <div className="relative flex h-full items-center justify-center">
@@ -93,7 +93,7 @@ const VowelPitchResult = () => {
       </div>
 
       {/* 본문 */}
-      <div className="flex flex-col items-center px-6 py-10">
+      <div className="flex flex-col items-center px-6 py-10 pb-20">
         {/* 점수 카드 */}
         <AnimatedContainer variant="fadeInScale" delay={0} className="mb-6 w-full max-w-2xl">
           <div className="rounded-2xl bg-white p-8 text-center shadow-md">
