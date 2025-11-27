@@ -19,18 +19,22 @@ export const useLogoutMutation = () => {
     onSuccess: (response) => {
       logger.log('✅ Logout success:', response.result);
 
-      // 로컬 스토어 정리
+      // 1. Zustand persist 정리 (자동)
       useAuthStore.getState().logout();
 
-      // 로그인 페이지로 리다이렉트
-      navigate('/login', { replace: true });
+      // 2. localStorage 수동 정리 (이중 보장)
+      localStorage.removeItem('auth-storage');
+
+      // 3. 강제 페이지 새로고침으로 완전한 초기화
+      window.location.href = '/login';
     },
     onError: (error) => {
       logger.error('❌ Logout failed:', error);
 
-      // 에러가 발생해도 로컬 로그아웃은 수행
+      // 에러 발생해도 동일한 정리 프로세스
       useAuthStore.getState().logout();
-      navigate('/login', { replace: true });
+      localStorage.removeItem('auth-storage');
+      window.location.href = '/login';
     },
   });
 };

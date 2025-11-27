@@ -14,11 +14,14 @@ export const useDeleteAccountMutation = () => {
       logger.log('✅ Account deleted:', response.result);
       logger.log(`계정 삭제 예정: ${response.result.purgeAt}`);
 
-      // 로그아웃 처리 (토큰 및 사용자 정보 삭제)
+      // 1. Zustand persist 정리
       logout();
 
-      // 로그인 페이지로 리다이렉트
-      navigate('/login', { replace: true });
+      // 2. localStorage 수동 정리
+      localStorage.removeItem('auth-storage');
+
+      // 3. 강제 페이지 새로고침
+      window.location.href = '/login';
     },
     onError: (error) => {
       logger.error('❌ Account deletion failed:', error);
