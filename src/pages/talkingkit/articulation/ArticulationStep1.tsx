@@ -98,7 +98,7 @@ const ArticulationStep1 = () => {
               {/* 352px 높이의 컨테이너 */}
               <div className="relative h-[352px] w-full">
                 {/* 입 영상 */}
-                <div className="absolute top-[41px] left-[70.5px] size-[216px]">
+                <div className="absolute top-[20px] left-1/2 -translate-x-1/2 h-[280px] w-[280px]">
                   <video
                     ref={videoRef}
                     className="h-full w-full object-cover"

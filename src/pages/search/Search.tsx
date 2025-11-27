@@ -123,7 +123,11 @@ const Search = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto pb-40 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <main
+        className={`flex-1 pb-24 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+          activeTab === '조음발음' ? 'overflow-hidden' : 'overflow-y-auto'
+        }`}
+      >
         {activeTab === '조음발음' ? (
           <div className="flex flex-col gap-10 px-4 pt-[36px]">
             {/* 진단 받기 섹션 */}
@@ -176,7 +180,7 @@ const Search = () => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col gap-6 px-4 pt-[36px]">
+          <div className="flex flex-col gap-6 px-4 pt-6">
             {/* 상황극 연습 타이틀 */}
             <p className="text-heading-01 text-gray-100">상황극 연습</p>
 
