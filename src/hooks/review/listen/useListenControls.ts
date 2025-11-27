@@ -3,19 +3,27 @@ import { useAudioPlayer } from '../useAudioPlayer';
 
 export const useListenControls = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const { loadAudio, play, pause, seekForward, seekBackward, isPlaying, progress } = useAudioPlayer();
+
+  const {
+    loadAndPlay,
+    play,
+    pause,
+    seekForward,
+    seekBackward,
+    isPlaying,
+    progress,
+  } = useAudioPlayer();
 
   const handleItemClick = (id: number, audioUrl: string) => {
     setSelectedId(id);
-    loadAudio(audioUrl);
-    play();
+    loadAndPlay(audioUrl); //  여기서 바로 src+load+play
   };
 
-  const handlePlayPause = () => {
+  const handlePlayPause = async() => {
     if (isPlaying) {
       pause();
     } else {
-      play();
+     await play();
     }
   };
 

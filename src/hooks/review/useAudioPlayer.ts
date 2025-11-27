@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface UseAudioPlayerReturn {
-  loadAudio: (url: string) => void;
+  loadAndPlay: (url: string) => void; // 통합
   play: () => void;
   pause: () => void;
   seekForward: (seconds?: number) => void;
@@ -11,83 +11,97 @@ interface UseAudioPlayerReturn {
   duration: number;
   progress: number;
   isLoading: boolean;
-  error: string | null;
 }
 
 export const useAudioPlayer = (): UseAudioPlayerReturn => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  // 오디오 로드
-  const loadAudio = useCallback((url: string) => {
-    // 기존 오디오 정리
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
+  // 오디오 요소 정리 (이벤트 리스너 포함)
+  const cleanupAudio = useCallback(() => {
+    if (!audioRef.current) return;
+
+    const audio = audioRef.current;
+
+    // 이벤트 리스너 명시적 제거
+    audio.onloadedmetadata = null;
+    audio.ontimeupdate = null;
+    audio.onended = null;
+    audio.onerror = null;
+
+    // 재생 중지 및 참조 제거
+    audio.pause();
+    audioRef.current = null;
+  }, []);
+
+  // iOS 통과형: 로드 + 재생 통합
+  const loadAndPlay = useCallback(async (url: string) => {
+    cleanupAudio();
 
     setIsLoading(true);
-    setError(null);
     setIsPlaying(false);
     setCurrentTime(0);
     setDuration(0);
     setProgress(0);
 
-    // 새 오디오 생성
-    const audio = new Audio(url);
+    // iOS에서 new Audio() 대신 이 방식이 더 안정적
+    const audio = document.createElement('audio');
+    audio.crossOrigin = 'anonymous';
+    audio.preload = 'metadata'; // ✅ auto ❌
+    audio.src = url;
+    audio.load(); // ✅ iOS 필수
+
     audioRef.current = audio;
 
-    // 메타데이터 로드 완료
-    audio.addEventListener('loadedmetadata', () => {
+    audio.onloadedmetadata = () => {
       setDuration(audio.duration);
       setIsLoading(false);
-    });
+    };
 
-    // 재생 중 시간 업데이트
-    audio.addEventListener('timeupdate', () => {
+    audio.ontimeupdate = () => {
       setCurrentTime(audio.currentTime);
       if (audio.duration > 0) {
         setProgress((audio.currentTime / audio.duration) * 100);
       }
-    });
+    };
 
-    // 재생 종료
-    audio.addEventListener('ended', () => {
+    audio.onended = () => {
       setIsPlaying(false);
       setCurrentTime(0);
       setProgress(0);
-    });
+    };
 
-    // 에러 처리
-    audio.addEventListener('error', () => {
-      setError('오디오를 재생할 수 없습니다');
-      setIsLoading(false);
+    audio.onerror = () => {
       setIsPlaying(false);
-    });
-  }, []);
+      setIsLoading(false);
+    };
 
-  // 재생
-  const play = useCallback(() => {
+    try {
+      const p = audio.play(); // ✅ 클릭 콜스택 안에서 실행됨
+      if (p instanceof Promise) await p;
+      setIsPlaying(true);
+    } catch {
+      setIsPlaying(false);
+    }
+  }, [cleanupAudio]);
+
+  const play = useCallback(async () => {
     if (!audioRef.current) return;
 
-    audioRef.current
-      .play()
-      .then(() => {
-        setIsPlaying(true);
-        setError(null);
-      })
-      .catch(() => {
-        setError('오디오 재생에 실패했습니다');
-        setIsPlaying(false);
-      });
+    try {
+      const p = audioRef.current.play();
+      if (p instanceof Promise) await p;
+      setIsPlaying(true);
+    } catch {
+      setIsPlaying(false);
+    }
   }, []);
 
-  // 일시정지
   const pause = useCallback(() => {
     if (!audioRef.current) return;
 
@@ -95,36 +109,36 @@ export const useAudioPlayer = (): UseAudioPlayerReturn => {
     setIsPlaying(false);
   }, []);
 
-  // 앞으로 이동 (기본 5초)
   const seekForward = useCallback((seconds = 5) => {
     if (!audioRef.current) return;
 
-    const newTime = Math.min(audioRef.current.currentTime + seconds, audioRef.current.duration);
+    const newTime = Math.min(
+      audioRef.current.currentTime + seconds,
+      audioRef.current.duration,
+    );
     audioRef.current.currentTime = newTime;
     setCurrentTime(newTime);
   }, []);
 
-  // 뒤로 이동 (기본 5초)
   const seekBackward = useCallback((seconds = 5) => {
     if (!audioRef.current) return;
 
-    const newTime = Math.max(audioRef.current.currentTime - seconds, 0);
+    const newTime = Math.max(
+      audioRef.current.currentTime - seconds,
+      0,
+    );
     audioRef.current.currentTime = newTime;
     setCurrentTime(newTime);
   }, []);
 
-  // 컴포넌트 언마운트 시 정리
   useEffect(() => {
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
+      cleanupAudio();
     };
-  }, []);
+  }, [cleanupAudio]);
 
   return {
-    loadAudio,
+    loadAndPlay, // ✅ 새로 노출
     play,
     pause,
     seekForward,
@@ -134,6 +148,5 @@ export const useAudioPlayer = (): UseAudioPlayerReturn => {
     duration,
     progress,
     isLoading,
-    error,
   };
 };
