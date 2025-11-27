@@ -1,12 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 import { authAPI } from '@/apis/auth';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { logger } from '@/utils/common/loggerUtils';
 
 export const useLogoutMutation = () => {
-  const navigate = useNavigate();
-
   return useMutation({
     mutationFn: () => {
       const refreshToken = useAuthStore.getState().refreshToken;

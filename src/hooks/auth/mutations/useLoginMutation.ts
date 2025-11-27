@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 import { authAPI } from '@/apis/auth';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { getErrorMessage } from '@/utils/common/errorHandlerUtils';
@@ -7,7 +6,6 @@ import { logger } from '@/utils/common/loggerUtils';
 import type { LoginRequest } from '@/types/auth';
 
 export const useLoginMutation = () => {
-  const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
 
   return useMutation({

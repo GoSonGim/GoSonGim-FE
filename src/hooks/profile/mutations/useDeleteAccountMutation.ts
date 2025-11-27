@@ -1,11 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 import { profileAPI } from '@/apis/profile';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { logger } from '@/utils/common/loggerUtils';
 
 export const useDeleteAccountMutation = () => {
-  const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
 
   return useMutation({
