@@ -120,10 +120,10 @@ export const useAudioRecorder = (): UseAudioRecorderReturn => {
             throw new Error(`녹음된 오디오가 너무 작습니다 (${audioBlob.size} bytes)`);
           }
 
-          // AudioContext로 디코딩 (webkit 호환)
+          // AudioContext로 디코딩 (webkit 호환 + 자동 resume)
           // Note: sampleRate를 지정하지 않고 네이티브 샘플레이트로 디코딩
           // audioBufferToWav()에서 16000 Hz로 리샘플링 처리
-          const audioContext = createAudioContext();
+          const audioContext = await createAudioContext();
           audioContextRef.current = audioContext;
 
           logger.log('AudioContext:', {

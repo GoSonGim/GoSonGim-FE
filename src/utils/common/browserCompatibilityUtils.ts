@@ -43,6 +43,14 @@ export const isWebkitBrowser = (): boolean => {
 };
 
 /**
+ * Detect if the current device is Android
+ */
+export const isAndroid = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+  return /android/i.test(navigator.userAgent);
+};
+
+/**
  * Get AudioContext constructor with webkit fallback
  * @returns AudioContext constructor
  */
@@ -61,13 +69,23 @@ export const getAudioContext = (): typeof AudioContext => {
 };
 
 /**
- * Create AudioContext instance with webkit fallback
+ * Create AudioContext instance with webkit fallback and auto-resume
+ * Mobile browsers (Android Chrome, iOS Safari) may start AudioContext in 'suspended' state
+ * This function automatically resumes the context to ensure audio processing works
  * @param options - AudioContext options
- * @returns AudioContext instance
+ * @returns Promise<AudioContext> - Resumed AudioContext instance
  */
-export const createAudioContext = (options?: AudioContextOptions): AudioContext => {
+export const createAudioContext = async (options?: AudioContextOptions): Promise<AudioContext> => {
   const AudioContextClass = getAudioContext();
-  return new AudioContextClass(options);
+  const audioContext = new AudioContextClass(options);
+
+  // Mobile browsers may start AudioContext in suspended state
+  // Resume is required for audio processing to work
+  if (audioContext.state === 'suspended') {
+    await audioContext.resume();
+  }
+
+  return audioContext;
 };
 
 /**
