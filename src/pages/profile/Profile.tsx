@@ -156,7 +156,7 @@ const Profile = () => {
         </div>
 
         {/* 설정 메뉴 */}
-        <div className="mt-6 flex flex-col bg-white">
+        <div className="mt-12 flex flex-col bg-white">
           <button
             className="h-16 cursor-pointer border-b border-[#f1f1f5] bg-white"
             onClick={() => navigate('/profile/guide')}
@@ -178,7 +178,7 @@ const Profile = () => {
         </div>
 
         {/* BottomNav 공간 확보 */}
-        <div className="h-24"></div>
+        <div className="h-18"></div>
       </div>
 
       {/* 하단 네비게이션 (고정) */}

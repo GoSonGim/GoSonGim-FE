@@ -57,7 +57,7 @@ export const useKitDiagnosis = () => {
     if (bookmark.savedKits.size === 0) {
       setShowModal(true);
     } else {
-      navigate('/studytalk');
+      navigate('/home');
       logger.log('내 학습 가기로 라우팅');
       setShowModal(false);
     }
@@ -70,7 +70,7 @@ export const useKitDiagnosis = () => {
 
   // 담지 않고 이동
   const handleConfirmNoSave = () => {
-    navigate('/studytalk');
+    navigate('/home');
     setShowModal(false);
   };
 

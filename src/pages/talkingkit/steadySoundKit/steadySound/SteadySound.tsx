@@ -124,7 +124,7 @@ const SteadySound = () => {
         onBackClick={handleBack}
       >
         <div className="flex h-[352px] items-center justify-center overflow-hidden">
-          <video className="h-auto w-[248px]" src={breathingVideo} muted playsInline />
+          <video className="h-full w-full object-contain" src={breathingVideo} muted playsInline />
         </div>
       </Step1Layout>
     );
@@ -142,7 +142,7 @@ const SteadySound = () => {
           disableAnimation={true}
         >
           <div className="flex h-[352px] items-center justify-center overflow-hidden">
-            <video ref={videoRef} className="h-auto w-[248px]" src={breathingVideo} muted playsInline />
+            <video ref={videoRef} className="h-full w-full object-contain" src={breathingVideo} muted playsInline />
           </div>
         </Step1Layout>
 

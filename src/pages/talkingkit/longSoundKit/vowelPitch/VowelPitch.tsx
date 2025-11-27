@@ -109,7 +109,7 @@ const VowelPitch = () => {
       </Step2Layout>
 
       {/* 하단: 안내 문구 + 마이크 아이콘 그룹 */}
-      <div className="absolute top-[570px] left-1/2 flex w-[288px] -translate-x-1/2 flex-col items-center gap-4">
+      <div className="absolute top-[565px] left-1/2 flex w-[288px] -translate-x-1/2 flex-col items-center gap-4">
         {/* 안내 문구 */}
         <AnimatedContainer variant="fadeIn" delay={0.2}>
           <p className="text-body-02-regular text-gray-60 h-6 w-full text-center">선을 따라 일정하게 발음해주세요</p>

@@ -26,7 +26,7 @@ const Review = () => {
       </header>
 
       {/* 메인 컨텐츠 */}
-      <main className="flex-1 overflow-y-auto px-4 pt-10 pb-40 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <main className="flex-1 overflow-hidden px-4 pt-10 pb-40 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* 단어 복습 카드 섹션 */}
         <div className="mb-10 flex flex-col gap-2">
           {/* 단어복습 랜덤퀴즈 카드 */}

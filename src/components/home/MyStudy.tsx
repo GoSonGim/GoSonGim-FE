@@ -86,14 +86,14 @@ export default function HomeMyStudy({ className }: HomeMyStudyProps) {
                   index === 0 ? 'bg-white hover:bg-[#f1f1f5]' : 'bg-white hover:bg-[#f1f1f5]'
                 }`}
               >
-                <div className="flex w-full flex-col items-start leading-normal">
+                <div className="flex w-full flex-1 flex-col items-start leading-normal min-h-0">
                   {/* 북마크 카테고리명 (string) */}
                   <p className="text-detail-02 text-gray-50">{getSituationCategoryName(item.category)}</p>
                   {/* 북마크 제목 (string) */}
                   <p className="text-heading-02-semibold wrap-break-word text-gray-100">{item.title}</p>{' '}
                 </div>
                 <div
-                  className={`flex items-center justify-center rounded-full border border-solid px-2 py-1 transition-colors ${
+                  className={`flex shrink-0 items-center justify-center rounded-full border border-solid px-2 py-1 transition-colors ${
                     item.type === 'SITUATION' ? 'border-blue-3 bg-white' : 'border-blue-3 bg-[#EAEEFF]'
                   }`}
                 >
