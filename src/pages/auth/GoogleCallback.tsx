@@ -42,11 +42,11 @@ const GoogleCallback = () => {
           const { user, tokens } = response.result;
           login(user, tokens.accessToken, tokens.refreshToken);
 
-          // state가 'signup'이면 닉네임 페이지로
+          // state에 따라 리다이렉트 (강제 새로고침)
           if (state === 'signup') {
-            navigate('/signup/nickname');
+            window.location.href = '/signup/nickname';
           } else {
-            navigate('/');
+            window.location.href = '/';
           }
         })
         .catch((error) => {
