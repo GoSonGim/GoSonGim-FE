@@ -67,7 +67,7 @@ const Profile = () => {
   return (
     <div className="bg-background-primary relative flex h-full w-full flex-col">
       {/* 스크롤 가능 영역 */}
-      <div className="flex-1 overflow-y-auto pb-14 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex-1 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {/* 상단 헤더 */}
         <div className="flex h-16 items-center justify-between bg-white px-4 py-2">
           <div className="flex items-center justify-center px-4 py-0">
@@ -76,7 +76,7 @@ const Profile = () => {
         </div>
 
         {/* 메인 컨텐츠 */}
-        <div className="flex flex-col gap-4 px-4 pt-6 pb-0">
+        <div className="flex flex-col gap-4 px-4 pt-6">
           {/* 프로필 정보 카드 */}
           <div className="flex flex-col gap-6 rounded-[16px] bg-white px-3 py-6 shadow-lg">
             <div className="flex flex-col items-end gap-6">
@@ -156,7 +156,7 @@ const Profile = () => {
         </div>
 
         {/* 설정 메뉴 */}
-        <div className="flex flex-col bg-white">
+        <div className="mt-12 flex flex-col bg-white">
           <button
             className="h-16 cursor-pointer border-b border-[#f1f1f5] bg-white"
             onClick={() => navigate('/profile/guide')}
@@ -167,7 +167,7 @@ const Profile = () => {
             </div>
           </button>
           <button
-            className="h-16 cursor-pointer bg-white"
+            className="h-16 cursor-pointer border-b border-[#f1f1f5] bg-white"
             onClick={() => navigate('/profile/account-settings')}
           >
             <div className="flex items-center justify-between px-7">
@@ -176,6 +176,9 @@ const Profile = () => {
             </div>
           </button>
         </div>
+
+        {/* BottomNav 공간 확보 */}
+        <div className="h-18"></div>
       </div>
 
       {/* 하단 네비게이션 (고정) */}

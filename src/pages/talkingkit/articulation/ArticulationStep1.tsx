@@ -88,34 +88,23 @@ const ArticulationStep1 = () => {
               <h2 className="text-heading-02-semibold text-gray-100">근육 강화하기</h2>
             </AnimatedContainer>
 
-            {/* 흰색 박스 */}
-            <AnimatedContainer
-              variant="fadeInScale"
-              delay={0.2}
-              className="border-gray-20 w-full overflow-visible rounded-[16px] border bg-white"
-              disabled={false}
-            >
-              {/* 352px 높이의 컨테이너 */}
-              <div className="relative h-[352px] w-full">
-                {/* 입 영상 */}
-                <div className="absolute top-[20px] left-1/2 -translate-x-1/2 h-[280px] w-[280px]">
-                  <video
-                    ref={videoRef}
-                    className="h-full w-full object-cover"
-                    playsInline
-                    muted
-                    onEnded={handleVideoEnded}
-                  >
-                    <source src={`/videos/${config.videoFile}`} type="video/mp4" />
-                  </video>
-                </div>
-
-                {/* 하단 애니메이션 영역 (나중에 애니메이션 추가 가능) */}
-                <div className="absolute top-[259px] left-[59.5px] h-[80px] w-[241px]">
-                  {/* 애니메이션 placeholder */}
-                </div>
+            {/* ✅ 흰색 박스 (애니메이션 제거) */}
+            <div className="border-gray-20 w-full overflow-hidden rounded-[16px] border bg-white">
+              <div className="relative h-[352px] w-full overflow-hidden bg-black">
+                <video
+                  ref={videoRef}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  playsInline
+                  muted
+                  preload="auto"
+                  disablePictureInPicture
+                  controlsList="nodownload noremoteplayback noplaybackrate"
+                  onEnded={handleVideoEnded}
+                >
+                  <source src={`/videos/${config.videoFile}`} type="video/mp4" />
+                </video>
               </div>
-            </AnimatedContainer>
+            </div>
           </div>
 
           {/* 안내 텍스트와 버튼 */}
